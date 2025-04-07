@@ -1,0 +1,3 @@
+rootProject.name = 'musinsam'
+
+include 'eureka-server'
