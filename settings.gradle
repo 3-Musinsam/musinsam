@@ -1,3 +1,11 @@
 rootProject.name = 'musinsam'
 
+include 'ai-service'
+include 'alarm-service'
+include 'coupon-service'
 include 'eureka-server'
+include 'eureka-gateway'
+include 'order-service'
+include 'payment-service'
+include 'product-service'
+include 'user-service'
