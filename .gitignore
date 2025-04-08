@@ -3,6 +3,10 @@
 
 ### Wish List
 .idea/
+postgres-data/
+
+# Env Files
+**/.env*
 
 ### Eclipse ###
 .metadata

@@ -1,0 +1,52 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    ports:
+      - "${CONTAINER_DB_PORT}:5432"
+    environment:
+      POSTGRES_DB: musinsam
+      POSTGRES_USER: ${CONTAINER_DB_USERNAME}
+      POSTGRES_PASSWORD: ${CONTAINER_DB_PASSWORD}
+      TZ: Asia/Seoul
+    networks:
+      - musinsam-network
+
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    container_name: eureka-server
+    ports:
+      - "${CONTAINER_EUREKA_SERVER_PORT}:8761"
+    env_file:
+      - ./.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=container
+    networks:
+      - musinsam-network
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "${CONTAINER_ORDER_SERVER_PORT}:12001"
+    depends_on:
+      - postgres
+      - eureka-server
+    env_file:
+      - ./.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=container
+    networks:
+      - musinsam-network
+
+networks:
+  musinsam-network:
+    driver: bridge
