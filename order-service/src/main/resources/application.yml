@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: order
+  config:
+    import:
+      - classpath:config/port.yml
+      - classpath:config/db.yml
+  profiles:
+    group:
+      local: local
+      container: container
+      test: test
+      prod: production
+    active: ${SPRING_ACTIVE_PROFILE:local}
+
