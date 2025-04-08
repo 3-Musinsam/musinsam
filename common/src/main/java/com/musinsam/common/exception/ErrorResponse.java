@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class ErrorResponse {
-  private final String code;
+  private final Integer code;
   private final String message;
   private List<FieldError> fieldErrors;
 
