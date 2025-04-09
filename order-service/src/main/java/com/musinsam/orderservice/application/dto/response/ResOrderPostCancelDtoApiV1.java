@@ -17,6 +17,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResOrderPostCancelDtoApiV1 {
 
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -44,6 +46,4 @@ public class ResOrderPostCancelDtoApiV1 {
             .build())
         .build();
   }
-
-  private Order order;
 }

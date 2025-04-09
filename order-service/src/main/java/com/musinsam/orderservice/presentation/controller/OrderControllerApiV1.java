@@ -40,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/v1/orders")
 public class OrderControllerApiV1 {
-  // TODO: CommonResponse 코드 설정
 
   private final OrderServiceApiV1 orderService;
 

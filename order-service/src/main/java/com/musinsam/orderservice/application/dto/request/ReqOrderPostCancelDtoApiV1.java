@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReqOrderPostCancelDtoApiV1 {
 
+  @Valid
+  private Cancel cancel;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -23,7 +26,4 @@ public class ReqOrderPostCancelDtoApiV1 {
 
     private String reason;
   }
-
-  @Valid
-  private Cancel cancel;
 }

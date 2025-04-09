@@ -24,6 +24,8 @@ import org.springframework.data.web.PagedModel;
 @AllArgsConstructor
 public class ResOrderGetDtoApiV1 {
 
+  private OrderPage orderPage;
+
   @Getter
   @ToString
   public static class OrderPage extends PagedModel<OrderPage.Order> {
@@ -72,6 +74,4 @@ public class ResOrderGetDtoApiV1 {
         .orderPage(new OrderPage(orderEntityPage))
         .build();
   }
-
-  private OrderPage orderPage;
 }

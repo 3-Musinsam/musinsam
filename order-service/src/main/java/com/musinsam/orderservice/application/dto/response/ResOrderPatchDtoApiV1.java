@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResOrderPatchDtoApiV1 {
 
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -41,6 +43,4 @@ public class ResOrderPatchDtoApiV1 {
             .build())
         .build();
   }
-
-  private Order order;
 }

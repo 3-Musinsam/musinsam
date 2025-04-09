@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResOrderGetByIdDtoApiV1 {
 
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -108,8 +110,6 @@ public class ResOrderGetByIdDtoApiV1 {
     private String name;
     private BigDecimal discountAmount;
   }
-
-  private Order order;
 
   // TODO:
   public static ResOrderGetByIdDtoApiV1 of(OrderEntity orderEntity) {
