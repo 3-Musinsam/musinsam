@@ -11,7 +11,9 @@ import static com.musinsam.eventservice.global.config.EventResponseCode.EVENT_GE
 import static com.musinsam.eventservice.global.config.EventResponseCode.EVENT_UPDATE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
+import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
+import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.eventservice.application.dto.request.ReqEventPostCreateDtoApiV1;
 import com.musinsam.eventservice.application.dto.request.ReqEventPutUpdateDtoApiV1;
 import com.musinsam.eventservice.application.dto.response.ResEventGetDtoApiV1;
@@ -40,7 +42,8 @@ public class EventControllerApiV1 {
   @PostMapping
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createEvent(
-      @RequestBody ReqEventPostCreateDtoApiV1 dto
+      @RequestBody ReqEventPostCreateDtoApiV1 dto,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
             EVENT_CREATE_SUCCESS.getCode(),
@@ -60,6 +63,7 @@ public class EventControllerApiV1 {
       ROLE_MASTER}
   )
   public ResponseEntity<ApiResponse<Page<ResEventGetListDtoApiV1>>> getEventList(
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
@@ -77,6 +81,7 @@ public class EventControllerApiV1 {
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateEvent(
       @PathVariable("event_id") UUID eventId,
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestBody ReqEventPutUpdateDtoApiV1 dto
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -92,7 +97,8 @@ public class EventControllerApiV1 {
   @DeleteMapping("/{event_id}")
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> deleteEvent(
-      @PathVariable("event_id") UUID eventId
+      @PathVariable("event_id") UUID eventId,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         EVENT_DELETE_SUCCESS.getCode(),
@@ -111,7 +117,8 @@ public class EventControllerApiV1 {
       ROLE_MASTER
   })
   public ResponseEntity<ApiResponse<ResEventGetDtoApiV1>> getEvent(
-      @PathVariable("event_id") UUID eventId
+      @PathVariable("event_id") UUID eventId,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         EVENT_GET_SUCCESS.getCode(),
@@ -131,6 +138,7 @@ public class EventControllerApiV1 {
   })
   public ResponseEntity<ApiResponse<Page<ResEventGetProductDtoApiV1>>> getEventProductList(
       @PathVariable("event_id") UUID eventId,
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
