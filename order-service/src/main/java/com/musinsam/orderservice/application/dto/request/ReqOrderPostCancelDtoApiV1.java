@@ -1,6 +1,5 @@
 package com.musinsam.orderservice.application.dto.request;
 
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +14,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReqOrderPostCancelDtoApiV1 {
 
-  @Valid
-  private Cancel cancel;
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Cancel {
-
-    private String reason;
-  }
+  private String cancelReason;
 }

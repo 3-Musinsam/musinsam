@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -51,14 +50,14 @@ public class ResOrderGetDtoApiV1 {
       private BigDecimal totalAmount;
       private BigDecimal discountAmount;
       private BigDecimal finalAmount;
-      private String firstProductName;
+      private String productName;
       private int productCount;
       private ZonedDateTime createdAt;
 
       public static List<Order> from(List<OrderEntity> orderEntities) {
         return orderEntities.stream()
             .map(Order::from)
-            .collect(Collectors.toList());
+            .toList();
       }
 
       public static Order from(OrderEntity orderEntity) {

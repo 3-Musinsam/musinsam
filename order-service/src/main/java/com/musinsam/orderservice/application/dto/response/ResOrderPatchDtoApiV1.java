@@ -1,6 +1,7 @@
 package com.musinsam.orderservice.application.dto.response;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,6 +27,8 @@ public class ResOrderPatchDtoApiV1 {
 
     private UUID id;
     private String orderStatus;
+    private String request;
+    private ZonedDateTime updatedAt;
   }
 
   // TODO:
