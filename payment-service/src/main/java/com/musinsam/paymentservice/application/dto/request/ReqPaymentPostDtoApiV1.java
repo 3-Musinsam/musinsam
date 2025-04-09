@@ -1,6 +1,7 @@
 package com.musinsam.paymentservice.application.dto.request;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class ReqPaymentPostDtoApiV1 {
 
   @Valid
+  @NotNull
   private Payment payment;
 
   @Getter
