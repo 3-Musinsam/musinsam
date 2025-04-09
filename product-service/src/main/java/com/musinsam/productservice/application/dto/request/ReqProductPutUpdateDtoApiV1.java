@@ -1,5 +1,6 @@
 package com.musinsam.productservice.application.dto.request;
 
+import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ReqProductUpdateDtoApiV1 {
+public class ReqProductPutUpdateDtoApiV1 {
 
   @Valid
   @NotNull(message = "수정할 상품 정보를 입력해주세요.")
@@ -35,6 +36,12 @@ public class ReqProductUpdateDtoApiV1 {
     private BigDecimal price;
 
     private List<UUID> unchangedImages;
+
+
+    public ProductEntity toEntity() {
+      return ProductEntity.builder()
+          .build();
+    }
 
   }
 

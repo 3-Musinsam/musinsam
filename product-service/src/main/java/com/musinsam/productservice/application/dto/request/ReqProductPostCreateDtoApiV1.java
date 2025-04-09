@@ -1,5 +1,6 @@
 package com.musinsam.productservice.application.dto.request;
 
+import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ReqProductCreateDtoApiV1 {
+public class ReqProductPostCreateDtoApiV1 {
 
   @Valid
   @NotNull(message = "상품 정보를 입력하세요.")
@@ -40,6 +41,11 @@ public class ReqProductCreateDtoApiV1 {
     @NotNull(message = "상점 id값을 입력해주세요.")
     private UUID shopId;
 
+
+    public ProductEntity toEntity() {
+      return ProductEntity.builder()
+          .build();
+    }
   }
 
 }
