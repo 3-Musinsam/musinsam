@@ -1,0 +1,18 @@
+### Local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /docs
+    url: /springdoc/openapi3-order-service.json
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /api-docs-order-service
+
+---

@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.4'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.epages.restdocs-api-spec' version "0.19.2"
 }
 
 group = 'com.musinsam'
@@ -23,6 +24,11 @@ ext {
 
 dependencies {
     implementation project(':common')
+
+    // documentation dependencies
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -48,3 +54,55 @@ dependencyManagement {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+compileJava {
+    dependsOn 'clean'
+}
+
+ext {
+    serviceId = 'order-service'
+    apiTitle = 'Order Service API'
+    apiVersion = project.version
+    apiDescription = 'Order Service API'
+}
+
+openapi3 {
+    servers = [
+            {
+                url = "http://localhost:12001"
+            }
+    ]
+    title = 'Order Service'
+    version = '1.0.0'
+    description = ''
+    format = 'json'
+}
+
+tasks.register('setDocs') {
+    dependsOn 'openapi3'
+    doLast {
+        copy {
+            from "build/api-spec"
+            include "*.json"
+            include "*.yaml"
+            into "build/resources/main/static/springdoc"
+            rename { String fileName ->
+                if (fileName.endsWith('.json')) {
+                    return fileName.replace('.json', '-order-service.json')
+                } else if (fileName.endsWith('.yaml')) {
+                    return fileName.replace('.yaml', '-order-service.yml')
+                }
+                return fileName
+            }
+        }
+    }
+}
+
+bootRun {
+    dependsOn 'setDocs'
+}
+
+bootJar {
+    dependsOn 'setDocs'
+}
+
