@@ -1,0 +1,54 @@
+### Local
+spring:
+  config:
+    activate:
+      on-profile: local
+
+server:
+  port: 13001
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+---
+### Container
+spring:
+  config:
+    activate:
+      on-profile: container
+
+server:
+  port: ${CONTAINER_PAYMENT_SERVER_PORT}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:${CONTAINER_EUREKA_SERVER_PORT}/eureka/
+
+---
+### Test
+spring:
+  config:
+    activate:
+      on-profile: test
+
+server:
+  port: 0
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+---
+### Production
+spring:
+  config:
+    activate:
+      on-profile: prod

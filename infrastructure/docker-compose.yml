@@ -46,6 +46,23 @@ services:
       - SPRING_PROFILES_ACTIVE=container
     networks:
       - laboratory-network
+
+  payment-service:
+    build:
+      context: ../payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "${CONTAINER_ORDER_SERVER_PORT}:13001"
+    depends_on:
+      - postgres
+      - eureka-server
+    env_file:
+      - ../.env
+    environment:
+      - SPRING_PROFILES_ACTIVE=container
+    networks:
+      - laboratory-network
 volumes:
   postgres_data:
 
