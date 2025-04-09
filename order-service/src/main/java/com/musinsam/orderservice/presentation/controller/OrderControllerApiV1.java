@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -52,17 +53,19 @@ public class OrderControllerApiV1 {
       UserRoleType.ROLE_COMPANY,
       UserRoleType.ROLE_USER
   })
-  public ApiResponse<ResOrderPostDtoApiV1> createOrder(
+  public ResponseEntity<ApiResponse<ResOrderPostDtoApiV1>> createOrder(
       @Valid @RequestBody ReqOrderPostDtoApiV1 requestDto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
 
     ResOrderPostDtoApiV1 responseDto = orderService.createOrder(requestDto, currentUser.userId());
 
-    return ApiResponse.success(
-        ApiSuccessCode.OK.getCode(),
-        "",
-        responseDto
+    return ResponseEntity.ok().body(
+        ApiResponse.success(
+            ApiSuccessCode.OK.getCode(),
+            "Order created successfully",
+            responseDto
+        )
     );
   }
 
@@ -75,17 +78,19 @@ public class OrderControllerApiV1 {
       UserRoleType.ROLE_COMPANY,
       UserRoleType.ROLE_USER
   })
-  public ApiResponse<ResOrderGetByIdDtoApiV1> getOrderById(
+  public ResponseEntity<ApiResponse<ResOrderGetByIdDtoApiV1>> getOrderById(
       @PathVariable UUID orderId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
 
     ResOrderGetByIdDtoApiV1 responseDto = orderService.getOrder(orderId, currentUser.userId());
 
-    return ApiResponse.success(
-        ApiSuccessCode.OK.getCode(),
-        "",
-        responseDto
+    return ResponseEntity.ok().body(
+        ApiResponse.success(
+            ApiSuccessCode.OK.getCode(),
+            "Order details retrieved successfully.",
+            responseDto
+        )
     );
   }
 
@@ -94,7 +99,7 @@ public class OrderControllerApiV1 {
    */
   @GetMapping
   @CustomPreAuthorize(userRoleType = {UserRoleType.ROLE_MASTER})
-  public ApiResponse<ResOrderGetDtoApiV1> getOrder(
+  public ResponseEntity<ApiResponse<ResOrderGetDtoApiV1>> getOrder(
       @PageableDefault
       @SortDefault.SortDefaults({
           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
@@ -109,10 +114,12 @@ public class OrderControllerApiV1 {
         currentUser.userId()
     );
 
-    return ApiResponse.success(
-        ApiSuccessCode.OK.getCode(),
-        "",
-        responseDto
+    return ResponseEntity.ok().body(
+        ApiResponse.success(
+            ApiSuccessCode.OK.getCode(),
+            "Orders retrieved successfully.",
+            responseDto
+        )
     );
   }
 
@@ -124,7 +131,7 @@ public class OrderControllerApiV1 {
       UserRoleType.ROLE_COMPANY,
       UserRoleType.ROLE_USER
   })
-  public ApiResponse<ResOrderPatchDtoApiV1> updateOrder(
+  public ResponseEntity<ApiResponse<ResOrderPatchDtoApiV1>> updateOrder(
       @PathVariable UUID orderId,
       @Valid @RequestBody ReqOrderPatchDtoApiV1 requestDto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
@@ -133,10 +140,12 @@ public class OrderControllerApiV1 {
     ResOrderPatchDtoApiV1 responseDto = orderService.updateOrder(orderId, requestDto,
         currentUser.userId());
 
-    return ApiResponse.success(
-        ApiSuccessCode.OK.getCode(),
-        "",
-        responseDto
+    return ResponseEntity.ok().body(
+        ApiResponse.success(
+            ApiSuccessCode.OK.getCode(),
+            "Order updated successfully.",
+            responseDto
+        )
     );
   }
 
@@ -148,7 +157,7 @@ public class OrderControllerApiV1 {
       UserRoleType.ROLE_COMPANY,
       UserRoleType.ROLE_USER
   })
-  public ApiResponse<ResOrderPostCancelDtoApiV1> cancelOrder(
+  public ResponseEntity<ApiResponse<ResOrderPostCancelDtoApiV1>> cancelOrder(
       @PathVariable UUID orderId,
       @Valid @RequestBody ReqOrderPostCancelDtoApiV1 requestDto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
@@ -157,10 +166,12 @@ public class OrderControllerApiV1 {
     ResOrderPostCancelDtoApiV1 responseDto = orderService.cancelOrder(orderId, requestDto,
         currentUser.userId());
 
-    return ApiResponse.success(
-        ApiSuccessCode.OK.getCode(),
-        "",
-        responseDto
+    return ResponseEntity.ok().body(
+        ApiResponse.success(
+            ApiSuccessCode.OK.getCode(),
+            "Order cancelled successfully.",
+            responseDto
+        )
     );
   }
 
@@ -169,13 +180,15 @@ public class OrderControllerApiV1 {
    */
   @DeleteMapping("/{orderId}")
   @CustomPreAuthorize(userRoleType = {UserRoleType.ROLE_MASTER})
-  public ApiResponse<Void> deleteOrder(
+  public ResponseEntity<ApiResponse<Void>> deleteOrder(
       @PathVariable UUID orderId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
 
     orderService.deleteOrder(orderId, currentUser.userId());
 
-    return ApiResponse.success();
+    return ResponseEntity.ok(
+        ApiResponse.success("Order deleted successfully.")
+    );
   }
 }
