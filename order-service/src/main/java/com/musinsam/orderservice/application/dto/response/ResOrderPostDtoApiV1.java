@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResOrderPostDtoApiV1 {
 
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -75,6 +77,4 @@ public class ResOrderPostDtoApiV1 {
         .order(Order.from(orderEntity))
         .build();
   }
-
-  private Order order;
 }

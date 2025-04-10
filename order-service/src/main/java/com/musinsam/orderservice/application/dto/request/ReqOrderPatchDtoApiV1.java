@@ -16,6 +16,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReqOrderPatchDtoApiV1 {
 
+  @Valid
+  @NotNull(message = "주문 정보가 존재하지 않습니다.")
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -24,22 +28,18 @@ public class ReqOrderPatchDtoApiV1 {
 
     private ShippingInfo shippingInfo;
     private String request;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShippingInfo {
+
+      private String receiverName;
+      private String receiverPhone;
+      private String zipCode;
+      private String address;
+      private String addressDetail;
+    }
   }
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class ShippingInfo {
-
-    private String receiverName;
-    private String receiverPhone;
-    private String zipCode;
-    private String address;
-    private String addressDetail;
-  }
-
-  @Valid
-  @NotNull(message = "주문 정보가 입력되지 않았습니다.")
-  private Order order;
 }

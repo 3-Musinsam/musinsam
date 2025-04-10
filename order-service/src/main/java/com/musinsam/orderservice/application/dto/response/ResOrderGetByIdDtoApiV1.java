@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResOrderGetByIdDtoApiV1 {
 
+  private Order order;
+
   @Getter
   @Builder
   @NoArgsConstructor
@@ -27,7 +29,7 @@ public class ResOrderGetByIdDtoApiV1 {
   public static class Order {
 
     private UUID id;
-    private UUID userId;
+    private Long userId;
     private String orderStatus;
     private List<OrderItem> orderItems;
     private BigDecimal totalAmount;
@@ -38,78 +40,76 @@ public class ResOrderGetByIdDtoApiV1 {
     private PaymentInfo paymentInfo;
     private ZonedDateTime createdAt;
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderItem {
+
+      private UUID id;
+      private UUID productId;
+      private String productName;
+      private String productImage;
+      private BigDecimal price;
+      private Integer quantity;
+      private BigDecimal discountAmount;
+      private BigDecimal finalAmount;
+
+      // TODO:
+      public static OrderItem from(OrderItemEntity orderItemEntity) {
+        return OrderItem.builder()
+            .build();
+      }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShippingInfo {
+
+      private UUID id;
+      private String shippingStatus;
+      private String trackingNumber;
+      private String receiverName;
+      private String receiverPhone;
+      private String zipCode;
+      private String address;
+      private String addressDetail;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PaymentInfo {
+
+      private UUID id;
+      private String paymentStatus;
+      private String paymentMethod;
+      private BigDecimal totalAmount;
+      private BigDecimal discountAmount;
+      private BigDecimal finalAmount;
+      private CouponInfo coupon;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CouponInfo {
+
+      private UUID id;
+      private String name;
+      private BigDecimal discountAmount;
+    }
+
     // TODO:
     public static Order from(OrderEntity orderEntity) {
       return Order.builder()
           .build();
     }
   }
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class OrderItem {
-
-    private UUID id;
-    private UUID productId;
-    private String productName;
-    private String productImage;
-    private BigDecimal price;
-    private Integer quantity;
-    private BigDecimal discountAmount;
-    private BigDecimal finalAmount;
-
-    // TODO:
-    public static OrderItem from(OrderItemEntity orderItemEntity) {
-      return OrderItem.builder()
-          .build();
-    }
-  }
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class ShippingInfo {
-
-    private UUID id;
-    private String shippingStatus;
-    private String trackingNumber;
-    private String receiverName;
-    private String receiverPhone;
-    private String zipCode;
-    private String address;
-    private String addressDetail;
-  }
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class PaymentInfo {
-
-    private UUID id;
-    private String paymentStatus;
-    private String paymentMethod;
-    private BigDecimal totalAmount;
-    private BigDecimal discountAmount;
-    private BigDecimal finalAmount;
-    private CouponInfo coupon;
-  }
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class CouponInfo {
-
-    private UUID id;
-    private String name;
-    private BigDecimal discountAmount;
-  }
-
-  private Order order;
 
   // TODO:
   public static ResOrderGetByIdDtoApiV1 of(OrderEntity orderEntity) {
