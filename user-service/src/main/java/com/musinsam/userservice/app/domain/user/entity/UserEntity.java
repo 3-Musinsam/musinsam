@@ -39,12 +39,18 @@ public class UserEntity extends BaseEntity {
   @Column(name = "role", nullable = false)
   private UserRoleType userRoleType;
 
-  @Builder
-  public UserEntity(String email, String password, String name, UserRoleType userRoleType) {
+  private UserEntity(String email, String password, String name, UserRoleType userRoleType) {
     this.email = email;
     this.password = password;
     this.name = name;
     this.userRoleType = userRoleType;
   }
 
+  public static UserEntity of(String email, String password, String name, UserRoleType userRoleType) {
+    return new UserEntity( email, password, name, userRoleType);
+  }
+
+  public static UserEntity of(String email, String password, String name) {
+    return new UserEntity( email, password, name, UserRoleType.ROLE_USER);
+  }
 }
