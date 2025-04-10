@@ -5,6 +5,7 @@ spring:
     import:
       - classpath:config/port.yml
       - classpath:config/db.yml
+      - classpath:config/docs.yml
   profiles:
     group:
       local: local
