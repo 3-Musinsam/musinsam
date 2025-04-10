@@ -1,0 +1,11 @@
+###
+POST http://localhost:10001/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice"
+  }
+}
