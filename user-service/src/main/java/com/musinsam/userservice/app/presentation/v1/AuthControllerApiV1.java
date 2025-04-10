@@ -72,12 +72,15 @@ public class AuthControllerApiV1 {
 
   @PostMapping("/generate-token")
   public ResponseEntity<ApiResponse<ResAuthGenerateTokenDtoApiV1>> generateToken(
-      @RequestBody ReqAuthGenerateTokenDtoApiV1 reqAuthGenerateTokenDtoApiV1
+      @RequestBody ReqAuthGenerateTokenDtoApiV1 request
   ) {
+
+    ResAuthGenerateTokenDtoApiV1 response = authService.generateToken(request);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_TOKEN_GENERATION_SUCCESS.getCode(),
         USER_TOKEN_GENERATION_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 

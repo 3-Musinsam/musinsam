@@ -20,3 +20,15 @@ Content-Type: application/json
     "password": "Authorize123!"
   }
 }
+
+> {%
+    client.global.set("refreshToken", response.body.data.token.refreshToken);
+%}
+
+### 토큰 재발급
+POST http://localhost:10001/v1/auth/generate-token
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
