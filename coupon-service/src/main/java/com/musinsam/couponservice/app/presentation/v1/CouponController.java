@@ -10,7 +10,6 @@ import static com.musinsam.couponservice.app.global.config.CouponResponseCode.CO
 import static com.musinsam.couponservice.app.global.config.CouponResponseCode.COUPON_DELETE_SUCCESS;
 import static com.musinsam.couponservice.app.global.config.CouponResponseCode.COUPON_GET_SUCCESS;
 import static com.musinsam.couponservice.app.global.config.CouponResponseCode.COUPON_ISSUE_SUCCESS;
-import static com.musinsam.couponservice.app.global.config.CouponResponseCode.COUPON_USE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
@@ -24,8 +23,8 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCoup
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
-import com.musinsam.couponservice.app.doamin.vo.CouponStatus;
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.CouponStatus;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;

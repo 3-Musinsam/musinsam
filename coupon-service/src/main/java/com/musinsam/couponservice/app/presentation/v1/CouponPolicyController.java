@@ -16,7 +16,7 @@ import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.Re
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPoliciesGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyIssueDtoApiV1;
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import org.springframework.data.domain.Pageable;

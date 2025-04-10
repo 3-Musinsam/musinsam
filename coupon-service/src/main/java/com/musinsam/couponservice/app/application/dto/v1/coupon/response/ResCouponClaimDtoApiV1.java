@@ -1,9 +1,9 @@
 package com.musinsam.couponservice.app.application.dto.v1.coupon.response;
 
-import com.musinsam.couponservice.app.doamin.entity.coupon.CouponEntity;
-import com.musinsam.couponservice.app.doamin.entity.coupon.CouponPolicyEntity;
-import com.musinsam.couponservice.app.doamin.vo.CouponStatus;
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
+import com.musinsam.couponservice.app.domain.entity.coupon.CouponPolicyEntity;
+import com.musinsam.couponservice.app.domain.vo.CouponStatus;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -18,7 +18,7 @@ public class ResCouponClaimDtoApiV1 {
 
   private Coupon coupon;
 
-  public static ResCouponClaimDtoApiV1 from(CouponEntity couponEntity) {
+  public static ResCouponClaimDtoApiV1 of(CouponEntity couponEntity) {
     return ResCouponClaimDtoApiV1.builder()
         .coupon(Coupon.from(couponEntity))
         .build();

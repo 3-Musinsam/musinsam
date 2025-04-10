@@ -2,7 +2,7 @@ package com.musinsam.couponservice.app.presentation.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.ReqCouponPolicyIssueDtoApiV1;
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import com.musinsam.couponservice.app.presentation.v1.config.TestWebMvcConfig;
 import java.time.ZonedDateTime;
 import java.util.UUID;

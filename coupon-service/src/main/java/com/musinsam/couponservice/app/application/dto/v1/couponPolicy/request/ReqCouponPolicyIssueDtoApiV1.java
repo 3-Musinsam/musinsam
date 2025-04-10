@@ -1,6 +1,6 @@
 package com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request;
 
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;

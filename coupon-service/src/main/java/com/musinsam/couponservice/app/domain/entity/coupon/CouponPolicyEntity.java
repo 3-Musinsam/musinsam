@@ -1,6 +1,6 @@
-package com.musinsam.couponservice.app.doamin.entity.coupon;
+package com.musinsam.couponservice.app.domain.entity.coupon;
 
-import com.musinsam.couponservice.app.doamin.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.DiscountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
