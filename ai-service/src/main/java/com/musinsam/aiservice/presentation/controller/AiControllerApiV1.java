@@ -1,5 +1,6 @@
 package com.musinsam.aiservice.presentation.controller;
 
+import com.musinsam.aiservice.application.dto.request.ReqAiPostDtoApiV1;
 import com.musinsam.aiservice.application.service.ChatGptService;
 import com.musinsam.common.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +19,8 @@ public class AiControllerApiV1 {
   private final ChatGptService chatGptService;
 
   @PostMapping
-  public ResponseEntity<ApiResponse<String>> postBy(@RequestBody String prompt) {
-    String message = chatGptService.completeChat(prompt);
+  public ResponseEntity<ApiResponse<String>> postBy(@RequestBody ReqAiPostDtoApiV1 dto) {
+    String message = chatGptService.completeChat(dto);
 
     return new ResponseEntity<>(
         ApiResponse.<String>builder()
