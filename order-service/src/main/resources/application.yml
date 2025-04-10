@@ -6,6 +6,7 @@ spring:
       - classpath:config/port.yml
       - classpath:config/db.yml
       - classpath:config/docs.yml
+      - classpath:config/jpa.yml
   profiles:
     group:
       local: local
