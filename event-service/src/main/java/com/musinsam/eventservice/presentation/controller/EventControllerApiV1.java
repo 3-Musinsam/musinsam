@@ -64,6 +64,7 @@ public class EventControllerApiV1 {
   )
   public ResponseEntity<ApiResponse<Page<ResEventGetListDtoApiV1>>> getEventList(
       @CurrentUser CurrentUserDtoApiV1 currentUser,
+      @RequestParam(required = false) Boolean active,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
