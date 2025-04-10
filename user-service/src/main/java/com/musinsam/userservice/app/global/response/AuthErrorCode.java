@@ -18,7 +18,7 @@ public enum AuthErrorCode implements ErrorCode {
   MISSING_REQUIRED_FIELDS(HttpStatus.BAD_REQUEST.value(), "Missing required fields.", HttpStatus.BAD_REQUEST),
 
   // Sign-in Errors
-  INVALID_USERNAME(HttpStatus.BAD_REQUEST.value(), "Invalid username.", HttpStatus.BAD_REQUEST),
+  INVALID_LOGIN(HttpStatus.BAD_REQUEST.value(), "Invalid username or password.", HttpStatus.BAD_REQUEST),
   INVALID_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Invalid password.", HttpStatus.BAD_REQUEST),
   REFRESH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST.value(), "Refresh token has expired.", HttpStatus.BAD_REQUEST),
   INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST.value(), "Invalid refresh token.", HttpStatus.BAD_REQUEST);
