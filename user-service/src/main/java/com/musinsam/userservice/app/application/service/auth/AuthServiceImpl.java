@@ -1,13 +1,17 @@
 package com.musinsam.userservice.app.application.service.auth;
 
 import com.musinsam.common.exception.CustomException;
+import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthSignupDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthSignupDtoApiV1;
+import com.musinsam.userservice.app.application.service.redis.RedisService;
 import com.musinsam.userservice.app.domain.auth.jwt.JwtProvider;
 import com.musinsam.userservice.app.domain.user.entity.UserEntity;
 import com.musinsam.userservice.app.domain.user.repository.auth.AuthRepository;
+import com.musinsam.userservice.app.domain.user.vo.UserRoleType;
 import com.musinsam.userservice.app.global.response.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+  private final RedisService redisService;
   private final AuthRepository authRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
@@ -55,6 +60,32 @@ public class AuthServiceImpl implements AuthService {
     String accessToken = jwtProvider.createAccessToken(user.getId(), user.getUserRoleType());
     String refreshToken = jwtProvider.createRefreshToken(user.getId(), user.getUserRoleType());
 
+    redisService.saveRefreshToken(user.getId(), refreshToken, jwtProvider.getRefreshTokenExpiration());
+
     return ResAuthLoginDtoApiV1.of(user, accessToken, refreshToken);
+  }
+
+  @Override
+  public ResAuthGenerateTokenDtoApiV1 generateToken(ReqAuthGenerateTokenDtoApiV1 request) {
+    if (!jwtProvider.validateToken(request.getRefreshToken())) {
+      throw new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+    }
+
+    Long userId = jwtProvider.getUserIdFromToken(request.getRefreshToken());
+    UserRoleType role = jwtProvider.getUserRoleFromToken(request.getRefreshToken());
+
+    String storedRefreshToken = redisService.getRefreshToken(userId)
+        .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
+
+    if (!storedRefreshToken.equals(request.getRefreshToken())) {
+      throw new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN);
+    }
+
+    String newAccessToken = jwtProvider.createAccessToken(userId, role);
+    String newRefreshToken = jwtProvider.createRefreshToken(userId, role);
+
+    redisService.saveRefreshToken(userId, newRefreshToken, jwtProvider.getRefreshTokenExpiration());
+
+    return ResAuthGenerateTokenDtoApiV1.of(newAccessToken, newRefreshToken);
   }
 }
