@@ -64,7 +64,8 @@ public class JwtProviderImpl implements JwtProvider {
       Jwts.parser()
           .verifyWith(secretKey)
           .build()
-          .parseSignedClaims(token);
+          .parseSignedClaims(token)
+          .getPayload();
       return true;
     } catch (Exception e) {
       return false;
@@ -87,6 +88,9 @@ public class JwtProviderImpl implements JwtProvider {
         .build()
         .parseSignedClaims(token)
         .getPayload();
-    return claims.get("userRole", UserRoleType.class);
+
+    String role = claims.get("userRole", String.class);
+
+    return UserRoleType.valueOf(role);
   }
 }

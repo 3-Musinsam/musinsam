@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReqAuthGenerateTokenDtoApiV1 {
 
-  private Long userId;
+  private String refreshToken;
 
 }

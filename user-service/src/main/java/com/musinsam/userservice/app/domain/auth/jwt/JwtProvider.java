@@ -12,4 +12,7 @@ public interface JwtProvider {
   Long getUserIdFromToken(String token);
 
   UserRoleType getUserRoleFromToken(String token);
+
+  Long getRefreshTokenExpiration();
+
 }
