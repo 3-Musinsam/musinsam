@@ -1,4 +1,14 @@
 services:
+  redis:
+    image: redis:latest
+    container_name: redis-user
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis-config:/usr/local/etc/redis
+    networks:
+      - laboratory-network
+
   postgres:
     image: postgres:latest
     container_name: postgres-db
