@@ -1,10 +1,10 @@
 package com.musinsam.alarmservice.application.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.musinsam.alarmservice.application.dto.response.ResAlarmGetDtoApiV1.AlarmPage.Alarm;
 import com.musinsam.alarmservice.domain.alarm.entity.AlarmEntity;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,24 +48,18 @@ public class ResAlarmGetDtoApiV1 {
     @AllArgsConstructor
     public static class Alarm {
 
-      @JsonProperty
       private UUID id;
-      @JsonProperty("order-id")
-      private UUID orderId;
-      @JsonProperty("coupon-id")
-      private UUID couponId;
-      @JsonProperty
       private String message;
 
       public static List<Alarm> from(List<AlarmEntity> alarmEntityList) {
-        return from(alarmEntityList);
+        return alarmEntityList.stream()
+            .map(Alarm::from)
+            .collect(Collectors.toList());
       }
 
       public static Alarm from(AlarmEntity alarmEntity) {
         return Alarm.builder()
             .id(alarmEntity.getId())
-            .orderId(alarmEntity.getOrderId())
-            .couponId(alarmEntity.getCouponId())
             .message(alarmEntity.getMessage())
             .build();
       }
