@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "OpenAiClient", url = "https://api.openai.com/v1/", configuration = ChatGptRequest.class)
-public interface AiClient {
+@FeignClient(name = "chatGptClient", url = "https://api.openai.com/v1/", configuration = ChatGptRequest.class)
+public interface ChatGptClient {
 
   @PostMapping("/chat/completions")
   ChatGptResponse aiCompletions(@RequestHeader("Authorization") String apiKey,
