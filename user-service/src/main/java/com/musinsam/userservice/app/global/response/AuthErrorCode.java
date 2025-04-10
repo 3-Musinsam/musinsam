@@ -21,7 +21,10 @@ public enum AuthErrorCode implements ErrorCode {
   INVALID_LOGIN(HttpStatus.BAD_REQUEST.value(), "Invalid username or password.", HttpStatus.BAD_REQUEST),
   INVALID_PASSWORD(HttpStatus.BAD_REQUEST.value(), "Invalid password.", HttpStatus.BAD_REQUEST),
   REFRESH_TOKEN_EXPIRED(HttpStatus.BAD_REQUEST.value(), "Refresh token has expired.", HttpStatus.BAD_REQUEST),
-  INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST.value(), "Invalid refresh token.", HttpStatus.BAD_REQUEST);
+  INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST.value(), "Invalid refresh token.", HttpStatus.BAD_REQUEST),
+
+  // Token Errors
+  REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND.value(), "Refresh token not found.", HttpStatus.NOT_FOUND);
 
   private final Integer code;
   private final String message;
