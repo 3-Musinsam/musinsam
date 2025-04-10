@@ -32,3 +32,15 @@ springdoc:
   api-docs:
     enabled: true
     path: /api-docs-order-service
+
+slack:
+  webhook:
+    url: https://hooks.slack.com/services/
+    key: T08LC8E12F8/B08MBTX27V4/rRjOPIGYtpj6R8DNwdZkauJR
+    "display_information":
+      "name": "Musinsam Alarmbot"
+    "settings":
+      "org_deploy_enabled": false,
+      "socket_mode_enabled": false,
+      "is_hosted": false,
+      "token_rotation_enabled": false
