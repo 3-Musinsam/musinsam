@@ -47,12 +47,15 @@ public class AuthControllerApiV1 {
 
   @PostMapping("/login")
   public ResponseEntity<ApiResponse<ResAuthLoginDtoApiV1>> login(
-      @RequestBody ReqAuthLoginDtoApiV1 reqAuthLoginDtoApiV1
+      @RequestBody ReqAuthLoginDtoApiV1 request
   ) {
+
+    ResAuthLoginDtoApiV1 response = authService.login(request);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_LOGIN_SUCCESS.getCode(),
         USER_LOGIN_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 
