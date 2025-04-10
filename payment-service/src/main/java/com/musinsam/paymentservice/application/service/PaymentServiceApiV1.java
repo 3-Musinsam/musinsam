@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PaymentService {
+public class PaymentServiceApiV1 {
 
   public ResPaymentPostInitDtoApiV1 initPayment(ReqPaymentPostInitDtoApiV1 requestDto,
       Long userId) {

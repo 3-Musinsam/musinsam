@@ -18,7 +18,7 @@ import com.musinsam.paymentservice.application.dto.response.ResPaymentPostApprov
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostCancelDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostInitDtoApiV1;
-import com.musinsam.paymentservice.application.service.PaymentService;
+import com.musinsam.paymentservice.application.service.PaymentServiceApiV1;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/payments")
 public class PaymentControllerApiV1 {
 
-  private final PaymentService paymentService;
+  private final PaymentServiceApiV1 paymentService;
 
   /**
    * 결제 서비스 초기 요청.

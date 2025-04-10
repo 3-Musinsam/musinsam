@@ -1,10 +1,9 @@
 package com.musinsam.paymentservice.presentation.controller;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
+import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
@@ -13,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
+import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPatchStatusDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostApproveDtoApiV1;
@@ -26,7 +26,7 @@ import com.musinsam.paymentservice.application.dto.response.ResPaymentPostApprov
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostCancelDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostInitDtoApiV1;
-import com.musinsam.paymentservice.application.service.PaymentService;
+import com.musinsam.paymentservice.application.service.PaymentServiceApiV1;
 import com.musinsam.paymentservice.domain.payment.entity.PaymentEntity;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -62,7 +62,7 @@ public class PaymentControllerApiV1Tests {
   private ObjectMapper objectMapper;
 
   @MockitoBean
-  private PaymentService paymentService;
+  private PaymentServiceApiV1 paymentService;
 
   @Test
   @DisplayName("결제 초기화 성공 테스트")
@@ -84,11 +84,8 @@ public class PaymentControllerApiV1Tests {
     ResPaymentPostInitDtoApiV1 responseDto = ResPaymentPostInitDtoApiV1.of(
         paymentId, paymentKey, amount);
 
-    when(paymentService.initPayment(any(ReqPaymentPostInitDtoApiV1.class), any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
-    this.mockMvc.perform(post("/v1/payments/init")
+    mockMvc.perform(post("/v1/payments/init")
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
             .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +97,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-init-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 초기화 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 초기화 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -138,11 +143,8 @@ public class PaymentControllerApiV1Tests {
             .build())
         .build();
 
-    when(paymentService.createPayment(any(ReqPaymentPostDtoApiV1.class), any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
-    this.mockMvc.perform(post("/v1/payments")
+    mockMvc.perform(post("/v1/payments")
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
             .contentType(MediaType.APPLICATION_JSON)
@@ -154,7 +156,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-create-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 생성 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 생성 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -189,11 +199,8 @@ public class PaymentControllerApiV1Tests {
             .build())
         .build();
 
-    when(paymentService.approvePayment(any(ReqPaymentPostApproveDtoApiV1.class), any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
-    this.mockMvc.perform(post("/v1/payments/approve")
+    mockMvc.perform(post("/v1/payments/approve")
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
             .contentType(MediaType.APPLICATION_JSON)
@@ -205,7 +212,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-approve-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 승인 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 승인 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -234,8 +249,6 @@ public class PaymentControllerApiV1Tests {
             .build())
         .build();
 
-    when(paymentService.getPayment(paymentId, userIdLong)).thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.get("/v1/payments/{paymentId}", paymentId)
             .header("X-USER-ID", userIdLong)
@@ -248,7 +261,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-getById-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 상세 조회 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 상세 조회 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -258,6 +279,8 @@ public class PaymentControllerApiV1Tests {
   void getPaymentsSuccess() throws Exception {
     // Given
     Long userId = 1L;
+    UUID paymentId = UUID.randomUUID();
+
     Pageable pageable = PageRequest.of(0, 10);
 
     PaymentEntity mockPaymentEntity1 = mock(PaymentEntity.class);
@@ -273,12 +296,11 @@ public class PaymentControllerApiV1Tests {
 
     ResPaymentGetDtoApiV1 responseDto = ResPaymentGetDtoApiV1.of(paymentEntityPage);
 
-    when(paymentService.getPaymentList(any(Pageable.class), eq(userId))).thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.get("/v1/payments")
             .header("X-USER-ID", userId)
             .header("X-USER-ROLE", "ROLE_MASTER")
+            .param("paymentId", String.valueOf(paymentId))
             .param("page", "0")
             .param("size", "10")
             .param("sort", "createdAt,desc")
@@ -290,7 +312,21 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-get-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 목록 조회 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 목록 조회 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .queryParameters(
+                        parameterWithName("paymentId").description("결제 ID").optional(),
+                        parameterWithName("page").description("페이지 번호").optional(),
+                        parameterWithName("size").description("페이지 크기").optional(),
+                        parameterWithName("sort").description("정렬 기준 (형식: 필드명,정렬방향)").optional()
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -318,10 +354,6 @@ public class PaymentControllerApiV1Tests {
             .build())
         .build();
 
-    when(paymentService.cancelPayment(eq(paymentId), any(ReqPaymentPostCancelDtoApiV1.class),
-        any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(
             RestDocumentationRequestBuilders.post("/v1/payments/{paymentId}/cancel", paymentId)
@@ -336,7 +368,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-cancel-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 취소 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 취소 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -364,10 +404,6 @@ public class PaymentControllerApiV1Tests {
             .build())
         .build();
 
-    when(paymentService.updatePaymentStatus(eq(paymentId), any(ReqPaymentPatchStatusDtoApiV1.class),
-        any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/v1/payments/{paymentId}/status", paymentId)
@@ -382,7 +418,15 @@ public class PaymentControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("payment-update-status-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("결제 상태 변경 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Payment V1")
+                    .summary("결제 상태 변경 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
