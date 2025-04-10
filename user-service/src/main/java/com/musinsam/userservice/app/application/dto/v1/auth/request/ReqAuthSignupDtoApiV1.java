@@ -36,6 +36,5 @@ public class ReqAuthSignupDtoApiV1 {
 
     @NotBlank(message = "Name is required")
     private String name;
-
   }
 }

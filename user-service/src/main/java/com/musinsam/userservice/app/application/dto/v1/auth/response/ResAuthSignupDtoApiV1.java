@@ -1,5 +1,6 @@
 package com.musinsam.userservice.app.application.dto.v1.auth.response;
 
+import com.musinsam.userservice.app.domain.user.entity.UserEntity;
 import java.time.ZonedDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,17 @@ import lombok.NoArgsConstructor;
 public class ResAuthSignupDtoApiV1 {
 
   private User user;
+
+  public static ResAuthSignupDtoApiV1 of(UserEntity userEntity) {
+    return ResAuthSignupDtoApiV1.builder()
+        .user(User.builder()
+            .id(userEntity.getId())
+            .email(userEntity.getEmail())
+            .name(userEntity.getName())
+            .createdAt(userEntity.getCreatedAt())
+            .build())
+        .build();
+  }
 
   @Getter
   @Builder
