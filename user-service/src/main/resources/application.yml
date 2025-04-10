@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: user-service
+
+  config:
+    import:
+      - optional:file:.env.user[.properties]
+      - classpath:properties/base.yml
+      - classpath:properties/cloud.yml
+      - classpath:properties/datasource.yml
+      - classpath:properties/jpa.yml
+  profiles:
+    group:
+      local: local
+      develop: develop
+    active: develop
