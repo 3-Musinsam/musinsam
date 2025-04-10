@@ -26,6 +26,5 @@ spring:
       - optional:file:.env.ai
 
 openai:
-  secret:
-    key: ${OPENAI-SECRET-KEY}
-  model: gpt-40
+  api:
+    key: ${OPENAI-API-KEY}
