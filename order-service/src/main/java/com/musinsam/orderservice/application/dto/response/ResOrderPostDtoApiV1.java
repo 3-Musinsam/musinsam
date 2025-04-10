@@ -29,7 +29,7 @@ public class ResOrderPostDtoApiV1 {
   public static class Order {
 
     private UUID id;
-    private UUID userId;
+    private Long userId;
     private String orderStatus;
     private List<OrderItem> orderItems;
     private BigDecimal totalAmount;
@@ -42,25 +42,25 @@ public class ResOrderPostDtoApiV1 {
       return Order.builder()
           .build();
     }
-  }
 
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class OrderItem {
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderItem {
 
-    private UUID productId;
-    private Integer quantity;
-    private BigDecimal price;
-    private BigDecimal finalAmount;
+      private UUID productId;
+      private String productName;
+      private Integer quantity;
+      private BigDecimal price;
+      private BigDecimal finalAmount;
 
-    public static OrderItem from(OrderItemEntity orderItemEntity) {
-      return OrderItem.builder()
-          .build();
+      public static OrderItem from(OrderItemEntity orderItemEntity) {
+        return OrderItem.builder()
+            .build();
+      }
     }
   }
-
 
   // TODO:
   public static ResOrderPostDtoApiV1 of() {
