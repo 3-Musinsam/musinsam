@@ -1,0 +1,50 @@
+package com.musinsam.eventservice.application.dto.request;
+
+import com.musinsam.eventservice.domain.event.entity.EventEntity;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ReqEventPutUpdateDtoApiV1 {
+
+  @Valid
+  @NotNull(message = "수정할 이벤트 정보를 입력해주세요.")
+  private UpdatedEvent updatedEvent;
+
+
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class UpdatedEvent {
+
+    @NotBlank(message = "이벤트 이름을 입력해주세요.")
+    private String name;
+
+    @NotNull(message = "이벤트 시작 일시를 입력해주세요.")
+    private ZonedDateTime startTime;
+
+    @NotNull(message = "이벤트 종료 일시를 입력해주세요.")
+    private ZonedDateTime endTime;
+
+    @NotNull(message = "최대 구매 가능 수량을 입력해주세요.")
+    private Integer maxPurchase;
+
+
+    public EventEntity toEntity() {
+      return EventEntity.builder()
+          .build();
+    }
+
+  }
+
+}
