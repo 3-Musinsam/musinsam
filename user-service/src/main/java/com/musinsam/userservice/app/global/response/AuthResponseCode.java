@@ -21,6 +21,6 @@ public enum AuthResponseCode implements SuccessCode {
 
   private final Integer code;
   private final String message;
-  private final HttpStatus HttpStatus; // 200
+  private final HttpStatus httpStatus; // 200
 
 }
