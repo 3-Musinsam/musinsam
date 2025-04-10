@@ -18,12 +18,12 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.productservice.application.dto.request.ReqProductPostApplyCouponDtoApiV1;
-import com.musinsam.productservice.application.dto.request.ReqProductPostCreateDtoApiV1;
-import com.musinsam.productservice.application.dto.request.ReqProductPutUpdateDtoApiV1;
-import com.musinsam.productservice.application.dto.response.ResProductGetCouponListDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPostCouponDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
-import com.musinsam.productservice.application.dto.response.ResProductGetListDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import java.util.List;
 import java.util.UUID;
@@ -50,7 +50,7 @@ public class ProductControllerApiV1 {
   @PostMapping
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createProduct(
-      @RequestBody ReqProductPostCreateDtoApiV1 dto,
+      @RequestBody ReqProductPostDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_CREATE_SUCCESS.getCode(),
@@ -62,9 +62,10 @@ public class ProductControllerApiV1 {
   /**
    * 단일 상품 조회
    */
-  @GetMapping
+  @GetMapping("/{product_id}")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  public ResponseEntity<ApiResponse<ResProductGetDtoApiV1>> getProduct(
+  public ResponseEntity<ApiResponse<ResProductGetByProductIdDtoApiV1>> getProduct(
+      @PathVariable("product_id") UUID id,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -77,10 +78,9 @@ public class ProductControllerApiV1 {
   /**
    * 상품 목록 조회
    */
-  @GetMapping("/{product_id}")
+  @GetMapping
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  public ResponseEntity<ApiResponse<Page<ResProductGetListDtoApiV1>>> getProductList(
-      @PathVariable("product_id") UUID id,
+  public ResponseEntity<ApiResponse<Page<ResProductGetDtoApiV1>>> getProductList(
       @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
@@ -99,7 +99,7 @@ public class ProductControllerApiV1 {
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateProduct(
       @PathVariable("product_id") UUID id,
-      @RequestBody ReqProductPutUpdateDtoApiV1 dto,
+      @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -158,14 +158,14 @@ public class ProductControllerApiV1 {
   }
 
   /**
-   * 쿠폰 적용
+   * 상품에 쿠폰 추가
    */
   @PostMapping("/{product_id}/coupons")
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> applyCoupon(
       @PathVariable("product_id") UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser,
-      @RequestBody ReqProductPostApplyCouponDtoApiV1 dto
+      @RequestBody ReqProductPostCouponDtoApiV1 dto
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_APPLY_COUPON_SUCCESS.getCode(),
@@ -175,11 +175,11 @@ public class ProductControllerApiV1 {
   }
 
   /**
-   * 쿠폰 목록 조회
+   * 적용된 쿠폰 조회
    */
   @GetMapping("/{product_id}/coupons")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  public ResponseEntity<ApiResponse<List<ResProductGetCouponListDtoApiV1>>> getCouponList(
+  public ResponseEntity<ApiResponse<List<ResProductGetCouponDtoApiV1>>> getCouponList(
       @PathVariable("product_id") UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
