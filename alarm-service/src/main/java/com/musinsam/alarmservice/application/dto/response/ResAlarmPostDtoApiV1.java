@@ -18,7 +18,7 @@ public class ResAlarmPostDtoApiV1 {
 
   public static ResAlarmPostDtoApiV1 of(AlarmEntity alarmEntity) {
     return ResAlarmPostDtoApiV1.builder()
-        .alarm(ResAlarmPostDtoApiV1.Alarm.from(alarmEntity))
+        .alarm(Alarm.from(alarmEntity))
         .build();
   }
 

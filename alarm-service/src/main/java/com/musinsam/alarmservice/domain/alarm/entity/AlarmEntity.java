@@ -25,12 +25,6 @@ public class AlarmEntity extends BaseEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(name = "order_id")
-  private UUID orderId;
-
-  @Column(name = "coupon_id")
-  private UUID couponId;
-
   @Column(columnDefinition = "TEXT")
   private String message;
 }

@@ -102,3 +102,4 @@ bootRun {
 bootJar {
     dependsOn 'setDocs'
 }
+
