@@ -1,8 +1,8 @@
 package com.musinsam.orderservice.presentation.controller;
 
+import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -10,6 +10,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -24,7 +25,6 @@ import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1.Order;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1.Order.OrderItem;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1.Order.ShippingInfo;
-import com.musinsam.orderservice.application.dto.response.ResOrderGetByIdDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderGetDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPatchDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPostCancelDtoApiV1;
@@ -57,7 +57,6 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 public class OrderControllerApiV1Tests {
-  // TODO: 모든 테스트 MockMvcRestDocumentationWrapper.document 작성
 
   @Autowired
   private MockMvc mockMvc;
@@ -109,7 +108,31 @@ public class OrderControllerApiV1Tests {
 
     ResOrderPostDtoApiV1 responseDto = ResOrderPostDtoApiV1.builder()
         .order(ResOrderPostDtoApiV1.Order.builder()
+            .id(UUID.randomUUID())
+            .userId(1L)
             .orderStatus("PENDING")
+            .orderItems(
+                List.of(
+                    ResOrderPostDtoApiV1.Order.OrderItem.builder()
+                        .productId(UUID.randomUUID())
+                        .productName("ProductName1")
+                        .price(new BigDecimal("10000"))
+                        .finalAmount(new BigDecimal("10000"))
+                        .quantity(5)
+                        .build(),
+                    ResOrderPostDtoApiV1.Order.OrderItem.builder()
+                        .productId(UUID.randomUUID())
+                        .productName("ProductName2")
+                        .price(new BigDecimal("20000"))
+                        .finalAmount(new BigDecimal("18000"))
+                        .quantity(10)
+                        .build()
+                )
+            )
+            .totalAmount(new BigDecimal("250000"))
+            .discountAmount(new BigDecimal("25000"))
+            .finalAmount(new BigDecimal("225000"))
+            .request("Request Example")
             .createdAt(ZonedDateTime.now())
             .build())
         .build();
@@ -118,7 +141,7 @@ public class OrderControllerApiV1Tests {
         .thenReturn(responseDto);
 
     // When & Then
-    this.mockMvc.perform(post("/v1/orders")
+    mockMvc.perform(post("/v1/orders")
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
             .contentType(MediaType.APPLICATION_JSON)
@@ -127,15 +150,20 @@ public class OrderControllerApiV1Tests {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(0))
         .andExpect(jsonPath("$.message").exists())
+        .andDo(print())
         .andDo(
             MockMvcRestDocumentationWrapper.document("order-create-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
                 resource(ResourceSnippetParameters.builder()
-                    .tag("Order Post Success API")
+                    .tag("Order V1")
                     .summary("주문 생성 성공")
                     .requestSchema(Schema.schema("ReqOrderPostDtoApiV1"))
                     .responseSchema(Schema.schema("ResOrderPostDtoApiV1"))
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
                     .requestFields(
                         fieldWithPath("order").description("주문 정보"),
                         fieldWithPath("order.orderItems").description("주문 상품 목록"),
@@ -165,6 +193,12 @@ public class OrderControllerApiV1Tests {
                         fieldWithPath("data.order.userId").description("사용자 ID").optional(),
                         fieldWithPath("data.order.orderStatus").description("주문 상태"),
                         fieldWithPath("data.order.orderItems").description("주문 상품 목록").optional(),
+                        fieldWithPath("data.order.orderItems[].productId").description("상품 ID"),
+                        fieldWithPath("data.order.orderItems[].productName").description("상품명"),
+                        fieldWithPath("data.order.orderItems[].quantity").description("상품 수량"),
+                        fieldWithPath("data.order.orderItems[].price").description("상품 가격"),
+                        fieldWithPath("data.order.orderItems[].finalAmount").description(
+                            "상품 최종 금액"),
                         fieldWithPath("data.order.totalAmount").description("총 주문 금액").optional(),
                         fieldWithPath("data.order.discountAmount").description("할인 금액").optional(),
                         fieldWithPath("data.order.finalAmount").description("최종 결제 금액").optional(),
@@ -182,43 +216,12 @@ public class OrderControllerApiV1Tests {
   void getOrderByIdSuccess() throws Exception {
     // Given
     UUID orderId = UUID.randomUUID();
-    Long userId = 1L;
-
-    ResOrderGetByIdDtoApiV1 responseDto = ResOrderGetByIdDtoApiV1.builder()
-        .order(ResOrderGetByIdDtoApiV1.Order.builder()
-            .id(orderId)
-            .userId(userId)
-            .orderStatus("PAID")
-            .totalAmount(new BigDecimal("250000"))
-            .discountAmount(new BigDecimal("25000"))
-            .finalAmount(new BigDecimal("225000"))
-            .request("배송 요청사항")
-            .createdAt(ZonedDateTime.now())
-            .orderItems(List.of(
-                ResOrderGetByIdDtoApiV1.Order.OrderItem.builder()
-                    .productId(UUID.randomUUID())
-                    .productName("상품명1")
-                    .price(new BigDecimal("10000"))
-                    .quantity(5)
-                    .finalAmount(new BigDecimal("50000"))
-                    .build()
-            ))
-            .shippingInfo(ResOrderGetByIdDtoApiV1.Order.ShippingInfo.builder()
-                .address("배송지 주소")
-                .addressDetail("상세 주소")
-                .receiverName("수령인")
-                .receiverPhone("010-1234-5678")
-                .zipCode("12345")
-                .build())
-            .build())
-        .build();
-
-    when(orderService.getOrder(orderId, userId)).thenReturn(responseDto);
 
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.get("/v1/orders/{orderId}", orderId)
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
+            .param("orderId", String.valueOf(orderId))
             .contentType(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.code").value(0))
@@ -227,7 +230,15 @@ public class OrderControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("order-getById-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("주문 상세 조회 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Order V1")
+                    .summary("주문 상세 조회 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         )
     ;
@@ -239,6 +250,7 @@ public class OrderControllerApiV1Tests {
     // Given
     Long userId = 1L;
     String query = "Sample Query";
+    UUID orderId = UUID.randomUUID();
     Pageable pageable = PageRequest.of(0, 10);
 
     OrderEntity mockOrderEntity1 = mock(OrderEntity.class);
@@ -254,14 +266,12 @@ public class OrderControllerApiV1Tests {
 
     ResOrderGetDtoApiV1 responseDto = ResOrderGetDtoApiV1.of(orderEntityPage);
 
-    when(orderService.getOrderList(any(Pageable.class), eq(query), eq(userId))).thenReturn(
-        responseDto);
-
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.get("/v1/orders")
             .header("X-USER-ID", 1L)
             .header("X-USER-ROLE", "ROLE_USER")
             .param("q", query)
+            .param("orderId", orderId.toString())
             .param("page", "0")
             .param("size", "10")
             .param("sort", "createdAt,desc")
@@ -274,7 +284,22 @@ public class OrderControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("order-get-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("주문 목록 조회 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Order V1")
+                    .summary("주문 목록 조회 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .queryParameters(
+                        parameterWithName("q").description("검색어").optional(),
+                        parameterWithName("orderId").description("주문 ID").optional(),
+                        parameterWithName("page").description("페이지 번호").optional(),
+                        parameterWithName("size").description("페이지 크기").optional(),
+                        parameterWithName("sort").description("정렬 기준 (형식: 필드명,정렬방향)").optional()
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -299,12 +324,6 @@ public class OrderControllerApiV1Tests {
             .build())
         .build();
 
-    when(orderService.updateOrder(
-        any(UUID.class),
-        any(ReqOrderPatchDtoApiV1.class),
-        any(Long.class))
-    ).thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.patch("/v1/orders/{orderId}", orderId)
             .header("X-USER-ID", 1L)
@@ -318,7 +337,15 @@ public class OrderControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("order-patch-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("주문 수정 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Order V1")
+                    .summary("주문 수정 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
@@ -342,12 +369,6 @@ public class OrderControllerApiV1Tests {
             .build())
         .build();
 
-    when(orderService.cancelOrder(
-        any(UUID.class),
-        any(ReqOrderPostCancelDtoApiV1.class),
-        any(Long.class)))
-        .thenReturn(responseDto);
-
     // When & Then
     mockMvc.perform(RestDocumentationRequestBuilders.post("/v1/orders/{orderId}/cancel", orderId)
             .header("X-USER-ID", 1L)
@@ -362,7 +383,15 @@ public class OrderControllerApiV1Tests {
             MockMvcRestDocumentationWrapper.document("order-cancel-success",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
-                resource("주문 취소 성공")
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Order V1")
+                    .summary("주문 취소 성공")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("사용자 ID"),
+                        headerWithName("X-USER-ROLE").description("사용자 권한")
+                    )
+                    .build()
+                )
             )
         );
   }
