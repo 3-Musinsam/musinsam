@@ -11,7 +11,7 @@ public enum AuthErrorCode implements ErrorCode {
 
   // Signup Errors
   DUPLICATE_USERNAME(HttpStatus.CONFLICT.value(), "Username already exists.", HttpStatus.CONFLICT),
-  DUPLICATE_EMAIL(HttpStatus.CONFLICT.value(), "email already exists.", HttpStatus.CONFLICT),
+  DUPLICATE_EMAIL(HttpStatus.CONFLICT.value(), "Email already exists.", HttpStatus.CONFLICT),
   INVALID_USERNAME_FORMAT(HttpStatus.BAD_REQUEST.value(), "Invalid username format.", HttpStatus.BAD_REQUEST),
   INVALID_SLACK_ID_FORMAT(HttpStatus.BAD_REQUEST.value(), "Invalid Slack ID format.", HttpStatus.BAD_REQUEST),
   PASSWORD_TOO_WEAK(HttpStatus.BAD_REQUEST.value(), "Password does not meet security requirements.", HttpStatus.BAD_REQUEST),

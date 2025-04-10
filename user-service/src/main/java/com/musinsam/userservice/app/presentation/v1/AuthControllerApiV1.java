@@ -32,16 +32,16 @@ public class AuthControllerApiV1 {
 
   @PostMapping("/signup")
   public ResponseEntity<ApiResponse<ResAuthSignupDtoApiV1>> signup(
-      @RequestBody ReqAuthSignupDtoApiV1 req
+      @RequestBody ReqAuthSignupDtoApiV1 request
   ) {
 
-    ResAuthSignupDtoApiV1 res = authService.signup(req);
+    ResAuthSignupDtoApiV1 response = authService.signup(request);
 
     return ResponseEntity.ok(
         new ApiResponse<>(
             USER_SIGNUP_SUCCESS.getCode(),
             USER_SIGNUP_SUCCESS.getMessage(),
-            res
+            response
         ));
   }
 

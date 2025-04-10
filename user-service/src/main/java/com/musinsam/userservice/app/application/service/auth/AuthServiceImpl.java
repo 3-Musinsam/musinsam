@@ -26,13 +26,13 @@ public class AuthServiceImpl implements AuthService {
 
   @Transactional
   @Override
-  public ResAuthSignupDtoApiV1 signup(ReqAuthSignupDtoApiV1 req) {
-    existsByEmail(req.getUser().getEmail());
+  public ResAuthSignupDtoApiV1 signup(ReqAuthSignupDtoApiV1 request) {
+    existsByEmail(request.getUser().getEmail());
 
     UserEntity userEntity = UserEntity.of(
-        req.getUser().getEmail(),
-        passwordEncoder.encode(req.getUser().getPassword()),
-        req.getUser().getName()
+        request.getUser().getEmail(),
+        passwordEncoder.encode(request.getUser().getPassword()),
+        request.getUser().getName()
     );
 
     UserEntity savedUser = authRepository.save(userEntity);
