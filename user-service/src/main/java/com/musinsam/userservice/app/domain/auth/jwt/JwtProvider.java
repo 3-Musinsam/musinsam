@@ -15,4 +15,5 @@ public interface JwtProvider {
 
   Long getRefreshTokenExpiration();
 
+  Long getRemainingTimeToken(String token);
 }

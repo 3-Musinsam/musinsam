@@ -31,4 +31,18 @@ public class RefreshTokenRepositoryImpl implements RefreshTokenRepository {
   public void deleteRefreshToken(Long userId) {
     redissonClient.getBucket("RT:" + userId).delete();
   }
+
+  @Override
+  public void setAccessTokenBlacklist(String accessToken, Long expirationMillis) {
+    String key = "BL:" + accessToken;
+    RBucket<String> bucket = redissonClient.getBucket(key);
+    bucket.set("blacklisted", Duration.ofMillis(expirationMillis));
+  }
+
+  @Override
+  public Boolean isAccessTokenBlacklisted(String accessToken) {
+    String key = "BL:" + accessToken;
+    RBucket<String> bucket = redissonClient.getBucket(key);
+    return bucket.isExists();
+  }
 }

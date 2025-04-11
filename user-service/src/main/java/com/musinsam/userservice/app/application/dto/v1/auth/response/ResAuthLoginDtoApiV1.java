@@ -27,13 +27,14 @@ public class ResAuthLoginDtoApiV1 {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   @AllArgsConstructor(access = AccessLevel.PRIVATE)
   public static class User {
-
+    private Long userId;
     private String email;
     private String name;
     private UserRoleType userRoleType;
 
     public static User from(UserEntity userEntity) {
       return User.builder()
+          .userId(userEntity.getId())
           .email(userEntity.getEmail())
           .name(userEntity.getName())
           .userRoleType(userEntity.getUserRoleType())
