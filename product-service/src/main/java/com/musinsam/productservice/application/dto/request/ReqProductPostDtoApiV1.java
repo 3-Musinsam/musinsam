@@ -13,8 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
-public class ReqProductPostCreateDtoApiV1 {
+public class ReqProductPostDtoApiV1 {
 
   @Valid
   @NotNull(message = "상품 정보를 입력하세요.")

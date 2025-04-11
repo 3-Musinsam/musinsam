@@ -15,18 +15,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ReqProductPutUpdateDtoApiV1 {
+public class ReqProductPutByProductIdDtoApiV1 {
 
   @Valid
   @NotNull(message = "수정할 상품 정보를 입력해주세요.")
-  private UpdatedProduct updatedProduct;
+  private Product product;
 
 
   @Getter
   @Builder
   @AllArgsConstructor
   @NoArgsConstructor
-  public static class UpdatedProduct {
+  public static class Product {
 
     @NotBlank(message = "상품 이름을 입력해주세요.")
     private String name;
@@ -35,14 +35,24 @@ public class ReqProductPutUpdateDtoApiV1 {
     @PositiveOrZero(message = "상품 가격은 0원 이상이어야 합니다.")
     private BigDecimal price;
 
-    private List<UUID> unchangedImages;
+    private Image image;
 
 
-    public ProductEntity toEntity() {
-      return ProductEntity.builder()
-          .build();
+    public void updateOf(ProductEntity productEntity) {
+      // productEntity.setName(name);
+      // productEntity.setPrice(price);
     }
 
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class Image {
+
+      private List<UUID> imageId;
+      private List<String> imageUrl;
+
+    }
   }
 
 }

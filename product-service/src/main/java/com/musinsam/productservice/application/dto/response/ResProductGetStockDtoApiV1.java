@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ResProductGetStockDtoApiV1 {
 
-  private Stock stock;
+  private Product product;
 
   public static ResProductGetStockDtoApiV1 of(ProductEntity productEntity) {
     return ResProductGetStockDtoApiV1.builder()
-        .stock(Stock.from(productEntity))
+        .product(Product.from(productEntity))
         .build();
   }
 
@@ -26,13 +26,13 @@ public class ResProductGetStockDtoApiV1 {
   @Builder
   @AllArgsConstructor
   @NoArgsConstructor
-  public static class Stock {
+  public static class Product {
 
     private UUID productId;
     private Integer stock;
 
-    public static Stock from(ProductEntity productEntity) {
-      return Stock.builder()
+    public static Product from(ProductEntity productEntity) {
+      return Product.builder()
           .productId(null)
           .stock(null)
           .build();
