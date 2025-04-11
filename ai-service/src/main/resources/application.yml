@@ -23,8 +23,38 @@ spring:
         default_batch_fetch_size: 10
   config:
     import:
-      - optional:file:.env.ai
+      - optional:file:.env
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /docs
+    url: /springdoc/openapi3-ai-service.json
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /api-docs-ai-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+  prometheus:
+    enabled: true
 
 openai:
   api:
     key: ${OPENAI-API-KEY}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+

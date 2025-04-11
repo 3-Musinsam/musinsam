@@ -1,6 +1,8 @@
 package com.musinsam.aiservice.application.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,8 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReqAiPostDtoApiV1 {
 
-  @JsonProperty
-  private String prompt;
+  @Valid
+  @NotNull(message = "Ai 정보를 입력해주세요.")
+  private Ai ai;
 
   @Getter
   @Builder
@@ -21,7 +24,7 @@ public class ReqAiPostDtoApiV1 {
   @AllArgsConstructor
   public static class Ai {
 
-    @JsonProperty
+    @NotBlank(message = "요청 메시지를 입력해주세요.")
     private String prompt;
 
   }
