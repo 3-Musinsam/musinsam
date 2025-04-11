@@ -1,16 +1,17 @@
 package com.musinsam.userservice.app.application.service.auth;
 
 import com.musinsam.common.exception.CustomException;
+import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthSignupDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthSignupDtoApiV1;
-import com.musinsam.userservice.app.domain.user.repository.token.RefreshTokenRepository;
 import com.musinsam.userservice.app.domain.auth.jwt.JwtProvider;
 import com.musinsam.userservice.app.domain.user.entity.UserEntity;
 import com.musinsam.userservice.app.domain.user.repository.auth.AuthRepository;
+import com.musinsam.userservice.app.domain.user.repository.token.RefreshTokenRepository;
 import com.musinsam.userservice.app.domain.user.vo.UserRoleType;
 import com.musinsam.userservice.app.global.response.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,17 @@ public class AuthServiceImpl implements AuthService {
     refreshTokenRepository.saveRefreshToken(user.getId(), refreshToken, jwtProvider.getRefreshTokenExpiration());
 
     return ResAuthLoginDtoApiV1.of(user, accessToken, refreshToken);
+  }
+
+  @Transactional
+  @Override
+  public void logout(String bearerToken, CurrentUserDtoApiV1 request) {
+    String accessToken = bearerToken.replace("Bearer ", "");
+
+    refreshTokenRepository.deleteRefreshToken(request.userId());
+
+    Long expiration = jwtProvider.getRemainingTimeToken(accessToken);
+    refreshTokenRepository.setAccessTokenBlacklist(accessToken, expiration);
   }
 
   @Override

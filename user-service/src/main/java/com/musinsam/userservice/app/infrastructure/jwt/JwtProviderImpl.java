@@ -93,4 +93,19 @@ public class JwtProviderImpl implements JwtProvider {
 
     return UserRoleType.valueOf(role);
   }
+
+  @Override
+  public Long getRemainingTimeToken(String token) {
+    Claims claims = Jwts.parser()
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
+
+    long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
+
+    return remainingTime > 0 ? remainingTime : 0;
+  }
+
+
 }

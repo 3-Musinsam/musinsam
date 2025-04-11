@@ -22,8 +22,21 @@ Content-Type: application/json
 }
 
 > {%
+    client.global.set("accessToken", response.body.data.token.accessToken);
     client.global.set("refreshToken", response.body.data.token.refreshToken);
+    client.global.set("userId", response.body.data.user.userId);
+    client.global.set("userRole", response.body.data.user.userRoleType);
 %}
+
+### 로그아웃
+POST http://localhost:10001/v1/auth/logout
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{}
+
 
 ### 토큰 재발급
 POST http://localhost:10001/v1/auth/generate-token
