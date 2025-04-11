@@ -15,12 +15,12 @@ public class ChatGptService {
 
   private final ChatGptClient chatGptClient;
 
-  @Value("${OPENAI-API-KEY}")
+  @Value("${openai.api.key}")
   private String openaiApiKey;
 
   public String completeChat(ReqAiPostDtoApiV1 dto) {
     List<ChatGptRequest.Message> messages = List.of(
-        new ChatGptRequest.Message("user", dto.getPrompt()));
+        new ChatGptRequest.Message("user", dto.getAi().getPrompt()));
 
     ChatGptRequest request = new ChatGptRequest(
         "gpt-3.5-turbo",

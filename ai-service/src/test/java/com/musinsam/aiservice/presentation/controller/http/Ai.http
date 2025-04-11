@@ -1,0 +1,11 @@
+### Ai 메시지 생성
+POST http://localhost:15001/v1/ais
+Content-Type: application/json
+X-USER-ID: 1
+X-USER-ROLE: ROLE_USER
+
+{
+  "ai": {
+    "prompt": "Name: John Doe\nEmail: johndoe@example.com\nPhone Number: 555-555-5555\n Order Number: 1234\nOrder Total: $50.00\n 100자 이내로 주문 알림 생성해줘. \n\n"
+  }
+}
