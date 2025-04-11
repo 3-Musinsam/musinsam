@@ -9,4 +9,8 @@ public interface RefreshTokenRepository {
   Optional<String> getRefreshToken(Long userId);
 
   void deleteRefreshToken(Long userId);
+
+  void setAccessTokenBlacklist(String accessToken, Long expirationMillis);
+
+  Boolean isAccessTokenBlacklisted(String accessToken);
 }
