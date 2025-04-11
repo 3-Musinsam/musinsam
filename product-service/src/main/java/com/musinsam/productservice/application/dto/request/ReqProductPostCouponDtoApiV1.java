@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqProductPostApplyCouponDtoApiV1 {
+public class ReqProductPostCouponDtoApiV1 {
 
   @Valid
   @NotNull(message = "쿠폰 정보를 입력해주세요.")
