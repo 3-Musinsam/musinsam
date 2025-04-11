@@ -1,16 +1,39 @@
+server:
+  port: 13001
+
 spring:
   application:
-    name: payment
-  config:
-    import:
-      - classpath:config/port.yml
-      - classpath:config/db.yml
-      - classpath:config/docs.yml
-  profiles:
-    group:
-      local: local
-      container: container
-      test: test
-      prod: production
-    active: ${SPRING_ACTIVE_PROFILE:local}
+    name: payment-service
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: postgres
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /docs
+    url: /springdoc/openapi3-payment-service.json
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    enabled: true
+    path: /api-docs-payment-service
 
