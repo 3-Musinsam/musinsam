@@ -94,7 +94,7 @@ class AuthControllerApiV1Test {
   public void givenTokenWhenLogoutThenSuccess() throws Exception {
     // given
     ReqAuthLogoutDtoApiV1 reqAuthLogoutDtoApiV1 = ReqAuthLogoutDtoApiV1.builder()
-        .token("fake-access-token")
+        .accessToken("fake-access-token")
         .build();
 
     String json = objectMapper.writeValueAsString(reqAuthLogoutDtoApiV1);
@@ -118,7 +118,7 @@ class AuthControllerApiV1Test {
   void givenTokenWhenGenerateTokenThenSuccess() throws Exception {
     // given
     ReqAuthGenerateTokenDtoApiV1 reqAuthGenerateTokenDtoApiV1 = ReqAuthGenerateTokenDtoApiV1.builder()
-        .userId(1L)
+        .refreshToken("fake-access-token")
         .build();
 
     String json = objectMapper.writeValueAsString(reqAuthGenerateTokenDtoApiV1);
