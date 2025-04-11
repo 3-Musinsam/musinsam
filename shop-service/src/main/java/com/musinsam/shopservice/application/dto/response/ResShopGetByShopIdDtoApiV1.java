@@ -7,17 +7,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResShopGetListDtoApiV1 {
+public class ResShopGetByShopIdDtoApiV1 {
 
   private Shop shop;
 
-  public static ResShopGetListDtoApiV1 of(ShopEntity shopEntity) {
-    return ResShopGetListDtoApiV1.builder()
+  public static ResShopGetByShopIdDtoApiV1 of(ShopEntity shopEntity) {
+    return ResShopGetByShopIdDtoApiV1.builder()
         .shop(Shop.from(shopEntity))
         .build();
   }
