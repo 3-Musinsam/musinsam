@@ -13,15 +13,16 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResEventGetListDtoApiV1 {
+public class ResEventGetByEventIdDtoApiV1 {
 
   private Event event;
 
-  public static ResEventGetListDtoApiV1 of(EventEntity eventEntity) {
-    return ResEventGetListDtoApiV1.builder()
+  public static ResEventGetByEventIdDtoApiV1 of(EventEntity eventEntity) {
+    return ResEventGetByEventIdDtoApiV1.builder()
         .event(Event.from(eventEntity))
         .build();
   }
+
 
   @Getter
   @Builder
@@ -34,6 +35,7 @@ public class ResEventGetListDtoApiV1 {
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
     private EventStatus status;
+    //ㅇㅣ벤트상품
 
 
     public static Event from(EventEntity eventEntity) {
