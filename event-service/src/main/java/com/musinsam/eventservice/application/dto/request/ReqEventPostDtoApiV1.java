@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqEventPutUpdateDtoApiV1 {
+public class ReqEventPostDtoApiV1 {
 
   @Valid
-  @NotNull(message = "수정할 이벤트 정보를 입력해주세요.")
-  private UpdatedEvent updatedEvent;
+  @NotNull(message = "이벤트 정보를 입력해주세요.")
+  private Event event;
 
 
   @Getter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class UpdatedEvent {
+  public static class Event {
 
     @NotBlank(message = "이벤트 이름을 입력해주세요.")
     private String name;
