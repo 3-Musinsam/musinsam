@@ -1,0 +1,23 @@
+### 알림 등록 테스트
+POST http://localhost:14001/v1/slack-alarms
+Content-Type: application/json
+X-USER-ID: 1
+X-USER-ROLE: ROLE_USER
+
+{
+  "alarm": {
+    "message": "Name: John Doe\nEmail: johndoe@example.com\nPhone Number: 555-555-5555\n Order Number: 1234\nOrder Total: $50.00\nMessage: Urgent - Please check on the status of my order.\n\n"
+  }
+}
+
+### 알림 전체 조희 테스트
+GET http://localhost:14001/v1/slack-alarms?page=0&size=10&orderby=CREATED&sort=DESC
+Content-Type: application/json
+X-USER-ID: 1
+X-USER-ROLE: ROLE_USER
+
+### 알림 단건 조희 테스트
+GET http://localhost:14001/v1/slack-alarms/37693873-4f4c-48b6-ac07-96b1c54c5a65
+Content-Type: application/json
+X-USER-ID: 1
+X-USER-ROLE: ROLE_USER
