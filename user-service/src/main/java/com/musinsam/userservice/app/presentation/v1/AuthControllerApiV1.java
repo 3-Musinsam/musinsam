@@ -6,7 +6,9 @@ import static com.musinsam.userservice.app.global.response.AuthResponseCode.USER
 import static com.musinsam.userservice.app.global.response.AuthResponseCode.USER_TOKEN_GENERATION_SUCCESS;
 import static com.musinsam.userservice.app.global.response.AuthResponseCode.USER_TOKEN_VALIDATION_SUCCESS;
 
+import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
+import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthLogoutDtoApiV1;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -61,8 +64,12 @@ public class AuthControllerApiV1 {
 
   @PostMapping("/logout")
   public ResponseEntity<ApiResponse<Void>> logout(
-      @RequestBody ReqAuthLogoutDtoApiV1 reqAuthLogoutDtoApiV1
+      @RequestHeader("Authorization") String bearerToken,
+      @CurrentUser CurrentUserDtoApiV1 request
   ) {
+
+    authService.logout(bearerToken, request);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_LOGOUT_SUCCESS.getCode(),
         USER_LOGOUT_SUCCESS.getMessage(),
