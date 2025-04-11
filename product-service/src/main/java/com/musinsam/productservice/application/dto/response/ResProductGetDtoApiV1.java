@@ -3,11 +3,14 @@ package com.musinsam.productservice.application.dto.response;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PagedModel;
 
 @Getter
 @Builder
@@ -15,43 +18,55 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResProductGetDtoApiV1 {
 
-  private Product product;
+  private ProductPage productPage;
 
-  public static ResProductGetDtoApiV1 of(ProductEntity productEntity, String shopName,
-      List<UUID> images) {
+  public static ResProductGetDtoApiV1 of(Page<ProductEntity> productEntityPage) {
     return ResProductGetDtoApiV1.builder()
-        .product(Product.from(productEntity, shopName, images))
+        .productPage(new ProductPage(productEntityPage))
         .build();
   }
 
-
   @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Product {
+  @ToString
+  public static class ProductPage extends PagedModel<ProductPage.Product> {
 
-    private UUID productId;
-    private UUID shopId;
-    private String shopName;
-    private String name;
-    private BigDecimal price;
-    private BigDecimal discountPrice;
-    private List<UUID> images;
+    public ProductPage(Page<ProductEntity> productEntityPage) {
+      super(
+          new PageImpl<>(
+              Product.from(productEntityPage.getContent()),
+              productEntityPage.getPageable(),
+              productEntityPage.getTotalElements()
+          )
+      );
+    }
 
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Product {
 
-    public static Product from(ProductEntity productEntity, String shopName, List<UUID> images) {
-      return Product.builder()
-          .productId(null)
-          .shopId(null)
-          .shopName(shopName)
-          .name(null)
-          .price(null)
-          .discountPrice(null)
-          .images(images)
-          .build();
+      private String name;
+      private BigDecimal price;
+      private BigDecimal discountPrice;
+
+      public static Product from(ProductEntity productEntity) {
+        return Product.builder()
+            .name(null)
+            .price(null)
+            .discountPrice(null)
+            .build();
+      }
+
+      public static List<Product> from(List<ProductEntity> productEntityList) {
+        return productEntityList.stream()
+            .map(productEntity -> Product.from(productEntity))
+            .toList();
+      }
+
     }
 
   }
+
 
 }

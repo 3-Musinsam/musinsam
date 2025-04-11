@@ -3,11 +3,16 @@ package com.musinsam.eventservice.application.dto.response;
 import com.musinsam.eventservice.domain.event.EventStatus;
 import com.musinsam.eventservice.domain.event.entity.EventEntity;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.web.PagedModel;
 
 @Getter
 @Builder
@@ -15,38 +20,60 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResEventGetDtoApiV1 {
 
-  private Event event;
+  private EventPage eventPage;
 
-  public static ResEventGetDtoApiV1 of(EventEntity eventEntity) {
+
+  public static ResEventGetDtoApiV1 of(Page<EventEntity> eventEntityPage) {
     return ResEventGetDtoApiV1.builder()
-        .event(Event.from(eventEntity))
+        .eventPage(new EventPage(eventEntityPage))
         .build();
   }
 
 
   @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class Event {
+  @ToString
+  public static class EventPage extends PagedModel<EventPage.Event> {
 
-    private UUID id;
-    private String name;
-    private ZonedDateTime startTime;
-    private ZonedDateTime endTime;
-    private EventStatus status;
+    public EventPage(Page<EventEntity> eventEntityPage) {
+      super(
+          new PageImpl<>(
+              Event.from(eventEntityPage.getContent()),
+              eventEntityPage.getPageable(),
+              eventEntityPage.getTotalElements()
+          )
+      );
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Event {
+
+      private UUID id;
+      private String name;
+      private ZonedDateTime startTime;
+      private ZonedDateTime endTime;
+      private EventStatus status;
 
 
-    public static Event from(EventEntity eventEntity) {
-      return Event.builder()
-          .id(null)
-          .name(null)
-          .startTime(null)
-          .endTime(null)
-          .status(null)
-          .build();
+      public static Event from(EventEntity eventEntity) {
+        return Event.builder()
+            .id(null)
+            .name(null)
+            .startTime(null)
+            .endTime(null)
+            .status(null)
+            .build();
+      }
+
+      public static List<Event> from(List<EventEntity> eventEntityList) {
+        return eventEntityList.stream()
+            .map(eventEntity -> Event.from(eventEntity))
+            .toList();
+      }
+
     }
 
   }
-
 }

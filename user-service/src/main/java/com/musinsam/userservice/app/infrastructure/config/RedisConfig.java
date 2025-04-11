@@ -1,4 +1,4 @@
-package com.musinsam.userservice.app.infrastructure.redis.config;
+package com.musinsam.userservice.app.infrastructure.config;
 
 import org.redisson.client.codec.StringCodec;
 import org.redisson.Redisson;

@@ -14,13 +14,13 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.eventservice.application.dto.request.ReqEventPostCreateDtoApiV1;
-import com.musinsam.eventservice.application.dto.request.ReqEventPutUpdateDtoApiV1;
+import com.musinsam.eventservice.application.dto.request.ReqEventPostDtoApiV1;
+import com.musinsam.eventservice.application.dto.request.ReqEventPutByEventIdDtoApiV1;
+import com.musinsam.eventservice.application.dto.response.ResEventGetByEventIdDtoApiV1;
 import com.musinsam.eventservice.application.dto.response.ResEventGetDtoApiV1;
-import com.musinsam.eventservice.application.dto.response.ResEventGetListDtoApiV1;
-import com.musinsam.eventservice.application.dto.response.ResEventGetProductDtoApiV1;
+import com.musinsam.eventservice.application.dto.response.ResEventGetProductByEventIdDtoApiV1;
+import jakarta.validation.Valid;
 import java.util.UUID;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +42,7 @@ public class EventControllerApiV1 {
   @PostMapping
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createEvent(
-      @RequestBody ReqEventPostCreateDtoApiV1 dto,
+      @Valid @RequestBody ReqEventPostDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -62,7 +62,7 @@ public class EventControllerApiV1 {
       ROLE_COMPANY,
       ROLE_MASTER}
   )
-  public ResponseEntity<ApiResponse<Page<ResEventGetListDtoApiV1>>> getEventList(
+  public ResponseEntity<ApiResponse<ResEventGetDtoApiV1>> getEventList(
       @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(required = false) Boolean active,
       @RequestParam(defaultValue = "1") int page,
@@ -78,12 +78,12 @@ public class EventControllerApiV1 {
   /**
    * 이벤트 수정
    */
-  @PutMapping("/{event_id}")
+  @PutMapping("/{eventId}")
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateEvent(
-      @PathVariable("event_id") UUID eventId,
+      @PathVariable UUID eventId,
       @CurrentUser CurrentUserDtoApiV1 currentUser,
-      @RequestBody ReqEventPutUpdateDtoApiV1 dto
+      @Valid @RequestBody ReqEventPutByEventIdDtoApiV1 dto
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         EVENT_UPDATE_SUCCESS.getCode(),
@@ -95,10 +95,10 @@ public class EventControllerApiV1 {
   /**
    * 이벤트 삭제
    */
-  @DeleteMapping("/{event_id}")
+  @DeleteMapping("/{eventId}")
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> deleteEvent(
-      @PathVariable("event_id") UUID eventId,
+      @PathVariable UUID eventId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -111,34 +111,34 @@ public class EventControllerApiV1 {
   /**
    * 이벤트 상세 조회
    */
-  @GetMapping("/{event_id}")
+  @GetMapping("/{eventId}")
   @CustomPreAuthorize(userRoleType = {
       ROLE_USER,
       ROLE_COMPANY,
       ROLE_MASTER
   })
-  public ResponseEntity<ApiResponse<ResEventGetDtoApiV1>> getEvent(
-      @PathVariable("event_id") UUID eventId,
+  public ResponseEntity<ApiResponse<ResEventGetByEventIdDtoApiV1>> getEvent(
+      @PathVariable UUID eventId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         EVENT_GET_SUCCESS.getCode(),
         EVENT_GET_SUCCESS.getMessage(),
-        new ResEventGetDtoApiV1()
+        new ResEventGetByEventIdDtoApiV1()
     ));
   }
 
   /**
    * 이벤트 상품 조회
    */
-  @GetMapping("/{event_id}/products")
+  @GetMapping("/{eventId}/products")
   @CustomPreAuthorize(userRoleType = {
       ROLE_USER,
       ROLE_COMPANY,
       ROLE_MASTER
   })
-  public ResponseEntity<ApiResponse<Page<ResEventGetProductDtoApiV1>>> getEventProductList(
-      @PathVariable("event_id") UUID eventId,
+  public ResponseEntity<ApiResponse<ResEventGetProductByEventIdDtoApiV1>> getEventProductList(
+      @PathVariable UUID eventId,
       @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size

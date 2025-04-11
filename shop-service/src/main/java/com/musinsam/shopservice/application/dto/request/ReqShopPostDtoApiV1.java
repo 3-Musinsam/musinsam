@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqShopPostCreateDtoApiV1 {
+public class ReqShopPostDtoApiV1 {
 
   @Valid
   @NotNull(message = "상점 정보를 입력해주세요.")
