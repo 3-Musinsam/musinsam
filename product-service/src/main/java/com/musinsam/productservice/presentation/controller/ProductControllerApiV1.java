@@ -23,6 +23,7 @@ import com.musinsam.productservice.application.dto.response.ResProductGetByProdu
 import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +47,7 @@ public class ProductControllerApiV1 {
   @PostMapping
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createProduct(
-      @RequestBody ReqProductPostDtoApiV1 dto,
+      @Valid @RequestBody ReqProductPostDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_CREATE_SUCCESS.getCode(),
@@ -58,10 +59,10 @@ public class ProductControllerApiV1 {
   /**
    * 단일 상품 조회
    */
-  @GetMapping("/{product_id}")
+  @GetMapping("/{productId}")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetByProductIdDtoApiV1>> getProduct(
-      @PathVariable("product_id") UUID id,
+      @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -91,11 +92,11 @@ public class ProductControllerApiV1 {
   /**
    * 상품 수정
    */
-  @PutMapping("/{product_id}")
+  @PutMapping("/{productId}")
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateProduct(
-      @PathVariable("product_id") UUID id,
-      @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
+      @PathVariable UUID productId,
+      @Valid @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -108,10 +109,10 @@ public class ProductControllerApiV1 {
   /**
    * 상품 삭제
    */
-  @DeleteMapping("/{product_id}")
+  @DeleteMapping("/{productId}")
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> deleteProduct(
-      @PathVariable("product_id") UUID id,
+      @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -124,10 +125,10 @@ public class ProductControllerApiV1 {
   /**
    * 재고 조회
    */
-  @GetMapping("/{product_id}/stock")
+  @GetMapping("/{productId}/stock")
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetStockDtoApiV1>> getProductStock(
-      @PathVariable("product_id") UUID id,
+      @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -140,11 +141,11 @@ public class ProductControllerApiV1 {
   /**
    * 재고 수정
    */
-  @PatchMapping("/{product_id}/stock")
+  @PatchMapping("/{productId}/stock")
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateProductStock(
-      @PathVariable("product_id") UUID id,
-      @RequestBody ReqProductPatchByProductIdDtoApiV1 dto,
+      @PathVariable UUID productId,
+      @Valid @RequestBody ReqProductPatchByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
@@ -174,10 +175,10 @@ public class ProductControllerApiV1 {
   /**
    * 특정 상품에 적용된 쿠폰 조회
    */
-  @GetMapping("/{product_id}/coupons")
+  @GetMapping("/{productId}/coupons")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetCouponDtoApiV1>> getCouponList(
-      @PathVariable("product_id") UUID productId,
+      @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
