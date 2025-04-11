@@ -12,8 +12,6 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +29,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Alarm Service", description = "알림 서비스 API")
-@RequestMapping("/v1/slack-alarms")
+@RequestMapping("/internal/v1/slack-alarms")
 public class AlarmControllerApiV1 {
 
   private final AlarmServiceApiV1 alarmServiceApiV1;
 
-  @Operation(summary = "알림 등록", description = "알림 등록 api 입니다.")
   @CustomPreAuthorize(userRoleType = {ROLE_USER})
   @PostMapping
   public ResponseEntity<ApiResponse<ResAlarmPostDtoApiV1>> postBy(@Valid
@@ -54,7 +50,6 @@ public class AlarmControllerApiV1 {
     );
   }
 
-  @Operation(summary = "알림 목록 조회", description = "알림 목록 조회 api 입니다.")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_MASTER})
   @GetMapping
   public ResponseEntity<ApiResponse<ResAlarmGetDtoApiV1>> getBy(
@@ -71,7 +66,6 @@ public class AlarmControllerApiV1 {
     );
   }
 
-  @Operation(summary = "알림 단건 조회", description = "알림 단건 조회 api 입니다.")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_MASTER})
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<ResAlarmGetByIdDtoApiV1>> getById(@Valid @PathVariable UUID id,
