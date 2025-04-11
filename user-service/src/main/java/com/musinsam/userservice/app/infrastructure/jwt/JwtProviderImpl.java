@@ -102,7 +102,9 @@ public class JwtProviderImpl implements JwtProvider {
         .parseSignedClaims(token)
         .getPayload();
 
-    return claims.getExpiration().getTime() - System.currentTimeMillis();
+    long remainingTime = claims.getExpiration().getTime() - System.currentTimeMillis();
+
+    return remainingTime > 0 ? remainingTime : 0;
   }
 
 
