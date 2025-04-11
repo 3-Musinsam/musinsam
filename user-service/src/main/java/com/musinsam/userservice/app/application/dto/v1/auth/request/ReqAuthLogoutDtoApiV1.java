@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReqAuthLogoutDtoApiV1 {
 
-  private String token;
+  private String accessToken;
 
 }
