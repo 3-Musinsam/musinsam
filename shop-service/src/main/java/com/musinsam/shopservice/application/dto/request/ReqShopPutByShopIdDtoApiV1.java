@@ -13,28 +13,24 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqShopPostUpdateDtoApiV1 {
+public class ReqShopPutByShopIdDtoApiV1 {
 
   @Valid
   @NotNull(message = "수정할 상점 정보를 입력해주세요.")
-  private UpdatedShop updatedShop;
+  private Shop shop;
 
 
   @Getter
   @Builder
   @NoArgsConstructor
   @AllArgsConstructor
-  public static class UpdatedShop {
-
-    @NotNull(message = "판매자 아이디를 입력해주세요.")
-    private Long userId;
+  public static class Shop {
 
     @NotBlank(message = "상점 이름을 입력해주세요.")
     private String name;
 
-    public ShopEntity toEntity() {
-      return ShopEntity.builder()
-          .build();
+    public void updateOf(ShopEntity shopEntity) {
+      //shopEntity.setName(name);
     }
   }
 
