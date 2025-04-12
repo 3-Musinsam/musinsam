@@ -44,14 +44,11 @@ public class OrderItemEntity extends BaseEntity {
   @Column(name = "quantity")
   private Integer quantity;
 
-  @Column(name = "discount_amount")
-  private BigDecimal discountAmount;
-
-  @Column(name = "final_amount")
-  private BigDecimal finalAmount;
-
   @ManyToOne
   @JoinColumn(name = "order_id")
   private OrderEntity order;
 
+  public void assignOrder(OrderEntity order) {
+    this.order = order;
+  }
 }

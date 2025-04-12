@@ -69,4 +69,9 @@ public class OrderEntity extends BaseEntity {
   @Builder.Default
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private List<OrderItemEntity> orderItems = new ArrayList<>();
+
+  public void assignOrderItems(List<OrderItemEntity> orderItems) {
+    this.orderItems.addAll(orderItems);
+    orderItems.forEach(item -> item.assignOrder(this));
+  }
 }
