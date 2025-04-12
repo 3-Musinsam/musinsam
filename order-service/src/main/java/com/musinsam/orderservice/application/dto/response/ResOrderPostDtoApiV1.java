@@ -70,7 +70,7 @@ public class ResOrderPostDtoApiV1 {
 
       public static OrderItem from(OrderItemEntity orderItemEntity) {
         return OrderItem.builder()
-            .productId(orderItemEntity.getId())
+            .productId(orderItemEntity.getProductId())
             .productName(orderItemEntity.getProductName())
             .quantity(orderItemEntity.getQuantity())
             .price(orderItemEntity.getPrice())

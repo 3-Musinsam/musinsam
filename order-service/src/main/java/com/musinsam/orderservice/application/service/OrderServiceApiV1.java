@@ -32,6 +32,7 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = requestDto.getOrder().toEntityWith(userId);
 
     validateOrderOwner(orderEntity, userId);
+    validateOrderStatus(orderEntity);
 
     // TODO: 상품 서비스에 재고 확인 요청 및 차감
     //  boolean stockAvailable = validateAndReserveStock(requestDto);
