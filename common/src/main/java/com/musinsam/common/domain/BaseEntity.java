@@ -1,6 +1,5 @@
 package com.musinsam.common.domain;
 
-import com.musinsam.common.time.TimeZoneContextHolder;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -21,20 +20,25 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class BaseEntity {
 
   @CreatedBy
-  @Column(updatable = false)
+  @Column(name = "created_by", updatable = false)
   private Long createdBy;
 
   @CreatedDate
-  @Column(updatable = false)
+  @Column(name = "created_at", updatable = false)
   private ZonedDateTime createdAt;
 
   @LastModifiedBy
+  @Column(name = "updated_by")
   private Long updatedBy;
 
   @LastModifiedDate
+  @Column(name = "updated_at")
   private ZonedDateTime updatedAt;
 
+  @Column(name = "deleted_by")
   private Long deletedBy;
+
+  @Column(name = "deleted_at")
   private ZonedDateTime deletedAt;
 
   public void softDelete(Long userId, ZoneId zoneId) {
