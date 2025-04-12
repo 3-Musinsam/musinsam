@@ -1,6 +1,8 @@
 package com.musinsam.orderservice.application.dto.response;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.vo.OrderCancelType;
+import com.musinsam.orderservice.domain.order.vo.OrderStatus;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -26,24 +28,23 @@ public class ResOrderPostCancelDtoApiV1 {
   public static class Order {
 
     private UUID id;
-    private String orderStatus;
-    private String cancelReason;
+    private OrderStatus orderStatus;
     private ZonedDateTime canceledAt;
+    private OrderCancelType orderCancelType;
+
+    public static Order from(OrderEntity entity) {
+      return Order.builder()
+          .id(entity.getId())
+          .orderStatus(entity.getOrderStatus())
+          .canceledAt(entity.getCanceledAt())
+          .orderCancelType(entity.getCancelType())
+          .build();
+    }
   }
 
-  // TODO:
-  public static ResOrderPostCancelDtoApiV1 of() {
+  public static ResOrderPostCancelDtoApiV1 of(OrderEntity entity) {
     return ResOrderPostCancelDtoApiV1.builder()
-        .order(Order.builder()
-            .build())
-        .build();
-  }
-
-  // TODO:
-  public static ResOrderPostCancelDtoApiV1 from(OrderEntity orderEntity) {
-    return ResOrderPostCancelDtoApiV1.builder()
-        .order(Order.builder()
-            .build())
+        .order(Order.from(entity))
         .build();
   }
 }

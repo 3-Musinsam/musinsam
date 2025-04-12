@@ -1,6 +1,7 @@
 package com.musinsam.orderservice.domain.order.entity;
 
 import com.musinsam.common.domain.BaseEntity;
+import com.musinsam.orderservice.domain.order.vo.OrderCancelType;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -66,6 +68,16 @@ public class OrderEntity extends BaseEntity {
   @Column(name = "order_status")
   private OrderStatus orderStatus;
 
+  @Enumerated(EnumType.STRING)
+  @Column(name = "cancel_type")
+  private OrderCancelType cancelType;
+
+  @Column(name = "cancel_reason")
+  private String cancelReason;
+
+  @Column(name = "canceled_at")
+  private ZonedDateTime canceledAt;
+
   @Builder.Default
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private List<OrderItemEntity> orderItems = new ArrayList<>();
@@ -90,5 +102,16 @@ public class OrderEntity extends BaseEntity {
     this.couponId = couponId;
 
     assignOrderItems(newOrderItems);
+  }
+
+  public void updateOrderStatus(OrderStatus status) {
+    this.orderStatus = status;
+  }
+
+  public void cancel(OrderCancelType cancelType, String cancelReason) {
+    this.orderStatus = OrderStatus.CANCELED;
+    this.canceledAt = ZonedDateTime.now();
+    this.cancelType = cancelType;
+    this.cancelReason = cancelReason;
   }
 }
