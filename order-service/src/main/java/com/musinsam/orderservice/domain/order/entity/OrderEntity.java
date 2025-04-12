@@ -67,11 +67,28 @@ public class OrderEntity extends BaseEntity {
   private OrderStatus orderStatus;
 
   @Builder.Default
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
   private List<OrderItemEntity> orderItems = new ArrayList<>();
 
   public void assignOrderItems(List<OrderItemEntity> orderItems) {
     this.orderItems.addAll(orderItems);
     orderItems.forEach(item -> item.assignOrder(this));
+  }
+
+  public void update(
+      BigDecimal totalAmount,
+      BigDecimal discountAmount,
+      BigDecimal finalAmount,
+      String request,
+      UUID couponId,
+      List<OrderItemEntity> newOrderItems
+  ) {
+    this.totalAmount = totalAmount;
+    this.discountAmount = discountAmount;
+    this.finalAmount = finalAmount;
+    this.request = request;
+    this.couponId = couponId;
+
+    assignOrderItems(newOrderItems);
   }
 }
