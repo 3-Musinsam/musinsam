@@ -12,9 +12,11 @@ spring:
     password: postgres
 
   jpa:
+    show-sql: true
     properties:
-      hibernate:
-        format_sql: true
+      hibernate.hibernate.format_sql: true
+      hibernate.highlight_sql: true
+      use_sql_comments: true
     hibernate:
       ddl-auto: update
     open-in-view: false
@@ -37,5 +39,10 @@ springdoc:
     enabled: true
     path: /api-docs-order-service
 
-
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.cloud.gateway: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
+    com.musinsam.orderservice: DEBUG
 
