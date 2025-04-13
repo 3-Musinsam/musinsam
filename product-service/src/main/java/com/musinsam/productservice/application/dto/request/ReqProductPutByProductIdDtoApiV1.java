@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class ReqProductPutByProductIdDtoApiV1 {
 
   @Valid
