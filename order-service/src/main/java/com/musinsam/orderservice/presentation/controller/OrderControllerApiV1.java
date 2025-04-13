@@ -15,11 +15,14 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostCancelDtoA
 import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.application.service.OrderServiceApiV1;
+import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.querydsl.core.types.Predicate;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
@@ -99,6 +102,7 @@ public class OrderControllerApiV1 {
   @GetMapping
   @CustomPreAuthorize(userRoleType = {UserRoleType.ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResOrderGetDtoApiV1>> getOrder(
+      @QuerydslPredicate(root = OrderEntity.class) Predicate predicate,
       @PageableDefault
       @SortDefault.SortDefaults({
           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
@@ -108,6 +112,7 @@ public class OrderControllerApiV1 {
   ) {
 
     ResOrderGetDtoApiV1 responseDto = orderService.getOrderList(
+        predicate,
         pageable,
         searchKeyword,
         currentUser.userId()

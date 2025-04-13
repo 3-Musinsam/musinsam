@@ -1,6 +1,7 @@
 package com.musinsam.orderservice.application.dto.response;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -46,13 +47,16 @@ public class ResOrderGetDtoApiV1 {
     public static class Order {
 
       private UUID id;
+      private Long userId;
       private String orderStatus;
+      private List<OrderItem> orderItems;
       private BigDecimal totalAmount;
       private BigDecimal discountAmount;
       private BigDecimal finalAmount;
-      private String productName;
-      private int productCount;
+      private String request;
+      private UUID couponId;
       private ZonedDateTime createdAt;
+      private ZonedDateTime updatedAt;
 
       public static List<Order> from(List<OrderEntity> orderEntities) {
         return orderEntities.stream()
@@ -61,9 +65,46 @@ public class ResOrderGetDtoApiV1 {
       }
 
       public static Order from(OrderEntity orderEntity) {
+        List<OrderItem> orderItems = orderEntity.getOrderItems().stream()
+            .map(OrderItem::from)
+            .toList();
+
         return Order.builder()
-            // TODO:
+            .id(orderEntity.getId())
+            .userId(orderEntity.getUserId())
+            .orderStatus(String.valueOf(orderEntity.getOrderStatus()))
+            .orderItems(orderItems)
+            .totalAmount(orderEntity.getTotalAmount())
+            .discountAmount(orderEntity.getDiscountAmount())
+            .finalAmount(orderEntity.getFinalAmount())
+            .request(orderEntity.getRequest())
+            .couponId(orderEntity.getCouponId())
+            .createdAt(orderEntity.getCreatedAt())
+            .updatedAt(orderEntity.getUpdatedAt())
             .build();
+      }
+
+      @Getter
+      @Builder
+      @NoArgsConstructor
+      @AllArgsConstructor
+      public static class OrderItem {
+
+        private UUID id;
+        private UUID productId;
+        private String productName;
+        private BigDecimal price;
+        private Integer quantity;
+
+        public static OrderItem from(OrderItemEntity orderItemEntity) {
+          return OrderItem.builder()
+              .id(orderItemEntity.getId())
+              .productId(orderItemEntity.getProductId())
+              .productName(orderItemEntity.getProductName())
+              .quantity(orderItemEntity.getQuantity())
+              .price(orderItemEntity.getPrice())
+              .build();
+        }
       }
     }
   }
