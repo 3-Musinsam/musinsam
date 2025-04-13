@@ -101,7 +101,7 @@ public class ProductControllerApiV1 {
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_SUCCESS.getCode(),
-        PRODUCT_UPDATE_STOCK_SUCCESS.getMessage(),
+        PRODUCT_UPDATE_SUCCESS.getMessage(),
         null
     ));
   }
