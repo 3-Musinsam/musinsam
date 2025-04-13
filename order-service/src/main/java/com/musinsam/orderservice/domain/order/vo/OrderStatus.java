@@ -10,7 +10,8 @@ public enum OrderStatus {
   PAID("결제 완료"),
   COMPLETED("주문 처리 완료"),
   SHIPPING("배송 대기"),
-  CANCELED("주문 취소");
+  CANCELED("주문 취소"),
+  DELETED("주문 삭제됨");
 
   private final String description;
 }

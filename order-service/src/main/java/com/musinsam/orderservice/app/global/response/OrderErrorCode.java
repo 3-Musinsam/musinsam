@@ -24,6 +24,8 @@ public enum OrderErrorCode implements ErrorCode {
   ORDER_COUPON_NOT_APPLICABLE(HttpStatus.BAD_REQUEST.value(), "Order coupon cannot be applied",
       HttpStatus.BAD_REQUEST),
   ORDER_CANNOT_BE_CANCELED(HttpStatus.BAD_REQUEST.value(), "Order cannot be canceled",
+      HttpStatus.BAD_REQUEST),
+  ORDER_CANNOT_BE_DELETED(HttpStatus.BAD_REQUEST.value(), "Order cannot be deleted",
       HttpStatus.BAD_REQUEST);
 
   private final Integer code;
