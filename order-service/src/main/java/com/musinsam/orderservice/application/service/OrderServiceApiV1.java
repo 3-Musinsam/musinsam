@@ -12,9 +12,10 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostCancelDtoA
 import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
-import java.util.Arrays;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -115,15 +116,40 @@ public class OrderServiceApiV1 {
     return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
 
+  @Transactional
   public void deleteOrder(UUID orderId, Long userId) {
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+
+    validateOrderOwner(orderEntity, userId);
+    validateDeletableStatus(orderEntity);
+
+    ZoneId zoneId = ZoneId.systemDefault();
+
+    orderEntity.softDelete(userId, zoneId);
+    orderEntity.updateOrderStatus(OrderStatus.DELETED);
+
+    for (OrderItemEntity item : orderEntity.getOrderItems()) {
+      item.softDelete(userId, zoneId);
+    }
+  }
+
+  private void validateDeletableStatus(OrderEntity orderEntity) {
+    List<OrderStatus> deletableStatuses = List.of(
+        OrderStatus.CANCELED
+    );
+
+    if (!deletableStatuses.contains(orderEntity.getOrderStatus())) {
+      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_DELETED);
+    }
   }
 
   private void validateCancellableStatus(OrderEntity orderEntity) {
-    List<OrderStatus> cancellableStatuses = Arrays.asList(
+    List<OrderStatus> cancelableStatuses = List.of(
         OrderStatus.PENDING
     );
 
-    if (!cancellableStatuses.contains(orderEntity.getOrderStatus())) {
+    if (!cancelableStatuses.contains(orderEntity.getOrderStatus())) {
       throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
     }
   }
