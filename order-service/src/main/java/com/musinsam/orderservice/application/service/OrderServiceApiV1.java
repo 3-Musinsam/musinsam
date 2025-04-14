@@ -15,10 +15,12 @@ import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
+import com.querydsl.core.types.Predicate;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,8 +66,16 @@ public class OrderServiceApiV1 {
     return ResOrderGetByIdDtoApiV1.of(orderEntity);
   }
 
-  public ResOrderGetDtoApiV1 getOrderList(Pageable pageable, String searchKeyword, Long userId) {
-    return null;
+  @Transactional(readOnly = true)
+  public ResOrderGetDtoApiV1 getOrderList(
+      Predicate predicate,
+      Pageable pageable,
+      String searchKeyword,
+      Long userId
+  ) {
+    Page<OrderEntity> orderPage = orderRepository.findAll(predicate, pageable);
+
+    return ResOrderGetDtoApiV1.of(orderPage);
   }
 
   @Transactional
