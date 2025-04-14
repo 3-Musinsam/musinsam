@@ -2,19 +2,21 @@ package com.musinsam.userservice.app.application.service.auth;
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthGenerateTokenDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthLoginDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.request.ReqAuthSignupDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthGenerateTokenDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthGenerateWithCookieDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthLoginDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthLoginWithCookieDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.auth.response.ResAuthSignupDtoApiV1;
 import com.musinsam.userservice.app.domain.auth.jwt.JwtProvider;
+import com.musinsam.userservice.app.domain.auth.vo.AuthErrorCode;
 import com.musinsam.userservice.app.domain.user.entity.UserEntity;
 import com.musinsam.userservice.app.domain.user.repository.auth.AuthRepository;
 import com.musinsam.userservice.app.domain.user.repository.token.RefreshTokenRepository;
 import com.musinsam.userservice.app.domain.user.vo.UserRoleType;
-import com.musinsam.userservice.app.global.response.AuthErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
   private final AuthRepository authRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtProvider jwtProvider;
+
+  private final String PREFIX_BEARER_NAME = "Bearer ";
 
   private void existsByEmail(String email) {
     if (authRepository.existsByEmail(email)) {
@@ -50,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
     return ResAuthSignupDtoApiV1.of(savedUser);
   }
 
-  public ResAuthLoginDtoApiV1 login(ReqAuthLoginDtoApiV1 request) {
+  public ResAuthLoginWithCookieDtoApiV1 login(ReqAuthLoginDtoApiV1 request) {
     UserEntity user = authRepository.findByEmail(request.getUser().getEmail())
         .orElseThrow(() -> new CustomException(AuthErrorCode.INVALID_LOGIN));
 
@@ -63,41 +67,62 @@ public class AuthServiceImpl implements AuthService {
 
     refreshTokenRepository.saveRefreshToken(user.getId(), refreshToken, jwtProvider.getRefreshTokenExpiration());
 
-    return ResAuthLoginDtoApiV1.of(user, accessToken, refreshToken);
+    ResponseCookie refreshCookie = getResponseCookie(refreshToken, jwtProvider.getRefreshTokenExpiration() / 1000);
+
+    return ResAuthLoginWithCookieDtoApiV1.of(ResAuthLoginDtoApiV1.of(user, accessToken), refreshCookie);
+  }
+
+  private ResponseCookie getResponseCookie(String refreshToken, Long maxAge) {
+    return ResponseCookie.from("refresh_token", refreshToken)
+        .httpOnly(jwtProvider.getHttpOnly())
+        .secure(jwtProvider.getSecure())
+        .path(jwtProvider.getPath())
+        .domain(jwtProvider.getDomain())
+        .sameSite(jwtProvider.getDomain())
+        .maxAge(maxAge)
+        .build();
   }
 
   @Transactional
   @Override
-  public void logout(String bearerToken, CurrentUserDtoApiV1 request) {
-    String accessToken = bearerToken.replace("Bearer ", "");
+  public ResponseCookie logout(String bearerToken, CurrentUserDtoApiV1 request) {
+    String accessToken = bearerToken.replace(PREFIX_BEARER_NAME, "");
 
     refreshTokenRepository.deleteRefreshToken(request.userId());
 
     Long expiration = jwtProvider.getRemainingTimeToken(accessToken);
     refreshTokenRepository.setAccessTokenBlacklist(accessToken, expiration);
+
+    return getResponseCookie("", 0L);
   }
 
   @Override
-  public ResAuthGenerateTokenDtoApiV1 generateToken(ReqAuthGenerateTokenDtoApiV1 request) {
-    if (!jwtProvider.validateToken(request.getRefreshToken())) {
+  public ResAuthGenerateWithCookieDtoApiV1 generateToken(String refreshToken, String bearerToken) {
+    if (!jwtProvider.validateToken(refreshToken)) {
       throw new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN);
     }
+    String accessToken = bearerToken.replace(PREFIX_BEARER_NAME, "");
 
-    Long userId = jwtProvider.getUserIdFromToken(request.getRefreshToken());
-    UserRoleType role = jwtProvider.getUserRoleFromToken(request.getRefreshToken());
+    Long userId = jwtProvider.getUserIdFromToken(accessToken);
+    UserRoleType role = jwtProvider.getUserRoleFromToken(accessToken);
 
     String storedRefreshToken = refreshTokenRepository.getRefreshToken(userId)
         .orElseThrow(() -> new CustomException(AuthErrorCode.REFRESH_TOKEN_NOT_FOUND));
 
-    if (!storedRefreshToken.equals(request.getRefreshToken())) {
+    if (!storedRefreshToken.equals(refreshToken)) {
       throw new CustomException(AuthErrorCode.INVALID_REFRESH_TOKEN);
     }
+
+    Long remainingTimeToken = jwtProvider.getRemainingTimeToken(accessToken);
+    refreshTokenRepository.setAccessTokenBlacklist(accessToken, remainingTimeToken);
 
     String newAccessToken = jwtProvider.createAccessToken(userId, role);
     String newRefreshToken = jwtProvider.createRefreshToken(userId, role);
 
     refreshTokenRepository.saveRefreshToken(userId, newRefreshToken, jwtProvider.getRefreshTokenExpiration());
 
-    return ResAuthGenerateTokenDtoApiV1.of(newAccessToken, newRefreshToken);
+    ResponseCookie refreshCookie = getResponseCookie(newRefreshToken, jwtProvider.getRefreshTokenExpiration() / 1000);
+
+    return ResAuthGenerateWithCookieDtoApiV1.of(ResAuthGenerateTokenDtoApiV1.of(newAccessToken), refreshCookie);
   }
 }
