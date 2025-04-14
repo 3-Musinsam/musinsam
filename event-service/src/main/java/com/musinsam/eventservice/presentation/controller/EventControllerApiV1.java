@@ -124,7 +124,7 @@ public class EventControllerApiV1 {
     return ResponseEntity.ok(new ApiResponse<>(
         EVENT_GET_SUCCESS.getCode(),
         EVENT_GET_SUCCESS.getMessage(),
-        new ResEventGetByEventIdDtoApiV1()
+        null
     ));
   }
 
