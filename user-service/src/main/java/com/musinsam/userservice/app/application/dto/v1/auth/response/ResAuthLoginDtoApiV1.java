@@ -15,10 +15,10 @@ public class ResAuthLoginDtoApiV1 {
   private User user;
   private Token token;
 
-  public static ResAuthLoginDtoApiV1 of(UserEntity userEntity, String accessToken, String refreshToken) {
+  public static ResAuthLoginDtoApiV1 of(UserEntity userEntity, String accessToken) {
     return ResAuthLoginDtoApiV1.builder()
         .user(User.from(userEntity))
-        .token(Token.from(accessToken, refreshToken))
+        .token(Token.from(accessToken))
         .build();
   }
 
@@ -50,12 +50,10 @@ public class ResAuthLoginDtoApiV1 {
   public static class Token {
 
     private String accessToken;
-    private String refreshToken;
 
-    public static Token from(String accessToken, String refreshToken) {
+    public static Token from(String accessToken) {
       return Token.builder()
           .accessToken(accessToken)
-          .refreshToken(refreshToken)
           .build();
     }
 

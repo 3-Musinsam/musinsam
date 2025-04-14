@@ -1,4 +1,4 @@
-package com.musinsam.userservice.app.global.response;
+package com.musinsam.userservice.app.domain.auth.vo;
 
 import com.musinsam.common.exception.ErrorCode;
 import lombok.Getter;

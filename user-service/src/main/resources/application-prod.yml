@@ -49,14 +49,8 @@ jwt:
   refresh:
     expiration: 86400000 # 24시간
   cookie:
-    secure: false
+    secure: true
     httpOnly: true
-    sameSite: Lax
-    domain: localhost
+    sameSite: None
+    domain: musinsam.com
     path: /
-
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true

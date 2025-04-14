@@ -3,10 +3,10 @@ package com.musinsam.userservice.app.presentation.v1;
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
-import static com.musinsam.userservice.app.global.response.UserResponseCode.USER_DELETE_BY_ID_SUCCESS;
-import static com.musinsam.userservice.app.global.response.UserResponseCode.USERS_GET_SUCCESS;
-import static com.musinsam.userservice.app.global.response.UserResponseCode.USER_GET_SUCCESS;
-import static com.musinsam.userservice.app.global.response.UserResponseCode.USER_PATCH_ROLE_BY_ID_SUCCESS;
+import static com.musinsam.userservice.app.domain.user.vo.UserResponseCode.USERS_GET_SUCCESS;
+import static com.musinsam.userservice.app.domain.user.vo.UserResponseCode.USER_DELETE_BY_ID_SUCCESS;
+import static com.musinsam.userservice.app.domain.user.vo.UserResponseCode.USER_GET_SUCCESS;
+import static com.musinsam.userservice.app.domain.user.vo.UserResponseCode.USER_PATCH_ROLE_BY_ID_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;

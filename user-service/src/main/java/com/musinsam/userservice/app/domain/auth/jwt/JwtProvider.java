@@ -16,4 +16,14 @@ public interface JwtProvider {
   Long getRefreshTokenExpiration();
 
   Long getRemainingTimeToken(String token);
+
+  Boolean getSecure();
+
+  Boolean getHttpOnly();
+
+  String getSameSite();
+
+  String getDomain();
+
+  String getPath();
 }
