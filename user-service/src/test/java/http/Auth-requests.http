@@ -1,4 +1,4 @@
-### 회원가입
+### 1. 회원가입
 POST http://localhost:10001/v1/auth/signup
 Content-Type: application/json
 
@@ -10,7 +10,7 @@ Content-Type: application/json
   }
 }
 
-### 로그인
+### 2. 로그인 (토큰 발급)
 POST http://localhost:10001/v1/auth/login
 Content-Type: application/json
 
@@ -23,12 +23,37 @@ Content-Type: application/json
 
 > {%
     client.global.set("accessToken", response.body.data.token.accessToken);
-    client.global.set("refreshToken", response.body.data.token.refreshToken);
     client.global.set("userId", response.body.data.user.userId);
     client.global.set("userRole", response.body.data.user.userRoleType);
 %}
 
-### 로그아웃
+### 3. 게이트웨이 테스트
+POST http://localhost:10000/v1/auth/validate-token
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{}
+
+### 4. 토큰 재발급 (이전 accessToken → Authorization 헤더에 포함, refreshToken → 쿠키에 포함 후 요청하기)
+POST http://localhost:10001/v1/auth/generate-token
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{}
+
+> {%
+    client.global.set("oldAccessToken", client.global.get("accessToken"));
+    client.global.set("accessToken", response.body.data.token.accessToken);
+%}
+
+### 5. 이전 accessToken 재사용 → 실패해야 정상 (블랙리스트 처리 확인용)
+POST http://localhost:10000/v1/auth/validate-token
+Authorization: Bearer {{oldAccessToken}}
+Content-Type: application/json
+
+{}
+
+### 6. 로그아웃
 POST http://localhost:10001/v1/auth/logout
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
@@ -37,11 +62,9 @@ Content-Type: application/json
 
 {}
 
-
-### 토큰 재발급
-POST http://localhost:10001/v1/auth/generate-token
+### 7. 로그아웃 후 토큰 재사용 → 실패해야 정상
+POST http://localhost:10000/v1/auth/validate-token
+Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 
-{
-  "refreshToken": "{{refreshToken}}"
-}
+{}
