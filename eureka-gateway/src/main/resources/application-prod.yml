@@ -1,0 +1,53 @@
+server:
+  port: 10000
+
+spring:
+  application:
+    name: eureka-gateway
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      username: default
+      password: systempass
+  cloud:
+    gateway:
+      routes:
+        - id: public-auth-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/v1/auth/signup, /v1/auth/login, /v1/auth/logout, /v1/auth/generate-token
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+        - id: protected-auth-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/v1/auth/validate-token
+
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+jwt:
+  secret: 401b09eab3c013d4ca54922bb802bec8fd5318192b0a75f201d8b3727429080fb337591abd3e44453b954555b7a0812e1081c39b740293f765eae731f5a65ed1
+  access:
+    expiration: 36000000 # 10시간
+  refresh:
+    expiration: 86400000 # 24시간
