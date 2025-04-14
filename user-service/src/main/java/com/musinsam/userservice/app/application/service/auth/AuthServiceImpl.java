@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
         .secure(jwtProvider.getSecure())
         .path(jwtProvider.getPath())
         .domain(jwtProvider.getDomain())
-        .sameSite(jwtProvider.getDomain())
+        .sameSite(jwtProvider.getSameSite())
         .maxAge(maxAge)
         .build();
   }
