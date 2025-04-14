@@ -41,6 +41,16 @@ public class ReqOrderPostDtoApiV1 {
     private BigDecimal finalAmount;
 
     public OrderEntity toEntityWith(Long userId) {
+      OrderEntity orderEntity = OrderEntity.builder()
+          .userId(userId)
+          .totalAmount(getTotalAmount())
+          .discountAmount(getDiscountAmount())
+          .finalAmount(getFinalAmount())
+          .totalQuantity(calculateTotalQuantity())
+          .request(getRequest())
+          .couponId(getCouponId())
+          .orderStatus(OrderStatus.PENDING)
+          .build();
 
       List<OrderItemEntity> itemEntities = getOrderItems().stream()
           .map(item -> OrderItemEntity.builder()
@@ -52,17 +62,8 @@ public class ReqOrderPostDtoApiV1 {
           )
           .toList();
 
-      return OrderEntity.builder()
-          .orderItems(itemEntities)
-          .userId(userId)
-          .totalAmount(getTotalAmount())
-          .discountAmount(getDiscountAmount())
-          .finalAmount(getFinalAmount())
-          .totalQuantity(calculateTotalQuantity())
-          .request(getRequest())
-          .couponId(getCouponId())
-          .orderStatus(OrderStatus.PENDING)
-          .build();
+      orderEntity.assignOrderItems(itemEntities);
+      return orderEntity;
     }
 
     private Integer calculateTotalQuantity() {

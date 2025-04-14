@@ -48,8 +48,15 @@ public class OrderServiceApiV1 {
     return ResOrderPostDtoApiV1.of(savedOrder);
   }
 
+  @Transactional(readOnly = true)
   public ResOrderGetByIdDtoApiV1 getOrder(UUID orderId, Long userId) {
-    return null;
+
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+
+    validateOrderOwner(orderEntity, userId);
+
+    return ResOrderGetByIdDtoApiV1.of(orderEntity);
   }
 
   public ResOrderGetDtoApiV1 getOrderList(Pageable pageable, String searchKeyword, Long userId) {

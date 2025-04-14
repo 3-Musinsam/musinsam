@@ -100,6 +100,7 @@ public class ResOrderPostDtoApiV1 {
 
   public static ResOrderPostDtoApiV1 of(OrderEntity orderEntity) {
     return ResOrderPostDtoApiV1.builder()
-        .order(Order.from(orderEntity)).build();
+        .order(Order.from(orderEntity))
+        .build();
   }
 }
