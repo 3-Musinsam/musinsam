@@ -1,5 +1,8 @@
 package com.musinsam.orderservice.application.dto.request;
 
+import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
+import com.musinsam.orderservice.domain.order.vo.OrderStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -37,13 +40,45 @@ public class ReqOrderPostDtoApiV1 {
     private BigDecimal discountAmount;
     private BigDecimal finalAmount;
 
+    public OrderEntity toEntityWith(Long userId) {
+
+      List<OrderItemEntity> itemEntities = getOrderItems().stream()
+          .map(item -> OrderItemEntity.builder()
+              .productId(item.getId())
+              .productName(item.getProductName())
+              .price(item.getPrice())
+              .quantity(item.getQuantity())
+              .build()
+          )
+          .toList();
+
+      return OrderEntity.builder()
+          .orderItems(itemEntities)
+          .userId(userId)
+          .totalAmount(getTotalAmount())
+          .discountAmount(getDiscountAmount())
+          .finalAmount(getFinalAmount())
+          .totalQuantity(calculateTotalQuantity())
+          .request(getRequest())
+          .couponId(getCouponId())
+          .orderStatus(OrderStatus.PENDING)
+          .build();
+    }
+
+    private Integer calculateTotalQuantity() {
+      return getOrderItems().stream()
+          .mapToInt(OrderItem::getQuantity)
+          .sum();
+    }
+
+
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class OrderItem {
 
-      private UUID productId;
+      private UUID id;
       private String productName;
       private BigDecimal price;
 

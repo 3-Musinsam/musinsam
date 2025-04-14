@@ -39,7 +39,21 @@ public class ResOrderPostDtoApiV1 {
     private ZonedDateTime createdAt;
 
     public static Order from(OrderEntity orderEntity) {
+
+      List<OrderItem> orderItems = orderEntity.getOrderItems().stream()
+          .map(OrderItem::from)
+          .toList();
+
       return Order.builder()
+          .id(orderEntity.getId())
+          .userId(orderEntity.getUserId())
+          .orderItems(orderItems)
+          .orderStatus(orderEntity.getOrderStatus().name())
+          .totalAmount(orderEntity.getTotalAmount())
+          .discountAmount(orderEntity.getDiscountAmount())
+          .finalAmount(orderEntity.getFinalAmount())
+          .request(orderEntity.getRequest())
+          .createdAt(orderEntity.getCreatedAt())
           .build();
     }
 
@@ -53,28 +67,39 @@ public class ResOrderPostDtoApiV1 {
       private String productName;
       private Integer quantity;
       private BigDecimal price;
-      private BigDecimal finalAmount;
 
       public static OrderItem from(OrderItemEntity orderItemEntity) {
         return OrderItem.builder()
+            .productId(orderItemEntity.getId())
+            .productName(orderItemEntity.getProductName())
+            .quantity(orderItemEntity.getQuantity())
+            .price(orderItemEntity.getPrice())
+            .build();
+      }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShippingInfo {
+
+      private String receiverName;
+      private String receiverPhone;
+      private String zipCode;
+      private String address;
+      private String addressDetail;
+
+      // TODO:
+      public static ShippingInfo from() {
+        return ShippingInfo.builder()
             .build();
       }
     }
   }
 
-  // TODO:
-  public static ResOrderPostDtoApiV1 of() {
+  public static ResOrderPostDtoApiV1 of(OrderEntity orderEntity) {
     return ResOrderPostDtoApiV1.builder()
-        .order(Order.builder()
-            .build()
-        )
-        .build();
-  }
-
-  // TODO:
-  public static ResOrderPostDtoApiV1 from(OrderEntity orderEntity) {
-    return ResOrderPostDtoApiV1.builder()
-        .order(Order.from(orderEntity))
-        .build();
+        .order(Order.from(orderEntity)).build();
   }
 }

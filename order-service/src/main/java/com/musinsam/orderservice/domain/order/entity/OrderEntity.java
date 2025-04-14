@@ -2,15 +2,20 @@ package com.musinsam.orderservice.domain.order.entity;
 
 import com.musinsam.common.domain.BaseEntity;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -30,28 +35,38 @@ public class OrderEntity extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id")
   private UUID id;
 
+  @Column(name = "user_id")
   private Long userId;
 
+  @Column(name = "payment_id")
   private UUID paymentId;
 
+  @Column(name = "coupon_id")
   private UUID couponId;
 
+  @Column(name = "total_amount")
   private BigDecimal totalAmount;
 
+  @Column(name = "discount_amount")
   private BigDecimal discountAmount;
 
+  @Column(name = "final_amount")
   private BigDecimal finalAmount;
 
+  @Column(name = "total_quantity")
   private Integer totalQuantity;
 
+  @Column(name = "request")
   private String request;
 
   @Enumerated(EnumType.STRING)
+  @Column(name = "order_status")
   private OrderStatus orderStatus;
 
-  private String cancelReason;
-
-  private ZonedDateTime canceledAt;
+  @Builder.Default
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private List<OrderItemEntity> orderItems = new ArrayList<>();
 }
