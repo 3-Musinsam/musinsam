@@ -12,9 +12,9 @@ public class ResAuthGenerateTokenDtoApiV1 {
 
   private Token token;
 
-  public static ResAuthGenerateTokenDtoApiV1 of(String accessToken, String refreshToken) {
+  public static ResAuthGenerateTokenDtoApiV1 of(String accessToken) {
     return ResAuthGenerateTokenDtoApiV1.builder()
-        .token(Token.from(accessToken, refreshToken))
+        .token(Token.from(accessToken))
         .build();
   }
 
@@ -26,12 +26,10 @@ public class ResAuthGenerateTokenDtoApiV1 {
   public static class Token {
 
     private String accessToken;
-    private String refreshToken;
 
-    public static Token from(String accessToken, String refreshToken) {
+    public static Token from(String accessToken) {
       return Token.builder()
           .accessToken(accessToken)
-          .refreshToken(refreshToken)
           .build();
     }
   }
