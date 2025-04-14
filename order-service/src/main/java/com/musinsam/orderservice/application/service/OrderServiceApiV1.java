@@ -14,6 +14,8 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,7 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = requestDto.getOrder().toEntityWith(userId);
 
     validateOrderOwner(orderEntity, userId);
+    validateOrderStatus(orderEntity);
 
     // TODO: 상품 서비스에 재고 확인 요청 및 차감
     //  boolean stockAvailable = validateAndReserveStock(requestDto);
@@ -89,13 +92,40 @@ public class OrderServiceApiV1 {
     return ResOrderPutDtoApiV1.of(orderEntity);
   }
 
-
+  @Transactional
   public ResOrderPostCancelDtoApiV1 cancelOrder(UUID orderId, ReqOrderPostCancelDtoApiV1 requestDto,
       Long userId) {
-    return null;
+
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+
+    validateOrderOwner(orderEntity, userId);
+
+    validateCancellableStatus(orderEntity);
+
+    orderEntity.cancel(
+        requestDto.getOrder().getCancelType(),
+        requestDto.getOrder().getCancelReason()
+    );
+
+    // TODO: 재고 복구 요청
+
+    // TODO: 취소 이벤트 발행
+
+    return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
 
   public void deleteOrder(UUID orderId, Long userId) {
+  }
+
+  private void validateCancellableStatus(OrderEntity orderEntity) {
+    List<OrderStatus> cancellableStatuses = Arrays.asList(
+        OrderStatus.PENDING
+    );
+
+    if (!cancellableStatuses.contains(orderEntity.getOrderStatus())) {
+      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
+    }
   }
 
   private void validateOrderStatus(OrderEntity orderEntity) {

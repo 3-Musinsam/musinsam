@@ -168,7 +168,7 @@ public class OrderControllerApiV1 {
     return ResponseEntity.ok().body(
         ApiResponse.success(
             ApiSuccessCode.OK.getCode(),
-            "Order cancelled successfully.",
+            "Order canceled successfully.",
             responseDto
         )
     );

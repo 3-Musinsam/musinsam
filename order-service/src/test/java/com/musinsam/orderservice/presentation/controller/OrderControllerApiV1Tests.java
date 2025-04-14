@@ -31,6 +31,8 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.application.service.OrderServiceApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.vo.OrderCancelType;
+import com.musinsam.orderservice.domain.order.vo.OrderStatus;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -334,13 +336,18 @@ public class OrderControllerApiV1Tests {
     UUID orderId = UUID.randomUUID();
 
     ReqOrderPostCancelDtoApiV1 requestDto = ReqOrderPostCancelDtoApiV1.builder()
-        .cancelReason("Sample Cancel Reason")
+        .order(ReqOrderPostCancelDtoApiV1.Order
+            .builder()
+            .cancelType(OrderCancelType.CUSTOMER_REQUEST)
+            .cancelReason("Sample Cancel Reason")
+            .build()
+        )
         .build();
 
     ResOrderPostCancelDtoApiV1 responseDto = ResOrderPostCancelDtoApiV1.builder()
         .order(ResOrderPostCancelDtoApiV1.Order.builder()
-            .id(orderId).orderStatus("CANCELLED")
-            .cancelReason("Sample Cancel Reason")
+            .id(orderId)
+            .orderStatus(OrderStatus.CANCELED)
             .canceledAt(ZonedDateTime.now())
             .build())
         .build();
