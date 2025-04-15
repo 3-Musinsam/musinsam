@@ -20,7 +20,7 @@ public class ResCouponPolicyGetDtoApiV1 {
   private Integer totalQuantity;
   private ZonedDateTime startedAt;
   private ZonedDateTime endedAt;
-  private UUID sellerId;
+  private UUID companyId;
   private ZonedDateTime createdAt;
   private Long createdBy;
   private ZonedDateTime updatedAt;
@@ -40,7 +40,7 @@ public class ResCouponPolicyGetDtoApiV1 {
         .totalQuantity(couponPolicyEntity.getTotalQuantity())
         .startedAt(couponPolicyEntity.getStartedAt())
         .endedAt(couponPolicyEntity.getEndedAt())
-        .sellerId(couponPolicyEntity.getCompanyId())
+        .companyId(couponPolicyEntity.getCompanyId())
         .createdAt(couponPolicyEntity.getCreatedAt())
         .createdBy(couponPolicyEntity.getCreatedBy())
         .updatedAt(couponPolicyEntity.getUpdatedAt())
