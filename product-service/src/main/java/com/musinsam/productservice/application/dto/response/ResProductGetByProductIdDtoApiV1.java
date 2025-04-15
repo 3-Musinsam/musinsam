@@ -3,6 +3,7 @@ package com.musinsam.productservice.application.dto.response;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,9 +19,9 @@ public class ResProductGetByProductIdDtoApiV1 {
   private Product product;
 
   public static ResProductGetByProductIdDtoApiV1 of(ProductEntity productEntity,
-      ProductImageEntity productImageEntity) {
+      List<ProductImageEntity> productImageEntity, String shopName) {
     return ResProductGetByProductIdDtoApiV1.builder()
-        .product(Product.from(productEntity, productImageEntity))
+        .product(Product.from(productEntity, productImageEntity, shopName))
         .build();
   }
 
@@ -36,18 +37,18 @@ public class ResProductGetByProductIdDtoApiV1 {
     private String name;
     private BigDecimal price;
     private BigDecimal discountPrice;
-    private Image image;
+    private List<Image> images;
 
 
     public static Product from(ProductEntity productEntity,
-        ProductImageEntity productImageEntity) { // +shop 정보
+        List<ProductImageEntity> productImageEntity, String shopName) {
       return Product.builder()
-          .productId(productEntity.getShopId())
-          .shop(Shop.from())
+          .productId(productEntity.getId())
+          .shop(Shop.from(productEntity, shopName))
           .name(productEntity.getName())
           .price(productEntity.getPrice())
           .discountPrice(productEntity.getDiscountPrice())
-          .image(Image.from(productImageEntity))
+          .images(Image.from(productImageEntity))
           .build();
     }
 
@@ -58,10 +59,10 @@ public class ResProductGetByProductIdDtoApiV1 {
       private UUID shopId;
       private String shopName;
 
-      public static Shop from() {
+      public static Shop from(ProductEntity productEntity, String shopName) {
         return Shop.builder()
-            .shopId(null)
-            .shopName(null)
+            .shopId(productEntity.getShopId())
+            .shopName(shopName)
             .build();
       }
     }
@@ -78,6 +79,12 @@ public class ResProductGetByProductIdDtoApiV1 {
             .imageId(productImageEntity.getId())
             .imageUrl(productImageEntity.getImageUrl())
             .build();
+      }
+
+      public static List<Image> from(List<ProductImageEntity> productImageEntityList) {
+        return productImageEntityList.stream()
+            .map(productImageEntity -> Image.from(productImageEntity))
+            .toList();
       }
 
     }

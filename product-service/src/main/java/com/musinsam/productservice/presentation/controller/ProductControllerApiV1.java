@@ -77,10 +77,13 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    ResProductGetByProductIdDtoApiV1 resDto = productService.getById(productId);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_SUCCESS.getCode(),
         PRODUCT_GET_SUCCESS.getMessage(),
-        null
+        resDto
     ));
   }
 
