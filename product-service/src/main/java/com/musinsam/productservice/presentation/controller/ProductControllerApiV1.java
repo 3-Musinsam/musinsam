@@ -97,10 +97,13 @@ public class ProductControllerApiV1 {
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
+
+    ResProductGetDtoApiV1 resDto = productService.getProductList(page, size);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_LIST_SUCCESS.getCode(),
         PRODUCT_GET_LIST_SUCCESS.getMessage(),
-        null
+        resDto
     ));
   }
 

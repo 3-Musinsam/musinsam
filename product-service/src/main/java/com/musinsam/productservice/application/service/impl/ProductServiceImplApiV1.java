@@ -3,6 +3,7 @@ package com.musinsam.productservice.application.service.impl;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
@@ -11,6 +12,8 @@ import com.musinsam.productservice.domain.product.repository.ProductRepository;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,4 +55,13 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     return resDto;
   }
 
+  @Override
+  public ResProductGetDtoApiV1 getProductList(int page, int size) {
+
+    PageRequest pageRequest = PageRequest.of(page - 1, size);
+    Page<ProductEntity> productEntityPage = productRepository.findByDeletedAtIsNull(
+        pageRequest);
+
+    return ResProductGetDtoApiV1.of(productEntityPage);
+  }
 }
