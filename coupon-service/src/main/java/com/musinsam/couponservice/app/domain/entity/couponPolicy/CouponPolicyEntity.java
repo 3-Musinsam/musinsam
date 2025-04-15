@@ -1,5 +1,6 @@
 package com.musinsam.couponservice.app.domain.entity.couponPolicy;
 
+import com.musinsam.common.domain.BaseEntity;
 import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,16 +21,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "p_coupon_policy")
 @Entity
-public class CouponPolicyEntity {
+public class CouponPolicyEntity extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Column(name = "name", nullable = false)
+  @Column(name = "name", nullable = false, length = 100)
   private String name;
 
-  @Column(name = "description", nullable = false)
+  @Column(name = "description", nullable = false, length = 255)
   private String description;
 
   @Enumerated(EnumType.STRING)
@@ -55,12 +56,12 @@ public class CouponPolicyEntity {
   private ZonedDateTime endedAt;
 
   @Column(name = "seller_id", nullable = false)
-  private UUID sellerId;
+  private UUID companyId;
 
   @Builder
   private CouponPolicyEntity(String name, String description, DiscountType discountType, Integer discountValue,
                              Integer minimumOrderAmount, Integer maximumDiscountAmount, Integer totalQuantity,
-                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID sellerId) {
+                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID companyId) {
     this.name = name;
     this.description = description;
     this.discountType = discountType;
@@ -70,7 +71,7 @@ public class CouponPolicyEntity {
     this.totalQuantity = totalQuantity;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.sellerId = sellerId;
+    this.companyId = companyId;
   }
 
   public static CouponPolicyEntity of(String name,
@@ -82,7 +83,7 @@ public class CouponPolicyEntity {
                                       Integer totalQuantity,
                                       ZonedDateTime startedAt,
                                       ZonedDateTime endedAt,
-                                      UUID sellerId) {
+                                      UUID companyId) {
     return CouponPolicyEntity.builder()
         .name(name)
         .description(description)
@@ -93,7 +94,7 @@ public class CouponPolicyEntity {
         .totalQuantity(totalQuantity)
         .startedAt(startedAt)
         .endedAt(endedAt)
-        .sellerId(sellerId)
+        .companyId(companyId)
         .build();
   }
 }
