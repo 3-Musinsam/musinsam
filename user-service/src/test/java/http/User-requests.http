@@ -1,0 +1,39 @@
+### 단 건 회원 조회
+GET http://localhost:10001/v1/users/1
+X-USER-ID: 1
+X-USER-ROLE: ROLE_MASTER
+
+{}
+
+
+### 단 건 회원 삭제
+DELETE http://localhost:10001/v1/users/1
+X-USER-ID: 1
+X-USER-ROLE: ROLE_MASTER
+
+
+### 동적 회원 조회
+GET http://localhost:10001/v1/users?email=test@example.com
+    &name=홍길동
+    &userRoleType=ROLE_USER
+    &createdFrom=2024-01-01T00:00:00Z
+    &createdTo=2024-12-31T23:59:59Z
+    &updatedFrom=2024-03-01T00:00:00Z
+    &updatedTo=2024-04-01T00:00:00Z
+    &deletedBy=admin
+    &page=0
+    &size=10
+    &sort=createdAt,desc
+Content-Type: application/json
+X-User-Id: 1L
+X-User-Role: ROLE_MASTER
+
+### 회원 권한 수정
+PATCH http://localhost:10001/v1/users/1/role
+Content-Type: application/json
+X-User-Id: 1
+X-User-Role: ROLE_MASTER
+
+{
+  "userRoleType": "ROLE_USER"
+}
