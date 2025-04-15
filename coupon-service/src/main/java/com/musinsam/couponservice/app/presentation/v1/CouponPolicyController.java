@@ -3,10 +3,10 @@ package com.musinsam.couponservice.app.presentation.v1;
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
-import static com.musinsam.couponservice.app.global.config.CouponPolicyResponseCode.COUPON_POLICY_DELETE_SUCCESS;
-import static com.musinsam.couponservice.app.global.config.CouponPolicyResponseCode.COUPON_POLICIES_GET_SUCCESS;
-import static com.musinsam.couponservice.app.global.config.CouponPolicyResponseCode.COUPON_POLICY_GET_SUCCESS;
-import static com.musinsam.couponservice.app.global.config.CouponResponseCode.COUPON_ISSUE_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICY_DELETE_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICIES_GET_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICY_GET_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
@@ -16,9 +16,11 @@ import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.Re
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPoliciesGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyIssueDtoApiV1;
-import com.musinsam.couponservice.app.domain.vo.DiscountType;
+import com.musinsam.couponservice.app.application.service.couponPolicy.CouponPolicyService;
+import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -36,20 +38,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RequestMapping("/v1/coupon-policies")
 @RestController
 public class CouponPolicyController {
 
+  private final CouponPolicyService couponPolicyService;
+
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   @PostMapping
   public ResponseEntity<ApiResponse<ResCouponPolicyIssueDtoApiV1>> issueCouponPolicy(
-      @RequestBody ReqCouponPolicyIssueDtoApiV1 reqCouponPolicyIssueDtoApiV1,
+      @RequestBody ReqCouponPolicyIssueDtoApiV1 request,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+    ResCouponPolicyIssueDtoApiV1 response = couponPolicyService.issueCouponPolicy(request, currentUser);
+
     return ResponseEntity.ok(new ApiResponse<>(
         COUPON_ISSUE_SUCCESS.getCode(),
         COUPON_ISSUE_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 
