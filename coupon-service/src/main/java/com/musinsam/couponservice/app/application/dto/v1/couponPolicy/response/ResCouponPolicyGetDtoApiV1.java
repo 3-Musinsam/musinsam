@@ -7,10 +7,9 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @Getter
-public class ResCouponPolicyIssueDtoApiV1 {
-
+@Builder
+public class ResCouponPolicyGetDtoApiV1 {
   private UUID id;
   private String name;
   private String description;
@@ -21,10 +20,16 @@ public class ResCouponPolicyIssueDtoApiV1 {
   private Integer totalQuantity;
   private ZonedDateTime startedAt;
   private ZonedDateTime endedAt;
-  private UUID companyId;
+  private UUID sellerId;
+  private ZonedDateTime createdAt;
+  private Long createdBy;
+  private ZonedDateTime updatedAt;
+  private Long updatedBy;
+  private ZonedDateTime deletedAt;
+  private Long deletedBy;
 
-  public static ResCouponPolicyIssueDtoApiV1 from(CouponPolicyEntity couponPolicyEntity) {
-    return ResCouponPolicyIssueDtoApiV1.builder()
+  public static ResCouponPolicyGetDtoApiV1 from(CouponPolicyEntity couponPolicyEntity) {
+    return ResCouponPolicyGetDtoApiV1.builder()
         .id(couponPolicyEntity.getId())
         .name(couponPolicyEntity.getName())
         .description(couponPolicyEntity.getDescription())
@@ -35,7 +40,13 @@ public class ResCouponPolicyIssueDtoApiV1 {
         .totalQuantity(couponPolicyEntity.getTotalQuantity())
         .startedAt(couponPolicyEntity.getStartedAt())
         .endedAt(couponPolicyEntity.getEndedAt())
-        .companyId(couponPolicyEntity.getCompanyId())
+        .sellerId(couponPolicyEntity.getCompanyId())
+        .createdAt(couponPolicyEntity.getCreatedAt())
+        .createdBy(couponPolicyEntity.getCreatedBy())
+        .updatedAt(couponPolicyEntity.getUpdatedAt())
+        .updatedBy(couponPolicyEntity.getUpdatedBy())
+        .deletedAt(couponPolicyEntity.getDeletedAt())
+        .deletedBy(couponPolicyEntity.getDeletedBy())
         .build();
   }
 }

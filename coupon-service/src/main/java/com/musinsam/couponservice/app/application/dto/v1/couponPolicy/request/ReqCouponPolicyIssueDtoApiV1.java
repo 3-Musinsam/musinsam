@@ -48,5 +48,5 @@ public class ReqCouponPolicyIssueDtoApiV1 {
   private ZonedDateTime endedAt;
 
   @NotNull(message = "Seller ID is required.")
-  private UUID sellerId;
+  private UUID companyId;
 }
