@@ -52,9 +52,9 @@ public class ResProductGetDtoApiV1 {
 
       public static Product from(ProductEntity productEntity) {
         return Product.builder()
-            .name(null)
-            .price(null)
-            .discountPrice(null)
+            .name(productEntity.getName())
+            .price(productEntity.getPrice())
+            .discountPrice(productEntity.getDiscountPrice())
             .build();
       }
 

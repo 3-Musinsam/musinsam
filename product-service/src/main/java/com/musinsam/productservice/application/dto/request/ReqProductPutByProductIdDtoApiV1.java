@@ -41,8 +41,8 @@ public class ReqProductPutByProductIdDtoApiV1 {
 
 
     public void updateOf(ProductEntity productEntity) {
-      // productEntity.setName(name);
-      // productEntity.setPrice(price);
+      productEntity.setName(name);
+      productEntity.setPrice(price);
     }
 
     @Getter
