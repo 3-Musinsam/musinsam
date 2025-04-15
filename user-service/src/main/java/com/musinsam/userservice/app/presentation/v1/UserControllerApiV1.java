@@ -12,30 +12,35 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.common.user.UserRoleType;
+import com.musinsam.userservice.app.application.dto.v1.user.request.ReqUserPatchRoleByIdDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.user.request.UserSearchCondition;
+import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserDeleteByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserGetByIdDtoApiV1;
-import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserGetDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserPatchRoleByIdDtoApiV1;
-import java.time.ZonedDateTime;
+import com.musinsam.userservice.app.application.dto.v1.user.response.ResUsersGetDtoApiV1;
+import com.musinsam.userservice.app.application.service.user.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.SortDefault;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RequestMapping("/v1/users")
 @RestController
 public class UserControllerApiV1 {
+
+  private final UserService userService;
 
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   @GetMapping("/{id}")
@@ -43,54 +48,50 @@ public class UserControllerApiV1 {
       @PathVariable Long id,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    ResUserGetByIdDtoApiV1 response = userService.getUser(id, currentUser);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_GET_SUCCESS.getCode(),
         USER_GET_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 
 
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   @DeleteMapping("/{id}")
-  public ResponseEntity<ApiResponse<Void>> deleteUser(
+  public ResponseEntity<ApiResponse<ResUserDeleteByIdDtoApiV1>> deleteUser(
       @PathVariable Long id,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    ResUserDeleteByIdDtoApiV1 response = userService.deleteUser(id, currentUser);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_DELETE_BY_ID_SUCCESS.getCode(),
         USER_DELETE_BY_ID_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 
   @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
   @GetMapping
-  public ResponseEntity<ApiResponse<PagedModel<ResUserGetDtoApiV1>>> getUsers(
-      @RequestParam(required = false) Long id,
-      @RequestParam(required = false) String email,
-      @RequestParam(required = false) String name,
-      @RequestParam(required = false) UserRoleType userRoleType,
-      @RequestParam(required = false) Boolean isDeleted,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime createdFrom,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime createdTo,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime updatedFrom,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime updatedTo,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime deletedFrom,
-      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime deletedTo,
-      @RequestParam(required = false) String createdBy,
-      @RequestParam(required = false) String updatedBy,
-      @RequestParam(required = false) String deletedBy,
+  public ResponseEntity<ApiResponse<Page<ResUsersGetDtoApiV1>>> getUsers(
+      @ParameterObject UserSearchCondition condition,
       @PageableDefault(size = 10)
       @SortDefault.SortDefaults({
           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC),
           @SortDefault(sort = "id", direction = Sort.Direction.DESC)
       }) Pageable pageable
   ) {
+
+    Page<ResUsersGetDtoApiV1> response = userService.getUsersByCondition(condition, pageable);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USERS_GET_SUCCESS.getCode(),
         USERS_GET_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 
@@ -98,12 +99,16 @@ public class UserControllerApiV1 {
   @PatchMapping("/{id}/role")
   public ResponseEntity<ApiResponse<ResUserPatchRoleByIdDtoApiV1>> patchUserRoleById(
       @PathVariable Long id,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
+      @RequestBody ReqUserPatchRoleByIdDtoApiV1 request
   ) {
+
+    ResUserPatchRoleByIdDtoApiV1 response = userService.patchUserRoleById(id, currentUser, request);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_PATCH_ROLE_BY_ID_SUCCESS.getCode(),
         USER_PATCH_ROLE_BY_ID_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 }

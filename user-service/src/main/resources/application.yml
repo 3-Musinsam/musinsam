@@ -15,7 +15,6 @@ spring:
     password: postgres
     driver-class-name: org.postgresql.Driver
 
-
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: true
@@ -40,6 +39,8 @@ eureka:
     fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
 
 
 jwt:

@@ -12,6 +12,9 @@ spring:
       username: default
       password: systempass
 
+  main:
+    web-application-type: reactive
+
   cloud:
     gateway:
       routes:
@@ -172,6 +175,10 @@ spring:
           uri: lb://SHOP-SERVICE
           predicates:
             - Path=/v1/shops/**
+
+      discovery:
+        locator:
+          enabled: true
 
       globalcors:
         corsConfigurations:

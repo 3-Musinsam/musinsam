@@ -8,18 +8,19 @@ plugins {
 group = 'com.musinsam'
 version = '0.0.1-SNAPSHOT'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 ext {
     set('springCloudVersion', "2024.0.1")
+    set('querydslVersion', "5.1.0")
 }
 
 dependencies {
@@ -56,6 +57,11 @@ dependencies {
     implementation 'org.redisson:redisson:3.23.5'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 dependencyManagement {

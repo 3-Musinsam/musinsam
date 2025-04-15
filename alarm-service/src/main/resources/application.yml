@@ -23,15 +23,10 @@ spring:
         default_batch_fetch_size: 10
 
 springdoc:
-  swagger-ui:
-    enabled: true
-    path: /docs
-    url: /springdoc/openapi3-alarm-service.json
-    operations-sorter: alpha
-    tags-sorter: alpha
   api-docs:
     enabled: true
-    path: /api-docs-alarm-service
+  swagger-ui:
+    enabled: true
 
 management:
   endpoints:
