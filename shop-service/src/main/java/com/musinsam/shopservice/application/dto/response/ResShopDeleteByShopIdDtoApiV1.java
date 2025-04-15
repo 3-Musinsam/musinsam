@@ -11,13 +11,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResShopGetByShopIdDtoApiV1 {
+public class ResShopDeleteByShopIdDtoApiV1 {
 
   private Shop shop;
 
-  public static ResShopGetByShopIdDtoApiV1 of(ShopEntity shopEntity) {
-    return ResShopGetByShopIdDtoApiV1.builder()
-        .shop(Shop.from(shopEntity))
+  public static ResShopDeleteByShopIdDtoApiV1 of(ShopEntity shopEntity) {
+    return ResShopDeleteByShopIdDtoApiV1.builder()
+        .shop(ResShopDeleteByShopIdDtoApiV1.Shop.from(shopEntity))
         .build();
   }
 
@@ -28,17 +28,11 @@ public class ResShopGetByShopIdDtoApiV1 {
   public static class Shop {
 
     private UUID id;
-    private Long userId;
-    private String name;
 
     public static Shop from(ShopEntity shopEntity) {
       return Shop.builder()
           .id(shopEntity.getId())
-          .userId(shopEntity.getUserId())
-          .name(shopEntity.getName())
           .build();
     }
-
   }
-
 }

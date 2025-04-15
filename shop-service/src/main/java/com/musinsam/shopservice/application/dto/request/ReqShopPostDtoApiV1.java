@@ -34,6 +34,8 @@ public class ReqShopPostDtoApiV1 {
 
     public ShopEntity toEntity() {
       return ShopEntity.builder()
+          .userId(userId)
+          .name(name)
           .build();
     }
   }
