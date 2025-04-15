@@ -12,11 +12,12 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.user.request.ReqUserPatchRoleByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.request.UserSearchCondition;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserDeleteByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserGetByIdDtoApiV1;
-import com.musinsam.userservice.app.application.dto.v1.user.response.ResUsersGetDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserPatchRoleByIdDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.user.response.ResUsersGetDtoApiV1;
 import com.musinsam.userservice.app.application.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -97,12 +99,16 @@ public class UserControllerApiV1 {
   @PatchMapping("/{id}/role")
   public ResponseEntity<ApiResponse<ResUserPatchRoleByIdDtoApiV1>> patchUserRoleById(
       @PathVariable Long id,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
+      @RequestBody ReqUserPatchRoleByIdDtoApiV1 request
   ) {
+
+    ResUserPatchRoleByIdDtoApiV1 response = userService.patchUserRoleById(id, currentUser, request);
+
     return ResponseEntity.ok(new ApiResponse<>(
         USER_PATCH_ROLE_BY_ID_SUCCESS.getCode(),
         USER_PATCH_ROLE_BY_ID_SUCCESS.getMessage(),
-        null
+        response
     ));
   }
 }
