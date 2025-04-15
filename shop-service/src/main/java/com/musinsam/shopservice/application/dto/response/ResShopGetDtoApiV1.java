@@ -1,5 +1,6 @@
 package com.musinsam.shopservice.application.dto.response;
 
+import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1.ShopPage.Shop;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,7 @@ public class ResShopGetDtoApiV1 {
 
   @Getter
   @ToString
-  public static class ShopPage extends PagedModel<ShopPage.Shop> {
+  public static class ShopPage extends PagedModel<Shop> {
 
     public ShopPage(Page<ShopEntity> shopEntityPage) {
       super(
@@ -53,22 +54,19 @@ public class ResShopGetDtoApiV1 {
       private Long userId;
       private String name;
 
-      public static Shop from(ShopEntity shopEntity) {
-        return Shop.builder()
-            .id(null)
-            .userId(null)
-            .name(null)
-            .build();
-      }
-
       public static List<Shop> from(List<ShopEntity> shopEntityList) {
         return shopEntityList.stream()
-            .map(shopEntity -> Shop.from(shopEntity))
+            .map(Shop::from)
             .toList();
       }
 
+      public static Shop from(ShopEntity shopEntity) {
+        return Shop.builder()
+            .id(shopEntity.getId())
+            .userId(shopEntity.getUserId())
+            .name(shopEntity.getName())
+            .build();
+      }
     }
-
   }
-
 }

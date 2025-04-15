@@ -29,9 +29,10 @@ public class ReqShopPutByShopIdDtoApiV1 {
     @NotBlank(message = "상점 이름을 입력해주세요.")
     private String name;
 
-    public void updateOf(ShopEntity shopEntity) {
-      //shopEntity.setName(name);
+    public ShopEntity updateOf() {
+      return ShopEntity.builder()
+          .name(name)
+          .build();
     }
   }
-
 }
