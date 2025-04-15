@@ -54,8 +54,8 @@ public class CouponPolicyEntity {
   @Column(name = "ended_at", nullable = false)
   private ZonedDateTime endedAt;
 
-  @Column(name = "company_id", nullable = false)
-  private UUID companyId;
+  @Column(name = "seller_id", nullable = false)
+  private UUID sellerId;
 
   @Builder
   public CouponPolicyEntity(
@@ -69,7 +69,7 @@ public class CouponPolicyEntity {
       Integer totalQuantity,
       ZonedDateTime startedAt,
       ZonedDateTime endedAt,
-      UUID companyId) {
+      UUID sellerId) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -80,6 +80,6 @@ public class CouponPolicyEntity {
     this.totalQuantity = totalQuantity;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.companyId = companyId;
+    this.sellerId = sellerId;
   }
 }
