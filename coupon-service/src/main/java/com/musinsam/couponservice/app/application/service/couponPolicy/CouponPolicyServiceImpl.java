@@ -26,7 +26,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         .orElseThrow(() -> new CustomException(NOT_FOUND_COUPON_POLICY));
   }
 
-  private Boolean existsCouponPolicyByName(String name) {
+  private Boolean existsByCouponPolicyName(String name) {
     return couponPolicyRepository.existsByCouponCode(name);
   }
 
@@ -35,7 +35,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
       ReqCouponPolicyIssueDtoApiV1 response,
       CurrentUserDtoApiV1 currentUser
   ) {
-    if (existsCouponPolicyByName(response.getName())) {
+    if (existsByCouponPolicyName(response.getName())) {
       throw new CustomException(CouponPolicyErrorCode.DUPLICATED_COUPON_POLICY);
     }
 

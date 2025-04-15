@@ -25,7 +25,7 @@ public class ReqCouponPolicyIssueDtoApiV1 {
   @NotNull(message = "Discount type is required.")
   private DiscountType discountType;
 
-  @NotNull(message = "Discount type is required.")
+  @NotNull(message = "Discount value is required.")
   private Integer discountValue;
 
   @NotNull(message = "Minimum order amount is required.")
