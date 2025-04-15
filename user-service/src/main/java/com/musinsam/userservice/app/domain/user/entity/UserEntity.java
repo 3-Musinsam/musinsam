@@ -43,7 +43,7 @@ public class UserEntity extends BaseEntity {
     this.email = email;
     this.password = password;
     this.name = name;
-    this.userRoleType = userRoleType;
+    this.userRoleType =  userRoleType == null ?  UserRoleType.ROLE_USER : userRoleType;
   }
 
   public static UserEntity of(String email, String password, String name, UserRoleType userRoleType) {

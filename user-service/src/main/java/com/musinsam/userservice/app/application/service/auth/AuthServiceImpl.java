@@ -46,7 +46,8 @@ public class AuthServiceImpl implements AuthService {
     UserEntity userEntity = UserEntity.of(
         request.getUser().getEmail(),
         passwordEncoder.encode(request.getUser().getPassword()),
-        request.getUser().getName()
+        request.getUser().getName(),
+        request.getUser().getUserRoleType()
     );
 
     UserEntity savedUser = authRepository.save(userEntity);
