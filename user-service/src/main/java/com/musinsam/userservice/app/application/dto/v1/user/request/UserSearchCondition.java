@@ -22,9 +22,9 @@ public class UserSearchCondition {
   private ZonedDateTime updatedTo;
   private ZonedDateTime deletedFrom;
   private ZonedDateTime deletedTo;
-  private String createdBy;
-  private String updatedBy;
-  private String deletedBy;
+  private Long createdBy;
+  private Long updatedBy;
+  private Long deletedBy;
 
 
 }
