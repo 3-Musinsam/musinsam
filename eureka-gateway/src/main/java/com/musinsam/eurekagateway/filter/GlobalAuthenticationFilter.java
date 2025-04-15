@@ -8,8 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import java.util.List;
-import java.util.stream.Stream;
 import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,16 +56,28 @@ public class GlobalAuthenticationFilter implements GlobalFilter, Ordered {
     }
 
     return extractToken(exchange)
-        .flatMap(token -> parseClaims(token)
-            .flatMap(claims -> isTokenBlacklisted(token)
-                .flatMap(isBlacklisted -> {
-                  if (isBlacklisted) {
-                    return onError(exchange, "Token is blacklisted");
-                  }
-                  ServerWebExchange mutatedExchange = addHeaders(exchange, claims);
-                  return chain.filter(mutatedExchange);
-                })))
-        .switchIfEmpty(onError(exchange, "Token is missing or invalid"));
+        .flatMap(token -> {
+          if (token == null || token.isEmpty()) {
+            return onError(exchange, "Token is missing");
+          }
+
+          return parseClaims(token)
+              .flatMap(claims -> {
+                if (claims == null) {
+                  return onError(exchange, "Token is invalid");
+                }
+
+                return isTokenBlacklisted(token)
+                    .defaultIfEmpty(false)
+                    .flatMap(isBlacklisted -> {
+                      if (isBlacklisted) {
+                        return onError(exchange, "Token is blacklisted");
+                      }
+                      ServerWebExchange mutatedExchange = addHeaders(exchange, claims);
+                      return chain.filter(mutatedExchange);
+                    });
+              });
+        });
   }
 
   private boolean isWhitelisted(String path) {
@@ -90,9 +100,10 @@ public class GlobalAuthenticationFilter implements GlobalFilter, Ordered {
           .build()
           .parseSignedClaims(token)
           .getPayload();
+      log.info("JWT Claims: {}", claims);
       return Mono.just(claims);
     } catch (JwtException e) {
-      log.warn("[JWT parsing error]: {}", e.getMessage());
+      log.warn("JWT parsing error: {}", e.getMessage());
       return Mono.empty();
     }
   }
@@ -117,7 +128,9 @@ public class GlobalAuthenticationFilter implements GlobalFilter, Ordered {
 
   private Mono<Boolean> isTokenBlacklisted(String token) {
     String key = "BL:" + token;
-    return redisTemplate.hasKey(key);
+    return redisTemplate.hasKey(key)
+        .doOnNext(val -> log.info("Redis blacklist check result for [{}]: {}", key, val))
+        .defaultIfEmpty(false);
   }
 
   @Override
