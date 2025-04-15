@@ -49,6 +49,6 @@ public class ProductEntity extends BaseEntity {
 
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
-  private ProductStatus status = ProductStatus.SHOW;
+  private ProductStatus status;
 
 }
