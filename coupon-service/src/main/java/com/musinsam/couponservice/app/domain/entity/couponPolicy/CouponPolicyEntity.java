@@ -1,6 +1,6 @@
-package com.musinsam.couponservice.app.domain.entity.coupon;
+package com.musinsam.couponservice.app.domain.entity.couponPolicy;
 
-import com.musinsam.couponservice.app.domain.vo.DiscountType;
+import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -54,23 +54,13 @@ public class CouponPolicyEntity {
   @Column(name = "ended_at", nullable = false)
   private ZonedDateTime endedAt;
 
-  @Column(name = "company_id", nullable = false)
-  private UUID companyId;
+  @Column(name = "seller_id", nullable = false)
+  private UUID sellerId;
 
   @Builder
-  public CouponPolicyEntity(
-      UUID id,
-      String name,
-      String description,
-      DiscountType discountType,
-      Integer discountValue,
-      Integer minimumOrderAmount,
-      Integer maximumDiscountAmount,
-      Integer totalQuantity,
-      ZonedDateTime startedAt,
-      ZonedDateTime endedAt,
-      UUID companyId) {
-    this.id = id;
+  private CouponPolicyEntity(String name, String description, DiscountType discountType, Integer discountValue,
+                             Integer minimumOrderAmount, Integer maximumDiscountAmount, Integer totalQuantity,
+                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID sellerId) {
     this.name = name;
     this.description = description;
     this.discountType = discountType;
@@ -80,6 +70,30 @@ public class CouponPolicyEntity {
     this.totalQuantity = totalQuantity;
     this.startedAt = startedAt;
     this.endedAt = endedAt;
-    this.companyId = companyId;
+    this.sellerId = sellerId;
+  }
+
+  public static CouponPolicyEntity of(String name,
+                                      String description,
+                                      DiscountType discountType,
+                                      Integer discountValue,
+                                      Integer minimumOrderAmount,
+                                      Integer maximumDiscountAmount,
+                                      Integer totalQuantity,
+                                      ZonedDateTime startedAt,
+                                      ZonedDateTime endedAt,
+                                      UUID sellerId) {
+    return CouponPolicyEntity.builder()
+        .name(name)
+        .description(description)
+        .discountType(discountType)
+        .discountValue(discountValue)
+        .minimumOrderAmount(minimumOrderAmount)
+        .maximumDiscountAmount(maximumDiscountAmount)
+        .totalQuantity(totalQuantity)
+        .startedAt(startedAt)
+        .endedAt(endedAt)
+        .sellerId(sellerId)
+        .build();
   }
 }

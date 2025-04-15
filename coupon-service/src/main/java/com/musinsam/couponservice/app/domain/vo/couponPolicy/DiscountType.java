@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.domain.vo;
+package com.musinsam.couponservice.app.domain.vo.couponPolicy;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
