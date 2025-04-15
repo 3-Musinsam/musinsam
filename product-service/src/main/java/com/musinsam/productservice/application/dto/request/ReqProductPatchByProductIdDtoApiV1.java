@@ -4,10 +4,14 @@ import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class ReqProductPatchByProductIdDtoApiV1 {
 
@@ -15,6 +19,10 @@ public class ReqProductPatchByProductIdDtoApiV1 {
   @NotNull(message = "수정할 상품 정보를 입력해주세요.")
   private Product product;
 
+  @Getter
+  @Builder
+  @AllArgsConstructor
+  @NoArgsConstructor
   public static class Product {
 
     @NotNull(message = "수정할 재고 수량을 입력해주세요.")
