@@ -26,15 +26,10 @@ spring:
       - optional:file:.env
 
 springdoc:
-  swagger-ui:
-    enabled: true
-    path: /docs
-    url: /springdoc/openapi3-ai-service.json
-    operations-sorter: alpha
-    tags-sorter: alpha
   api-docs:
     enabled: true
-    path: /api-docs-ai-service
+  swagger-ui:
+    enabled: true
 
 management:
   endpoints:

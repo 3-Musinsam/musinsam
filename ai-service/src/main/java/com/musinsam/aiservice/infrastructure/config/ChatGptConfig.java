@@ -1,4 +1,4 @@
-package com.musinsam.aiservice.infrastructure.configuration;
+package com.musinsam.aiservice.infrastructure.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
