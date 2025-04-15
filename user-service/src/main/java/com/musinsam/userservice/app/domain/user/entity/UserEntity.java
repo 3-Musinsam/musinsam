@@ -58,4 +58,9 @@ public class UserEntity extends BaseEntity {
   public void softDelete(Long userId, ZoneId zoneId) {
     super.softDelete(userId, zoneId);
   }
+
+  public void updateRole(UserRoleType userRoleType) {
+    this.userRoleType = userRoleType;
+  }
+
 }
