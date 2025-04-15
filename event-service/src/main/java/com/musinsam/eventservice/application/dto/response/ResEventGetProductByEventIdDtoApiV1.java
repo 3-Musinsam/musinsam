@@ -69,15 +69,15 @@ public class ResEventGetProductByEventIdDtoApiV1 {
 
       public static EventProduct from(EventProductEntity eventProductEntity) {
         return EventProduct.builder()
-            .id(null)
-            .eventId(null)
-            .productId(null)
-            .originPrice(null)
-            .salePrice(null)
-            .discountRate(null)
-            .maxPurchase(null)
-            .soldQuantity(null)
-            .status(null)
+            .id(eventProductEntity.getId())
+            .eventId(eventProductEntity.getEvent().getId())
+            .productId(eventProductEntity.getProductId())
+            .originPrice(eventProductEntity.getOriginPrice())
+            .salePrice(eventProductEntity.getSalePrice())
+            .discountRate(eventProductEntity.getDiscountRate())
+            .maxPurchase(eventProductEntity.getMaxPurchase())
+            .soldQuantity(eventProductEntity.getSoldQuantity())
+            .status(eventProductEntity.getEvent().getStatus())
             .build();
       }
     }

@@ -42,6 +42,10 @@ public class ReqEventPostDtoApiV1 {
 
     public EventEntity toEntity() {
       return EventEntity.builder()
+          .name(name)
+          .startTime(startTime)
+          .endTime(endTime)
+          .maxPurchase(maxPurchase)
           .build();
     }
 

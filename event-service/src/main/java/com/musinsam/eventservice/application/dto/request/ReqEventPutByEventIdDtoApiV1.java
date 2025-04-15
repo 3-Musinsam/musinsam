@@ -41,10 +41,10 @@ public class ReqEventPutByEventIdDtoApiV1 {
 
 
     public void updateOf(EventEntity eventEntity) {
-      // eventEntity.setName(name);
-      // eventEntity.setStartTime(startTime);
-      // eventEntity.setEndTime(endTime);
-      // eventEntity.setMaxPurchase(maxPurchase);
+      eventEntity.setName(name);
+      eventEntity.setStartTime(startTime);
+      eventEntity.setEndTime(endTime);
+      eventEntity.setMaxPurchase(maxPurchase);
     }
 
   }
