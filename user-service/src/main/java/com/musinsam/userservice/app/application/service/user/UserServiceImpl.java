@@ -5,9 +5,11 @@ import static com.musinsam.userservice.app.domain.user.vo.UserErrorCode.USER_NOT
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.user.request.ReqUserPatchRoleByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.request.UserSearchCondition;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserDeleteByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserGetByIdDtoApiV1;
+import com.musinsam.userservice.app.application.dto.v1.user.response.ResUserPatchRoleByIdDtoApiV1;
 import com.musinsam.userservice.app.application.dto.v1.user.response.ResUsersGetDtoApiV1;
 import com.musinsam.userservice.app.domain.user.entity.UserEntity;
 import com.musinsam.userservice.app.domain.user.repository.user.UserQueryRepository;
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
     return ResUserGetByIdDtoApiV1.of(userEntity);
   }
 
+  @Transactional
   @Override
   public ResUserDeleteByIdDtoApiV1 deleteUser(Long id, CurrentUserDtoApiV1 currentUser) {
     validateAccessRight(id, currentUser);
@@ -66,5 +69,17 @@ public class UserServiceImpl implements UserService {
     return userQueryRepository.findUsersByCondition(condition, pageable);
   }
 
+  @Transactional
+  @Override
+  public ResUserPatchRoleByIdDtoApiV1 patchUserRoleById(
+      Long id,
+      CurrentUserDtoApiV1 currentUser,
+      ReqUserPatchRoleByIdDtoApiV1 request) {
+    validateAccessRight(id, currentUser);
+    UserEntity userEntity = findUserById(id);
 
+    userEntity.updateRole(request.getUserRoleType());
+    userRepository.save(userEntity);
+    return ResUserPatchRoleByIdDtoApiV1.of(userEntity);
+  }
 }
