@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
   public ResUserDeleteByIdDtoApiV1 deleteUser(Long id, CurrentUserDtoApiV1 currentUser) {
     validateAccessRight(id, currentUser);
     UserEntity userEntity = findUserById(id);
-    userEntity.softDelete(currentUser.userId(), ZoneId.systemDefault());
+    userEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
     UserEntity savedUserEntity = userRepository.save(userEntity);
 
     return ResUserDeleteByIdDtoApiV1.of(savedUserEntity);

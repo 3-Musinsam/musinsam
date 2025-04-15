@@ -1,5 +1,6 @@
 package com.musinsam.userservice.app.application.dto.v1.auth.request;
 
+import com.musinsam.userservice.app.domain.user.vo.UserRoleType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -36,5 +37,7 @@ public class ReqAuthSignupDtoApiV1 {
 
     @NotBlank(message = "Name is required")
     private String name;
+
+    private UserRoleType userRoleType;
   }
 }
