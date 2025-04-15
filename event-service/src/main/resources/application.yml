@@ -20,3 +20,9 @@ spring:
 
 server:
   port: 11001
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
