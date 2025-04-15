@@ -51,13 +51,13 @@ public class ResProductGetCouponDtoApiV1 {
 
       public static ProductCoupon from(ProductCouponEntity productCouponEntity) { //받아온 쿠폰 정보
         Coupon coupon = Coupon.builder()
-            .couponId(null)
+            .couponId(productCouponEntity.getCouponId())
             .couponName(null)
             .endTime(null)
             .build();
 
         return ProductCoupon.builder()
-            .productId(null)
+            .productId(productCouponEntity.getProduct().getId())
             .coupon(coupon)
             .build();
       }

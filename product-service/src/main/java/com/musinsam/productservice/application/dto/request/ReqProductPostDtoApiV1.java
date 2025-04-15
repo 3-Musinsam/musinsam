@@ -46,6 +46,10 @@ public class ReqProductPostDtoApiV1 {
 
     public ProductEntity toEntity() {
       return ProductEntity.builder()
+          .name(name)
+          .shopId(shopId)
+          .price(price)
+          .stock(stock)
           .build();
     }
   }

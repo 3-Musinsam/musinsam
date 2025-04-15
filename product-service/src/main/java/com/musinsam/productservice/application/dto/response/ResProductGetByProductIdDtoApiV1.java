@@ -42,11 +42,11 @@ public class ResProductGetByProductIdDtoApiV1 {
     public static Product from(ProductEntity productEntity,
         ProductImageEntity productImageEntity) { // +shop 정보
       return Product.builder()
-          .productId(null)
+          .productId(productEntity.getShopId())
           .shop(Shop.from())
-          .name(null)
-          .price(null)
-          .discountPrice(null)
+          .name(productEntity.getName())
+          .price(productEntity.getPrice())
+          .discountPrice(productEntity.getDiscountPrice())
           .image(Image.from(productImageEntity))
           .build();
     }
@@ -75,8 +75,8 @@ public class ResProductGetByProductIdDtoApiV1 {
 
       public static Image from(ProductImageEntity productImageEntity) {
         return Image.builder()
-            .imageId(null)
-            .imageUrl(null)
+            .imageId(productImageEntity.getId())
+            .imageUrl(productImageEntity.getImageUrl())
             .build();
       }
 

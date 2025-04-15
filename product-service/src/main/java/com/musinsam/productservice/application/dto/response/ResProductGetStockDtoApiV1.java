@@ -33,8 +33,8 @@ public class ResProductGetStockDtoApiV1 {
 
     public static Product from(ProductEntity productEntity) {
       return Product.builder()
-          .productId(null)
-          .stock(null)
+          .productId(productEntity.getId())
+          .stock(productEntity.getStock())
           .build();
     }
 

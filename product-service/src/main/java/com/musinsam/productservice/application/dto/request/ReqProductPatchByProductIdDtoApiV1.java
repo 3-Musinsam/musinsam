@@ -30,7 +30,7 @@ public class ReqProductPatchByProductIdDtoApiV1 {
     private Integer stock;
 
     public void updateOf(ProductEntity productEntity) {
-      //productEntity.setStock(stock);
+      productEntity.setStock(stock);
     }
 
   }
