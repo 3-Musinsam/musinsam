@@ -40,11 +40,11 @@ public class ResEventGetByEventIdDtoApiV1 {
 
     public static Event from(EventEntity eventEntity) {
       return Event.builder()
-          .id(null)
-          .name(null)
-          .startTime(null)
-          .endTime(null)
-          .status(null)
+          .id(eventEntity.getId())
+          .name(eventEntity.getName())
+          .startTime(eventEntity.getStartTime())
+          .endTime(eventEntity.getEndTime())
+          .status(eventEntity.getStatus())
           .build();
     }
 
