@@ -45,9 +45,8 @@ public class UserServiceImpl implements UserService {
   public ResUserGetByIdDtoApiV1 getUser(Long id, CurrentUserDtoApiV1 currentUser) {
     validateAccessRight(id, currentUser);
     UserEntity userEntity = findUserById(id);
-    UserEntity savedUserEntity = userRepository.save(userEntity);
 
-    return ResUserGetByIdDtoApiV1.of(savedUserEntity);
+    return ResUserGetByIdDtoApiV1.of(userEntity);
   }
 
   @Override
