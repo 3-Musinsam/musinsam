@@ -36,9 +36,9 @@ public class UserQueryRepositoryImpl implements UserQueryRepository {
         .and(QuerydslUtil.betweenIfNotNull(user.createdAt, condition.getCreatedFrom(), condition.getCreatedTo()))
         .and(QuerydslUtil.betweenIfNotNull(user.updatedAt, condition.getUpdatedFrom(), condition.getUpdatedTo()))
         .and(QuerydslUtil.betweenIfNotNull(user.deletedAt, condition.getDeletedFrom(), condition.getDeletedTo()))
-        .and(QuerydslUtil.likeContains(Expressions.stringPath(user.createdBy.toString()), condition.getCreatedBy()))
-        .and(QuerydslUtil.likeContains(Expressions.stringPath(user.updatedBy.toString()), condition.getUpdatedBy()))
-        .and(QuerydslUtil.likeContains(Expressions.stringPath(user.deletedBy.toString()), condition.getDeletedBy()));
+        .and(QuerydslUtil.eqIgnoreCase(Expressions.stringPath(user.createdBy.toString()), condition.getCreatedBy()))
+        .and(QuerydslUtil.eqIgnoreCase(Expressions.stringPath(user.updatedBy.toString()), condition.getUpdatedBy()))
+        .and(QuerydslUtil.eqIgnoreCase(Expressions.stringPath(user.deletedBy.toString()), condition.getDeletedBy()));
 
     List<ResUsersGetDtoApiV1> contents = queryFactory
         .select(Projections.constructor(
