@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
     return userQueryRepository.findUsersByCondition(condition, pageable);
   }
 
+  @Transactional
   @Override
   public ResUserPatchRoleByIdDtoApiV1 patchUserRoleById(
       Long id,
