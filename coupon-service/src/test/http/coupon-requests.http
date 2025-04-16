@@ -83,3 +83,18 @@ Content-Type: application/json
   "couponId": "{{couponId}}"
 }
 
+> {%
+    client.global.set("id", response.body.data.couponId);
+%}
+
+### 쿠폰 사용
+POST http://localhost:10000/v1/coupons/{{id}}/use
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "orderId": "00000000-0000-0000-0000-000000000001"
+}
+
