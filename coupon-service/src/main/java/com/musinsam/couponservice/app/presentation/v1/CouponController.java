@@ -6,6 +6,7 @@ import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CLAIM_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_USE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
@@ -76,8 +77,8 @@ public class CouponController {
     ResCouponUseDtoApiV1 response = couponService.useCoupon(id, request, currentUser);
 
     return ResponseEntity.ok(new ApiResponse<>(
-        COUPON_CLAIM_SUCCESS.getCode(),
-        COUPON_CLAIM_SUCCESS.getMessage(),
+        COUPON_USE_SUCCESS.getCode(),
+        COUPON_USE_SUCCESS.getMessage(),
         response
     ));
   }
