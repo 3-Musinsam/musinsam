@@ -24,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ShopServiceApiV1 {
 
   private final ShopRepository shopRepository;
@@ -35,6 +34,7 @@ public class ShopServiceApiV1 {
     return ResShopPostDtoApiV1.of(shopEntity);
   }
 
+  @Transactional(readOnly = true)
   public ResShopGetDtoApiV1 getBy(Pageable pageable,
       CurrentUserDtoApiV1 currentUser) {
 
@@ -44,6 +44,7 @@ public class ShopServiceApiV1 {
     return ResShopGetDtoApiV1.of(shopEntityPage);
   }
 
+  @Transactional(readOnly = true)
   public ResShopGetByShopIdDtoApiV1 getByShopId(UUID id, CurrentUserDtoApiV1 currentUser) {
     ShopEntity shopEntity = shopRepository.findById(id)
         .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -67,6 +68,7 @@ public class ShopServiceApiV1 {
     return ResShopDeleteByShopIdDtoApiV1.of(shopEntity);
   }
 
+  @Transactional(readOnly = true)
   public ResShopGetCouponByShopIdDtoApiV1 couponGetByShopId(UUID id,
       CurrentUserDtoApiV1 currentUser) {
     // TODO : feign 으로 쿠폰 목록 조회
