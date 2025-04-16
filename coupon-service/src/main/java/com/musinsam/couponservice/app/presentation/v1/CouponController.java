@@ -1,26 +1,46 @@
 package com.musinsam.couponservice.app.presentation.v1;
 
 
+import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
+import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
+
+import com.musinsam.common.aop.CustomPreAuthorize;
+import com.musinsam.common.resolver.CurrentUser;
+import com.musinsam.common.response.ApiResponse;
+import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.service.v1.coupon.CouponService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@RequiredArgsConstructor
 @RequestMapping("/v1/coupons")
 @RestController
 public class CouponController {
-//
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  @PostMapping
-//  public ResponseEntity<ApiResponse<ResCouponIssueDtoApiV1>> issueCoupon(
-//      @RequestBody ReqCouponIssueDtoApiV1 reqCouponIssueDtoApiV1,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_ISSUE_SUCCESS.getCode(),
-//        COUPON_ISSUE_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
-//
+
+  private final CouponService couponService;
+
+  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
+  @PostMapping
+  public ResponseEntity<ApiResponse<ResCouponIssueDtoApiV1>> issueCoupon(
+      @RequestBody ReqCouponIssueDtoApiV1 request,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+    ResCouponIssueDtoApiV1 response = couponService.issueCoupon(request, currentUser);
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_ISSUE_SUCCESS.getCode(),
+        COUPON_ISSUE_SUCCESS.getMessage(),
+        response
+    ));
+  }
+
 //  @CustomPreAuthorize(userRoleType = {ROLE_USER})
 //  @PostMapping("/claim")
 //  public ResponseEntity<ApiResponse<ResCouponClaimDtoApiV1>> claimCoupon(
