@@ -1,6 +1,7 @@
 package com.musinsam.productservice.application.service;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPatchByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
@@ -23,4 +24,7 @@ public interface ProductServiceApiV1 {
   void deleteProduct(CurrentUserDtoApiV1 currentUser, UUID productId);
 
   ResProductGetStockDtoApiV1 getProductStock(CurrentUserDtoApiV1 currentUser, UUID productId);
+
+  void updateProductStock(CurrentUserDtoApiV1 currentUser, UUID productId,
+      @Valid ReqProductPatchByProductIdDtoApiV1 dto);
 }

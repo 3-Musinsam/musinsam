@@ -77,13 +77,10 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
-
-    ResProductGetByProductIdDtoApiV1 resDto = productService.getById(productId);
-
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_SUCCESS.getCode(),
         PRODUCT_GET_SUCCESS.getMessage(),
-        resDto
+        productService.getById(productId)
     ));
   }
 
@@ -97,13 +94,10 @@ public class ProductControllerApiV1 {
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
-
-    ResProductGetDtoApiV1 resDto = productService.getProductList(page, size);
-
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_LIST_SUCCESS.getCode(),
         PRODUCT_GET_LIST_SUCCESS.getMessage(),
-        resDto
+        productService.getProductList(page, size)
     ));
   }
 
@@ -155,7 +149,6 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
-
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_STOCK_SUCCESS.getCode(),
         PRODUCT_GET_STOCK_SUCCESS.getMessage(),
@@ -173,6 +166,9 @@ public class ProductControllerApiV1 {
       @Valid @RequestBody ReqProductPatchByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.updateProductStock(currentUser, productId, dto);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_STOCK_SUCCESS.getCode(),
         PRODUCT_UPDATE_STOCK_SUCCESS.getMessage(),

@@ -2,6 +2,7 @@ package com.musinsam.productservice.application.service.impl;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.common.user.UserRoleType;
+import com.musinsam.productservice.application.dto.request.ReqProductPatchByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
@@ -41,7 +42,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   }
 
   @Override
-  @Transactional
+  @Transactional(readOnly = true)
   public ResProductGetByProductIdDtoApiV1 getById(UUID productId) {
 
     ProductEntity product = findProductEntityById(productId);
@@ -59,6 +60,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   }
 
   @Override
+  @Transactional(readOnly = true)
   public ResProductGetDtoApiV1 getProductList(int page, int size) {
 
     PageRequest pageRequest = PageRequest.of(page - 1, size);
@@ -96,6 +98,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
 
   @Override
+  @Transactional(readOnly = true)
   public ResProductGetStockDtoApiV1 getProductStock(CurrentUserDtoApiV1 currentUser,
       UUID productId) {
 
@@ -103,6 +106,17 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     validateShopManager(currentUser, product);
 
     return ResProductGetStockDtoApiV1.of(product);
+  }
+
+  @Override
+  @Transactional
+  public void updateProductStock(CurrentUserDtoApiV1 currentUser, UUID productId,
+      ReqProductPatchByProductIdDtoApiV1 dto) {
+
+    ProductEntity product = findProductEntityById(productId);
+    validateShopManager(currentUser, product);
+
+    dto.getProduct().updateOf(product);
   }
 
 
