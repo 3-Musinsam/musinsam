@@ -15,6 +15,9 @@ import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
 import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
+import com.musinsam.productservice.infrastructure.image.S3Folder;
+import com.musinsam.productservice.infrastructure.image.service.FileService;
+import com.musinsam.productservice.infrastructure.image.service.S3Service;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +26,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -30,17 +34,20 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
+  private final FileService fileService;
+  private final S3Service s3Service;
 
   @Override
   @Transactional
-  public void createProduct(CurrentUserDtoApiV1 currentUser, ReqProductPostDtoApiV1 dto) {
+  public void createProduct(CurrentUserDtoApiV1 currentUser, ReqProductPostDtoApiV1 dto,
+      List<MultipartFile> images) {
 
     ProductEntity product = dto.getProduct().toEntity();
     productRepository.save(product);
 
-    // TODO: S3 이미지 업로드 구현
-//    for (MultipartFile image : images) {
-//    }
+    for (MultipartFile image : images) {
+      fileService.saveImageFile(S3Folder.PRODUCT, image, product.getId());
+    }
   }
 
   @Override
@@ -94,7 +101,15 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     // TODO: ROLE_COMPANY == shop 확인
     validateShopManager(currentUser, product);
 
+    List<ProductImageEntity> images = productImageRepository.findByProductIdAndDeletedAtIsNull(
+        productId);
+
     product.softDelete(currentUser.userId(), ZoneId.systemDefault());
+
+    for (ProductImageEntity productImage : images) {
+      s3Service.removeFile(productImage.getImageUrl(), productImage.getS3Folder());
+      productImage.softDelete(currentUser.userId(), ZoneId.systemDefault());
+    }
 
   }
 
@@ -109,6 +124,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     return ResProductGetStockDtoApiV1.of(product);
   }
+
 
   @Override
   @Transactional

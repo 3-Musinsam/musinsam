@@ -25,9 +25,11 @@ import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -52,14 +55,14 @@ public class ProductControllerApiV1 {
   /**
    * 상품 등록
    */
-  @PostMapping
+  @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createProduct(
       @Valid @RequestPart ReqProductPostDtoApiV1 dto,
-//      @RequestPart List<MultipartFile> images,
+      @RequestPart List<MultipartFile> images,
       @CurrentUser CurrentUserDtoApiV1 currentUser) {
 
-    productService.createProduct(currentUser, dto);
+    productService.createProduct(currentUser, dto, images);
 
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_CREATE_SUCCESS.getCode(),

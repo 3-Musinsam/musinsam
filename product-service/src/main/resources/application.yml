@@ -34,3 +34,18 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${ACCESS_KEY}
+      secret-key: ${SECRET_KEY}
+    s3:
+      bucket-name: musinsam-bucket
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+file:
+  image-extension: jpg, jpeg, png, gif

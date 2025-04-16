@@ -9,11 +9,14 @@ import com.musinsam.productservice.application.dto.response.ResProductGetCouponD
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface ProductServiceApiV1 {
 
-  void createProduct(CurrentUserDtoApiV1 currentUser, @Valid ReqProductPostDtoApiV1 dto);
+  void createProduct(CurrentUserDtoApiV1 currentUser, @Valid ReqProductPostDtoApiV1 dto,
+      List<MultipartFile> images);
 
   ResProductGetByProductIdDtoApiV1 getById(UUID productId);
 
