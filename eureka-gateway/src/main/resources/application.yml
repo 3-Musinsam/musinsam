@@ -26,7 +26,7 @@ spring:
         - id: internal-user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/users/**
 
         - id: swagger-user-service
           uri: lb://USER-SERVICE
@@ -43,7 +43,7 @@ spring:
         - id: internal-ai-service
           uri: lb://AI-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/ai-messages/**
 
         - id: swagger-ai-service
           uri: lb://AI-SERVICE
@@ -55,12 +55,12 @@ spring:
         - id: ai-service
           uri: lb://AI-SERVICE
           predicates:
-            - Path=/v1/ai/**
+            - Path=/v1/ai-messages/**
 
         - id: internal-alarm-service
           uri: lb://ALARM-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/slack-alarms/**
 
         - id: swagger-alarm-service
           uri: lb://ALARM-SERVICE
@@ -77,7 +77,7 @@ spring:
         - id: internal-coupon-service
           uri: lb://COUPON-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/coupon/**
 
         - id: swagger-coupon-service
           uri: lb://COUPON-SERVICE
@@ -91,10 +91,15 @@ spring:
           predicates:
             - Path=/v1/coupons/**
 
+        - id: coupon-service
+          uri: lb://COUPON-SERVICE
+          predicates:
+            - Path=/v1/coupon-policies/**
+
         - id: internal-event-service
           uri: lb://EVENT-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/event/**
 
         - id: swagger-event-service
           uri: lb://EVENT-SERVICE
@@ -111,7 +116,7 @@ spring:
         - id: internal-order-service
           uri: lb://ORDER-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/order/**
 
         - id: swagger-order-service
           uri: lb://ORDER-SERVICE
@@ -128,7 +133,7 @@ spring:
         - id: internal-payment-service
           uri: lb://PAYMENT-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/payment/**
 
         - id: swagger-payment-service
           uri: lb://PAYMENT-SERVICE
@@ -145,7 +150,7 @@ spring:
         - id: internal-product-service
           uri: lb://PRODUCT-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/product/**
 
         - id: swagger-product-service
           uri: lb://PRODUCT-SERVICE
@@ -162,7 +167,7 @@ spring:
         - id: internal-shop-service
           uri: lb://SHOP-SERVICE
           predicates:
-            - Path=/internal/**
+            - Path=/internal/v1/shop/**
 
         - id: swagger-shop-service
           uri: lb://SHOP-SERVICE

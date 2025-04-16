@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.global.config;
+package com.musinsam.couponservice.app.domain.vo.couponPolicy;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;

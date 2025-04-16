@@ -6,7 +6,8 @@ Content-Type: application/json
   "user": {
     "email": "alice@gmail.com",
     "password": "Authorize123!",
-    "name": "alice"
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
   }
 }
 
@@ -26,13 +27,6 @@ Content-Type: application/json
     client.global.set("userId", response.body.data.user.userId);
     client.global.set("userRole", response.body.data.user.userRoleType);
 %}
-
-### 3. 게이트웨이 테스트
-POST http://localhost:10000/v1/auth/validate-token
-Authorization: Bearer {{accessToken}}
-Content-Type: application/json
-
-{}
 
 ### 4. 토큰 재발급 (이전 accessToken → Authorization 헤더에 포함, refreshToken → 쿠키에 포함 후 요청하기)
 POST http://localhost:10001/v1/auth/generate-token

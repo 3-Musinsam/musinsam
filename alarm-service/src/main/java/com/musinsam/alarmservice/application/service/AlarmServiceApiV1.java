@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class AlarmServiceApiV1 {
 
   private final AlarmRepository alarmRepository;
@@ -33,6 +32,7 @@ public class AlarmServiceApiV1 {
     return ResAlarmPostDtoApiV1.of(alarmEntity);
   }
 
+  @Transactional(readOnly = true)
   public ResAlarmGetDtoApiV1 getBy(Pageable pageable,
       CurrentUserDtoApiV1 currentUser) {
 
@@ -42,6 +42,7 @@ public class AlarmServiceApiV1 {
     return ResAlarmGetDtoApiV1.of(alarmEntityPage);
   }
 
+  @Transactional(readOnly = true)
   public ResAlarmGetByIdDtoApiV1 getById(UUID id, CurrentUserDtoApiV1 currentUser) {
     AlarmEntity alarmEntity = alarmRepository.findById(id)
         .orElseThrow(() -> new CustomException(AlarmErrorCode.ALARM_NOT_FOUND));

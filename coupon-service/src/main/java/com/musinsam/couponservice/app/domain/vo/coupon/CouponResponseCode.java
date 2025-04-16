@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.global.config;
+package com.musinsam.couponservice.app.domain.vo.coupon;
 
 import static org.springframework.http.HttpStatus.OK;
 

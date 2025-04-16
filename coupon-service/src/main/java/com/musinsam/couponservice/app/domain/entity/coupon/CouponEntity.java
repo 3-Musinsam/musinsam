@@ -1,7 +1,8 @@
 package com.musinsam.couponservice.app.domain.entity.coupon;
 
 import com.musinsam.common.domain.BaseEntity;
-import com.musinsam.couponservice.app.domain.vo.CouponStatus;
+import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
+import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,12 +14,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,7 +42,7 @@ public class CouponEntity extends BaseEntity {
   @Column(name = "order_id")
   private UUID orderId;
 
-  @Column(name = "coupon_code", nullable = false)
+  @Column(name = "coupon_code", nullable = false, unique = true)
   private String couponCode;
 
   @Enumerated(EnumType.STRING)
@@ -50,16 +52,13 @@ public class CouponEntity extends BaseEntity {
   @Column(name = "used_at")
   private ZonedDateTime usedAt;
 
-  @Builder
-  public CouponEntity(
-      UUID id,
+  private CouponEntity(
       CouponPolicyEntity couponPolicyEntity,
       Long userId,
       UUID orderId,
       String couponCode,
       CouponStatus couponStatus,
       ZonedDateTime usedAt) {
-    this.id = id;
     this.couponPolicyEntity = couponPolicyEntity;
     this.userId = userId;
     this.orderId = orderId;
@@ -67,4 +66,31 @@ public class CouponEntity extends BaseEntity {
     this.couponStatus = couponStatus;
     this.usedAt = usedAt;
   }
+
+  public static CouponEntity of(
+      CouponPolicyEntity couponPolicyEntity,
+      Long userId,
+      UUID orderId,
+      String couponCode,
+      CouponStatus couponStatus,
+      ZonedDateTime usedAt) {
+    return new CouponEntity(couponPolicyEntity, userId, orderId, couponCode, couponStatus, usedAt);
+  }
+
+  public void claimCoupon(Long userId) {
+    this.userId = userId;
+  }
+
+  public void updateCouponStatus(CouponStatus couponStatus) {
+    this.couponStatus = couponStatus;
+  }
+
+  public void updateUsedAt() {
+    this.usedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+  }
+
+  public void updateOrderId(UUID orderId) {
+    this.orderId = orderId;
+  }
+
 }

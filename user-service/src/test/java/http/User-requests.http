@@ -1,19 +1,41 @@
+### 2. 로그인 (토큰 발급)
+POST http://localhost:10000/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.token.accessToken);
+    client.global.set("userId", response.body.data.user.userId);
+    client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
 ### 단 건 회원 조회
-GET http://localhost:10001/v1/users/1
-X-USER-ID: 1
-X-USER-ROLE: ROLE_MASTER
+GET http://localhost:10000/v1/users/1
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
 
 {}
 
 
 ### 단 건 회원 삭제
-DELETE http://localhost:10001/v1/users/1
-X-USER-ID: 1
-X-USER-ROLE: ROLE_MASTER
+DELETE http://localhost:10000/v1/users/1
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
 
 
 ### 동적 회원 조회
-GET http://localhost:10001/v1/users?email=test@example.com
+GET http://localhost:10000/v1/users?email=test@example.com
     &name=홍길동
     &userRoleType=ROLE_USER
     &createdFrom=2024-01-01T00:00:00Z
@@ -24,15 +46,17 @@ GET http://localhost:10001/v1/users?email=test@example.com
     &page=0
     &size=10
     &sort=createdAt,desc
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 Content-Type: application/json
-X-User-Id: 1L
-X-User-Role: ROLE_MASTER
 
 ### 회원 권한 수정
-PATCH http://localhost:10001/v1/users/1/role
+PATCH http://localhost:10000/v1/users/1/role
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 Content-Type: application/json
-X-User-Id: 1
-X-User-Role: ROLE_MASTER
 
 {
   "userRoleType": "ROLE_USER"

@@ -1,0 +1,100 @@
+### 1. 회원가입
+POST http://localhost:10000/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
+  }
+}
+
+### 2. 로그인 (토큰 발급)
+POST http://localhost:10000/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.token.accessToken);
+    client.global.set("userId", response.body.data.user.userId);
+    client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
+### 쿠폰 정책 발행
+POST http://localhost:10000/v1/coupon-policies
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "name": "첫구매 할인 정책",
+  "description": "첫 구매자에게 10% 할인 제공",
+  "discountType": "FIXED_AMOUNT",
+  "discountValue": 1000,
+  "minimumOrderAmount": 10000,
+  "maximumDiscountAmount": 5000,
+  "totalQuantity": 1000,
+  "startedAt": "2025-05-01T00:00:00+09:00",
+  "endedAt": "2025-06-01T00:00:00+09:00",
+  "companyId": "00000000-0000-0000-0000-000000000001"
+}
+
+
+> {%
+    client.global.set("couponPolicyId", response.body.data.id);
+%}
+
+### 쿠폰 발행
+POST http://localhost:10000/v1/coupons
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "userId": {{userId}},
+  "couponPolicyId": "{{couponPolicyId}}",
+  "couponCode": "aliceCouponCode",
+  "couponStatus": "AVAILABLE"
+}
+
+> {%
+    client.global.set("couponId", response.body.data.couponId);
+%}
+
+### 쿠폰 발급
+POST http://localhost:10000/v1/coupons/claim
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+
+{
+  "couponId": "{{couponId}}"
+}
+
+> {%
+    client.global.set("id", response.body.data.couponId);
+%}
+
+### 쿠폰 사용
+POST http://localhost:10000/v1/coupons/{{id}}/use
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "orderId": "00000000-0000-0000-0000-000000000001"
+}
+
