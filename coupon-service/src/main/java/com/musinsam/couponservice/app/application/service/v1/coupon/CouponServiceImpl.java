@@ -1,21 +1,24 @@
 package com.musinsam.couponservice.app.application.service.v1.coupon;
 
-import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.*;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_CODE_ALREADY_EXISTS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.NOT_FOUND_COUPON;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.AVAILABLE;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.ISSUED;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.USED;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.NOT_FOUND_COUPON_POLICY;
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
-import com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -76,9 +79,24 @@ public class CouponServiceImpl implements CouponService {
     couponEntity.updateCouponStatus(ISSUED);
 
     CouponEntity savedCouponEntity = couponRepository.save(couponEntity);
-    log.info("savedCouponEntity.getCouponPolicyEntity().getId() : {}", savedCouponEntity.getCouponPolicyEntity().getId());
     CouponPolicyEntity couponPolicyById = findCouponPolicyById(savedCouponEntity.getCouponPolicyEntity().getId());
 
     return ResCouponClaimDtoApiV1.from(savedCouponEntity, couponPolicyById);
   }
+
+  @Transactional
+  @Override
+  public ResCouponUseDtoApiV1 useCoupon(UUID couponId, ReqCouponUseDtoApiV1 request, CurrentUserDtoApiV1 currentUser) {
+    CouponEntity couponEntity = findCouponById(couponId);
+    couponEntity.updateUsedAt();
+    couponEntity.updateCouponStatus(USED);
+    couponEntity.updateOrderId(request.getOrderId());
+
+    CouponEntity savedCouponEntity = couponRepository.save(couponEntity);
+    CouponPolicyEntity couponPolicyById = findCouponPolicyById(savedCouponEntity.getCouponPolicyEntity().getId());
+
+    return ResCouponUseDtoApiV1.from(savedCouponEntity, couponPolicyById);
+  }
+
+
 }
