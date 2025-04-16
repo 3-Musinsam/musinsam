@@ -15,7 +15,8 @@ public enum CouponErrorCode implements ErrorCode {
   COUPON_EXPIRED(-1, "Coupon has expired.", BAD_REQUEST),
   COUPON_ALREADY_USED(-1, "Coupon has already been used.", BAD_REQUEST),
   COUPON_ISSUE_LIMIT_EXCEEDED(-1, "Coupon issue limit exceeded.", BAD_REQUEST),
-  INVALID_COUPON_CONDITION(-1, "Invalid coupon usage conditions.", BAD_REQUEST);
+  INVALID_COUPON_CONDITION(-1, "Invalid coupon usage conditions.", BAD_REQUEST),
+  COUPON_CODE_ALREADY_EXISTS(-1, "Coupon code already exists.", BAD_REQUEST);
 
   private final Integer code;
   private final String message;

@@ -9,4 +9,5 @@ public interface CouponRepository {
   Optional<CouponEntity> findById(UUID id);
   Optional<CouponEntity> findByCouponCode(String couponCode);
   CouponEntity save(CouponEntity couponEntity);
+  Boolean existsCouponByCouponCode(String couponCode);
 }
