@@ -5,6 +5,7 @@ import com.musinsam.productservice.application.dto.request.ReqProductPatchByProd
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import jakarta.validation.Valid;
@@ -27,4 +28,7 @@ public interface ProductServiceApiV1 {
 
   void updateProductStock(CurrentUserDtoApiV1 currentUser, UUID productId,
       @Valid ReqProductPatchByProductIdDtoApiV1 dto);
+
+  ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId,
+      int page, int size);
 }

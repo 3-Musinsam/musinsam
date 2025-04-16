@@ -74,8 +74,7 @@ public class ProductControllerApiV1 {
   @GetMapping("/{productId}")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetByProductIdDtoApiV1>> getProduct(
-      @PathVariable UUID productId,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @PathVariable UUID productId
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_SUCCESS.getCode(),
@@ -90,7 +89,6 @@ public class ProductControllerApiV1 {
   @GetMapping
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetDtoApiV1>> getProductList(
-      @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
@@ -176,55 +174,22 @@ public class ProductControllerApiV1 {
     ));
   }
 
-//  /**
-//   * 상품에 쿠폰 추가
-//   */
-//  @PostMapping("/{product_id}/coupons")
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  public ResponseEntity<ApiResponse<Void>> applyCoupon(
-//      @PathVariable("product_id") UUID productId,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser,
-//      @RequestBody ReqProductPostCouponDtoApiV1 dto
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        PRODUCT_APPLY_COUPON_SUCCESS.getCode(),
-//        PRODUCT_APPLY_COUPON_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
 
   /**
-   * 특정 상품에 적용된 쿠폰 조회
+   * 특정 상품의 적용 가능한 쿠폰 조회
    */
   @GetMapping("/{productId}/coupons")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetCouponDtoApiV1>> getCouponList(
       @PathVariable UUID productId,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_COUPON_SUCCESS.getCode(),
         PRODUCT_GET_COUPON_SUCCESS.getMessage(),
-        null
+        productService.getProductCouponList(productId, page, size)
     ));
   }
-
-//  /**
-//   * 적용된 쿠폰 삭제
-//   */
-//  @DeleteMapping("/{product_id}/coupons/{coupon_id}")
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  public ResponseEntity<ApiResponse<Void>> deleteCoupon(
-//      @PathVariable("product_id") UUID productId,
-//      @PathVariable("coupon_id") UUID couponId,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        PRODUCT_DELETE_COUPON_SUCCESS.getCode(),
-//        PRODUCT_DELETE_COUPON_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
-
 
 }

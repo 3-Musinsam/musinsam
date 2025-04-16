@@ -6,6 +6,7 @@ import com.musinsam.productservice.application.dto.request.ReqProductPatchByProd
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
@@ -13,6 +14,7 @@ import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
+import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
@@ -117,6 +119,21 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     validateShopManager(currentUser, product);
 
     dto.getProduct().updateOf(product);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId, int size, int page) {
+
+    ProductEntity product = findProductEntityById(productId);
+
+    UUID shopId = product.getShopId();
+    // TODO: shop-service feign client 호출해서 쿠폰 페이지 받기
+    // return ResShopCouponDto
+
+    ResShopCouponDto resDto = null;
+
+    return ResProductGetCouponDtoApiV1.of(resDto.getCouponList(), productId, page, size);
   }
 
 
