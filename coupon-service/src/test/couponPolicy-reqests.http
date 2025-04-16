@@ -36,7 +36,7 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {
-  "name": "첫구매 할인 정책!",
+  "name": "첫구매 할인 정책",
   "description": "첫 구매자에게 10% 할인 제공",
   "discountType": "FIXED_AMOUNT",
   "discountValue": 1000,
@@ -60,5 +60,12 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 
-###
+### 동적 쿠폰 조회
+GET http://localhost:10051/v1/coupon-policies
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+
 
