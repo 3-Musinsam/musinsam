@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/internal/v1/ai-message")
+@RequestMapping("/internal/v1/ai-messages")
 public class AiControllerApiV1 {
 
   private final ChatGptService chatGptService;
