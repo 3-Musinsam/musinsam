@@ -4,15 +4,20 @@ import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicy
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.CouponPolicySearchCondition;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.ReqCouponPolicyIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPoliciesGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPolicyIssueDtoApiV1;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
+import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
 import com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +28,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
 
   private final CouponPolicyRepository couponPolicyRepository;
+  private final CouponPolicyQueryRepository couponPolicyQueryRepository;
 
   private CouponPolicyEntity findCouponPolicyById(UUID id) {
     return couponPolicyRepository.findById(id)
@@ -68,5 +74,13 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     return ResCouponPolicyGetDtoApiV1.from(couponPolicyEntity);
   }
 
+  @Transactional(readOnly = true)
+  @Override
+  public Page<ResCouponPoliciesGetDtoApiV1> getCouponPoliciesByCondition(
+      CouponPolicySearchCondition condition,
+      CurrentUserDtoApiV1 currentUser,
+      Pageable pageable) {
 
+    return couponPolicyQueryRepository.findCouponPoliciesByCondition(condition, currentUser, pageable);
+  }
 }
