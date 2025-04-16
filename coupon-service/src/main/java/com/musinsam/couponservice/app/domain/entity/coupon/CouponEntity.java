@@ -17,7 +17,6 @@ import jakarta.persistence.Table;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -51,16 +50,13 @@ public class CouponEntity extends BaseEntity {
   @Column(name = "used_at")
   private ZonedDateTime usedAt;
 
-  @Builder
-  public CouponEntity(
-      UUID id,
+  private CouponEntity(
       CouponPolicyEntity couponPolicyEntity,
       Long userId,
       UUID orderId,
       String couponCode,
       CouponStatus couponStatus,
       ZonedDateTime usedAt) {
-    this.id = id;
     this.couponPolicyEntity = couponPolicyEntity;
     this.userId = userId;
     this.orderId = orderId;
@@ -68,4 +64,15 @@ public class CouponEntity extends BaseEntity {
     this.couponStatus = couponStatus;
     this.usedAt = usedAt;
   }
+
+  public static CouponEntity of(
+      CouponPolicyEntity couponPolicyEntity,
+      Long userId,
+      UUID orderId,
+      String couponCode,
+      CouponStatus couponStatus,
+      ZonedDateTime usedAt) {
+    return new CouponEntity(couponPolicyEntity, userId, orderId, couponCode, couponStatus, usedAt);
+  }
+
 }

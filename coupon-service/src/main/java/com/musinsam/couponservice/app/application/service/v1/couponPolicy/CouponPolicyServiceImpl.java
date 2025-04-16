@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.application.service.couponPolicy;
+package com.musinsam.couponservice.app.application.service.v1.couponPolicy;
 
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.NOT_FOUND_COUPON_POLICY;
 
