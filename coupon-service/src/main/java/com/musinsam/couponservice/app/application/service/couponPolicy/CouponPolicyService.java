@@ -16,4 +16,6 @@ public interface CouponPolicyService {
   ResCouponPolicyGetDtoApiV1 getCouponPolicy(UUID id, CurrentUserDtoApiV1 currentUser);
 
   Page<ResCouponPoliciesGetDtoApiV1> getCouponPoliciesByCondition(CouponPolicySearchCondition condition, CurrentUserDtoApiV1 currentUser, Pageable pageable);
+
+  void deleteCouponPolicy(UUID id, CurrentUserDtoApiV1 currentUser);
 }

@@ -67,5 +67,9 @@ X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 Content-Type: application/json
 
-
-
+### 쿠폰 삭제
+DELETE http://localhost:10051/v1/coupon-policies/{{id}}
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
