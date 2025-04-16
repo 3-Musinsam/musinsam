@@ -13,6 +13,7 @@ import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEnt
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
 import com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode;
+import java.time.ZoneId;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,5 +83,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
       Pageable pageable) {
 
     return couponPolicyQueryRepository.findCouponPoliciesByCondition(condition, currentUser, pageable);
+  }
+
+  @Transactional
+  @Override
+  public void deleteCouponPolicy(UUID id, CurrentUserDtoApiV1 currentUser) {
+    CouponPolicyEntity couponPolicyEntity = findCouponPolicyById(id);
+
+    couponPolicyEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
+    couponPolicyRepository.save(couponPolicyEntity);
   }
 }
