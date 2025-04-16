@@ -18,4 +18,6 @@ public interface ProductServiceApiV1 {
 
   void updateProduct(CurrentUserDtoApiV1 currentUser, UUID productId,
       @Valid ReqProductPutByProductIdDtoApiV1 dto);
+
+  void deleteProduct(CurrentUserDtoApiV1 currentUser, UUID productId);
 }

@@ -136,6 +136,9 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.deleteProduct(currentUser, productId);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_DELETE_SUCCESS.getCode(),
         PRODUCT_DELETE_SUCCESS.getMessage(),
