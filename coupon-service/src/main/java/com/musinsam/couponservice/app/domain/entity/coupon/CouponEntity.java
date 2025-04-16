@@ -19,6 +19,7 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,7 +41,7 @@ public class CouponEntity extends BaseEntity {
   @Column(name = "order_id")
   private UUID orderId;
 
-  @Column(name = "coupon_code", nullable = false)
+  @Column(name = "coupon_code", nullable = false, unique = true)
   private String couponCode;
 
   @Enumerated(EnumType.STRING)
@@ -73,6 +74,14 @@ public class CouponEntity extends BaseEntity {
       CouponStatus couponStatus,
       ZonedDateTime usedAt) {
     return new CouponEntity(couponPolicyEntity, userId, orderId, couponCode, couponStatus, usedAt);
+  }
+
+  public void claimCoupon(Long userId) {
+    this.userId = userId;
+  }
+
+  public void updateCouponStatus(CouponStatus couponStatus) {
+    this.couponStatus = couponStatus;
   }
 
 }

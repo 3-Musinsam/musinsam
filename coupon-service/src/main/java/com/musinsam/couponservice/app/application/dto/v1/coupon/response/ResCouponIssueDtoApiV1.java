@@ -4,11 +4,15 @@ import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
 import java.time.ZonedDateTime;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResCouponIssueDtoApiV1 {
   private UUID couponId;
   private UUID couponPolicyId;

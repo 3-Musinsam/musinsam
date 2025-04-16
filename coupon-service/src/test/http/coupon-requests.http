@@ -67,3 +67,19 @@ Content-Type: application/json
   "couponStatus": "AVAILABLE"
 }
 
+> {%
+    client.global.set("couponId", response.body.data.couponId);
+%}
+
+### 쿠폰 발급
+POST http://localhost:10000/v1/coupons/claim
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+
+{
+  "couponId": "{{couponId}}"
+}
+

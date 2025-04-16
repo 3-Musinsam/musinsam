@@ -3,13 +3,17 @@ package com.musinsam.couponservice.app.presentation.v1;
 
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
+import static com.musinsam.common.user.UserRoleType.ROLE_USER;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CLAIM_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.service.v1.coupon.CouponService;
 import lombok.RequiredArgsConstructor;
@@ -41,18 +45,23 @@ public class CouponController {
     ));
   }
 
-//  @CustomPreAuthorize(userRoleType = {ROLE_USER})
-//  @PostMapping("/claim")
-//  public ResponseEntity<ApiResponse<ResCouponClaimDtoApiV1>> claimCoupon(
-//      @RequestBody ReqCouponClaimDtoApiV1 reqCouponClaimDtoApiV1,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_CLAIM_SUCCESS.getCode(),
-//        COUPON_CLAIM_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @PostMapping("/claim")
+  public ResponseEntity<ApiResponse<ResCouponClaimDtoApiV1>> claimCoupon(
+      @RequestBody ReqCouponClaimDtoApiV1 request,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+
+    ResCouponClaimDtoApiV1 response = couponService.claimCoupon(request, currentUser);
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_CLAIM_SUCCESS.getCode(),
+        COUPON_CLAIM_SUCCESS.getMessage(),
+        response
+    ));
+  }
+
+
 //
 //  @CustomPreAuthorize(userRoleType = {ROLE_USER})
 //  @PostMapping("/{id}/use")
