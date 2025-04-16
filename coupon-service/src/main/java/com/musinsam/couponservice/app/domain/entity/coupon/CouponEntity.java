@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -82,6 +83,14 @@ public class CouponEntity extends BaseEntity {
 
   public void updateCouponStatus(CouponStatus couponStatus) {
     this.couponStatus = couponStatus;
+  }
+
+  public void updateUsedAt() {
+    this.usedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+  }
+
+  public void updateOrderId(UUID orderId) {
+    this.orderId = orderId;
   }
 
 }
