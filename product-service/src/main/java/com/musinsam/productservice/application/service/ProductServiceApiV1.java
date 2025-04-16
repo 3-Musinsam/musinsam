@@ -5,6 +5,7 @@ import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import jakarta.validation.Valid;
 import java.util.UUID;
 
@@ -20,4 +21,6 @@ public interface ProductServiceApiV1 {
       @Valid ReqProductPutByProductIdDtoApiV1 dto);
 
   void deleteProduct(CurrentUserDtoApiV1 currentUser, UUID productId);
+
+  ResProductGetStockDtoApiV1 getProductStock(CurrentUserDtoApiV1 currentUser, UUID productId);
 }

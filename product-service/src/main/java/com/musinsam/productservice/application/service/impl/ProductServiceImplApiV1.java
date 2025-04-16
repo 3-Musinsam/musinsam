@@ -6,6 +6,7 @@ import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
@@ -74,12 +75,8 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     ProductEntity product = findProductEntityById(productId);
 
-    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
-      // USER-ROLE이 ROLE_COMPANY일 경우,
-      // product의 shopId로 업체관리자가 UserId와 같은지 확인
-      // TODO: shop feign client 호출 (shopId보내서 UserId 받기)
-      UUID shopId = product.getShopId();
-    }
+    // TODO: ROLE_COMPANY == shop 확인
+    validateShopManager(currentUser, product);
 
     dto.getProduct().updateOf(product);
   }
@@ -90,20 +87,38 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     ProductEntity product = findProductEntityById(productId);
 
-    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
-      // USER-ROLE이 ROLE_COMPANY일 경우,
-      // product의 shopId로 업체관리자가 UserId와 같은지 확인
-      // TODO: shop feign client 호출 (shopId보내서 UserId 받기)
-      UUID shopId = product.getShopId();
-    }
+    // TODO: ROLE_COMPANY == shop 확인
+    validateShopManager(currentUser, product);
 
     product.softDelete(currentUser.userId(), ZoneId.systemDefault());
 
   }
 
 
+  @Override
+  public ResProductGetStockDtoApiV1 getProductStock(CurrentUserDtoApiV1 currentUser,
+      UUID productId) {
+
+    ProductEntity product = findProductEntityById(productId);
+    validateShopManager(currentUser, product);
+
+    return ResProductGetStockDtoApiV1.of(product);
+  }
+
+
   private ProductEntity findProductEntityById(UUID productId) {
     return productRepository.findByIdAndDeletedAtIsNull(productId)
         .orElseThrow(() -> new RuntimeException());
+  }
+
+  private void validateShopManager(CurrentUserDtoApiV1 currentUser, ProductEntity product) {
+    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
+      // USER-ROLE이 ROLE_COMPANY일 경우,
+      // product의 shopId로 업체관리자가 UserId와 같은지 확인
+      // TODO: shop feign client 호출 (shopId보내서 UserId 받기)
+      UUID shopId = product.getShopId();
+
+      // 다르면 예외
+    }
   }
 }

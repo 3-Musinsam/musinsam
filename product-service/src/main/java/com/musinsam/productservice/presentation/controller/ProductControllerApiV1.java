@@ -155,10 +155,11 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_STOCK_SUCCESS.getCode(),
         PRODUCT_GET_STOCK_SUCCESS.getMessage(),
-        null
+        productService.getProductStock(currentUser, productId)
     ));
   }
 
