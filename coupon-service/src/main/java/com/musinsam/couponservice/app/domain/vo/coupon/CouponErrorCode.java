@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CouponErrorCode implements ErrorCode {
 
-  NOT_FOUND_COUPON(0, "Coupon not found.", NOT_FOUND),
-  COUPON_EXPIRED(0, "Coupon has expired.", BAD_REQUEST),
-  COUPON_ALREADY_USED(0, "Coupon has already been used.", BAD_REQUEST),
-  COUPON_ISSUE_LIMIT_EXCEEDED(0, "Coupon issue limit exceeded.", BAD_REQUEST),
-  INVALID_COUPON_CONDITION(0, "Invalid coupon usage conditions.", BAD_REQUEST);
+  NOT_FOUND_COUPON(-1, "Coupon not found.", NOT_FOUND),
+  COUPON_EXPIRED(-1, "Coupon has expired.", BAD_REQUEST),
+  COUPON_ALREADY_USED(-1, "Coupon has already been used.", BAD_REQUEST),
+  COUPON_ISSUE_LIMIT_EXCEEDED(-1, "Coupon issue limit exceeded.", BAD_REQUEST),
+  INVALID_COUPON_CONDITION(-1, "Invalid coupon usage conditions.", BAD_REQUEST);
 
   private final Integer code;
   private final String message;

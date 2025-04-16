@@ -14,11 +14,11 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum CouponPolicyErrorCode implements ErrorCode {
 
-  NOT_FOUND_COUPON_POLICY(0, "Coupon policy not found.", NOT_FOUND),
-  INVALID_DATE_RANGE(0, "Start date must be before end date.", BAD_REQUEST),
-  INVALID_DISCOUNT_VALUE(0, "Invalid discount value for the discount type.", BAD_REQUEST),
-  DUPLICATED_COUPON_POLICY(0, "Coupon policy with the same name already exists.", CONFLICT),
-  EXPIRED_COUPON_POLICY(0, "Coupon policy is expired.", BAD_REQUEST);
+  NOT_FOUND_COUPON_POLICY(-1, "Coupon policy not found.", NOT_FOUND),
+  INVALID_DATE_RANGE(-1, "Start date must be before end date.", BAD_REQUEST),
+  INVALID_DISCOUNT_VALUE(-1, "Invalid discount value for the discount type.", BAD_REQUEST),
+  DUPLICATED_COUPON_POLICY(-1, "Coupon policy with the same name already exists.", CONFLICT),
+  EXPIRED_COUPON_POLICY(-1, "Coupon policy is expired.", BAD_REQUEST);
 
   private final Integer code;
   private final String message;
