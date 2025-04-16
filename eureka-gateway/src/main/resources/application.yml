@@ -43,7 +43,7 @@ spring:
         - id: internal-ai-service
           uri: lb://AI-SERVICE
           predicates:
-            - Path=/internal/v1/ai-messages/
+            - Path=/internal/v1/ai-messages/**
 
         - id: swagger-ai-service
           uri: lb://AI-SERVICE
