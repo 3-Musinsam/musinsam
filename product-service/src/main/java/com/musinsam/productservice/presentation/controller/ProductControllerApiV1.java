@@ -117,6 +117,9 @@ public class ProductControllerApiV1 {
       @Valid @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.updateProduct(currentUser, productId, dto);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_SUCCESS.getCode(),
         PRODUCT_UPDATE_SUCCESS.getMessage(),

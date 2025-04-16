@@ -1,7 +1,9 @@
 package com.musinsam.productservice.application.service.impl;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.common.user.UserRoleType;
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
@@ -63,5 +65,23 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
         pageRequest);
 
     return ResProductGetDtoApiV1.of(productEntityPage);
+  }
+
+  @Override
+  @Transactional
+  public void updateProduct(CurrentUserDtoApiV1 currentUser, UUID productId,
+      ReqProductPutByProductIdDtoApiV1 dto) {
+
+    ProductEntity product = productRepository.findByIdAndDeletedAtIsNull(productId)
+        .orElseThrow(() -> new RuntimeException());
+
+    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
+      // USER-ROLE이 ROLE_COMPANY일 경우,
+      // product의 shopId로 업체관리자가 UserId와 같은지 확인
+      // TODO: shop feign client 호출 (shopId보내서 UserId 받기)
+      UUID shopId = product.getShopId();
+    }
+
+    dto.getProduct().updateOf(product);
   }
 }
