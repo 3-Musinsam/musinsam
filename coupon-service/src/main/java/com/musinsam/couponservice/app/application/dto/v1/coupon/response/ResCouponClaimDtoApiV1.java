@@ -73,8 +73,6 @@ public class ResCouponClaimDtoApiV1 {
     private Long updatedBy;
     private ZonedDateTime deletedAt;
     private Long deletedBy;
-    private CouponPolicy couponPolicy;
-
 
     public static CouponPolicy from(CouponPolicyEntity couponPolicyEntity) {
       return CouponPolicy.builder()
