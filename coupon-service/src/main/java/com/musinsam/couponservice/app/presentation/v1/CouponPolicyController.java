@@ -4,6 +4,7 @@ import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICIES_GET_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICY_DELETE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICY_GET_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -92,16 +94,18 @@ public class CouponPolicyController {
     ));
   }
 
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<ApiResponse<Void>> deleteCouponPolicy(
-//      @PathVariable UUID id,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_POLICY_DELETE_SUCCESS.getCode(),
-//        COUPON_POLICY_DELETE_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
+  @CustomPreAuthorize(userRoleType = {ROLE_MASTER})
+  @DeleteMapping("/{id}")
+  public ResponseEntity<ApiResponse<Void>> deleteCouponPolicy(
+      @PathVariable UUID id,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+    couponPolicyService.deleteCouponPolicy(id, currentUser);
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_POLICY_DELETE_SUCCESS.getCode(),
+        COUPON_POLICY_DELETE_SUCCESS.getMessage(),
+        null
+    ));
+  }
 }
