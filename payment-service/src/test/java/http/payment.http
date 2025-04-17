@@ -61,6 +61,7 @@ Content-Type: application/json
 ### 결제 위젯 랜더 요청 (PENDING 상태의 주문ID로 요청해야 함)
 POST http://localhost:13001/v1/payments/init
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 
@@ -71,6 +72,7 @@ X-User-Role: {{userRole}}
 ### 결제 승인 요청 (paymentKey, 주문ID 필요)
 POST http://localhost:13001/v1/payments/approve
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 
@@ -86,6 +88,7 @@ X-User-Role: {{userRole}}
 ### 결제 단일 조회
 GET http://localhost:10000/v1/payments/{{example_payment_id}}
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 
