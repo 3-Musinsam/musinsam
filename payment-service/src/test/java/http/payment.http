@@ -91,7 +91,7 @@ X-User-Role: {{userRole}}
 
 
 ### 결제 목록 조회
-GET http://localhost:13001/v1/payments
+GET http://localhost:10000/v1/payments
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}

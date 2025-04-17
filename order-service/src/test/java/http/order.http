@@ -109,7 +109,7 @@ X-User-Role: {{userRole}}
 
 
 ### 주문 전체 조회 (권한 필요)
-GET http://localhost:12001/v1/orders?page=0&size=5
+GET http://localhost:10000/v1/orders?page=0&size=5
 Authorization: Bearer {{accessToken}}
 Content-Type: application/json
 X-User-Id: {{userId}}
