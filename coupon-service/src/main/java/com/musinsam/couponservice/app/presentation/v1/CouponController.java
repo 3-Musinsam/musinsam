@@ -5,7 +5,9 @@ import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPONS_GET_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CANCEL_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CLAIM_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_DELETE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_GET_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_USE_SUCCESS;
@@ -18,6 +20,7 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSe
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponCancelDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
@@ -31,9 +34,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.data.web.PagedModel;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -127,7 +130,6 @@ public class CouponController {
 
     ResCouponGetDtoApiV1 response = couponService.getCoupon(id, currentUser);
 
-
     return ResponseEntity.ok(new ApiResponse<>(
         COUPON_GET_SUCCESS.getCode(),
         COUPON_GET_SUCCESS.getMessage(),
@@ -135,29 +137,32 @@ public class CouponController {
     ));
   }
 
-//  @CustomPreAuthorize(userRoleType = {ROLE_USER})
-//  @PostMapping("/{id}/cancel")
-//  public ResponseEntity<ApiResponse<ResCouponCancelDtoApiV1>> cancelCoupon(
-//      @PathVariable UUID id,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_CANCEL_SUCCESS.getCode(),
-//        COUPON_CANCEL_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
-//
-//  @CustomPreAuthorize(userRoleType = {ROLE_USER})
-//  @DeleteMapping("/{id}")
-//  public ResponseEntity<ApiResponse<Void>> deleteCoupon(
-//      @PathVariable UUID id,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_DELETE_SUCCESS.getCode(),
-//        COUPON_DELETE_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @PostMapping("/{id}/cancel")
+  public ResponseEntity<ApiResponse<ResCouponCancelDtoApiV1>> cancelCoupon(
+      @PathVariable UUID id,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+
+    ResCouponCancelDtoApiV1 response = couponService.cancelCoupon(id, currentUser);
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_CANCEL_SUCCESS.getCode(),
+        COUPON_CANCEL_SUCCESS.getMessage(),
+        response
+    ));
+  }
+
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @DeleteMapping("/{id}")
+  public ResponseEntity<ApiResponse<Void>> deleteCoupon(
+      @PathVariable UUID id,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_DELETE_SUCCESS.getCode(),
+        COUPON_DELETE_SUCCESS.getMessage(),
+        null
+    ));
+  }
 }

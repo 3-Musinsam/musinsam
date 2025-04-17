@@ -3,6 +3,7 @@ package com.musinsam.couponservice.app.application.service.v1.coupon;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_CODE_ALREADY_EXISTS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.NOT_FOUND_COUPON;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.AVAILABLE;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.CANCELLED;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.ISSUED;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.USED;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.NOT_FOUND_COUPON_POLICY;
@@ -13,6 +14,7 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSe
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponCancelDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
@@ -120,5 +122,17 @@ public class CouponServiceImpl implements CouponService {
     CouponPolicyEntity couponPolicyById = findCouponPolicyById(couponEntity.getCouponPolicyEntity().getId());
 
     return ResCouponGetDtoApiV1.from(couponEntity, couponPolicyById);
+  }
+
+  @Transactional
+  @Override
+  public ResCouponCancelDtoApiV1 cancelCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser) {
+    CouponEntity couponEntity = findCouponById(couponId);
+    couponEntity.updateCouponStatus(CANCELLED);
+
+    CouponEntity savedCouponEntity = couponRepository.save(couponEntity);
+    CouponPolicyEntity couponPolicyById = findCouponPolicyById(savedCouponEntity.getCouponPolicyEntity().getId());
+
+    return ResCouponCancelDtoApiV1.from(savedCouponEntity, couponPolicyById);
   }
 }
