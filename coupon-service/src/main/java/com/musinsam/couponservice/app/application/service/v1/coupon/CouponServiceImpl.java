@@ -37,7 +37,7 @@ public class CouponServiceImpl implements CouponService {
 
   private final CouponRepository couponRepository;
   private final CouponPolicyRepository couponPolicyRepository;
-  private final CouponQueryRepository couponQueryRepository; // 주입 필요!
+  private final CouponQueryRepository couponQueryRepository;
 
 
   private CouponPolicyEntity findCouponPolicyById(UUID id) {
@@ -111,6 +111,4 @@ public class CouponServiceImpl implements CouponService {
                                                             CurrentUserDtoApiV1 currentUser, Pageable pageable) {
     return couponQueryRepository.findCouponsByCondition(condition, currentUser, pageable);
   }
-
-
 }
