@@ -3,7 +3,7 @@ package com.musinsam.aiservice.application.service;
 import com.musinsam.aiservice.application.dto.request.ChatGptRequest;
 import com.musinsam.aiservice.application.dto.request.ReqAiPostDtoApiV1;
 import com.musinsam.aiservice.application.dto.response.ChatGptResponse;
-import com.musinsam.aiservice.infrastructure.client.ChatGptClient;
+import com.musinsam.aiservice.infrastructure.feign.ChatGptFeignClientApiV1;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatGptService {
 
-  private final ChatGptClient chatGptClient;
+  private final ChatGptFeignClientApiV1 chatGptFeignClientApiV1;
 
   @Value("${openai.api.key}")
   private String openaiApiKey;
@@ -28,7 +28,8 @@ public class ChatGptService {
         0.9
     );
 
-    ChatGptResponse response = chatGptClient.aiCompletions("Bearer " + openaiApiKey, request);
+    ChatGptResponse response = chatGptFeignClientApiV1.aiCompletions("Bearer " + openaiApiKey,
+        request);
 
     return response.getChoices().get(0).getMessage().getContent();
   }
