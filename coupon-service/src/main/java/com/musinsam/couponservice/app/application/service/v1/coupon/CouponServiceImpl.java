@@ -113,7 +113,7 @@ public class CouponServiceImpl implements CouponService {
     return couponQueryRepository.findCouponsByCondition(condition, currentUser, pageable);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   @Override
   public ResCouponGetDtoApiV1 getCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser) {
     CouponEntity couponEntity = findCouponById(couponId);
