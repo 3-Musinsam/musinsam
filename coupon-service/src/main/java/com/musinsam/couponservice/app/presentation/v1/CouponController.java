@@ -4,6 +4,7 @@ package com.musinsam.couponservice.app.presentation.v1;
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPONS_GET_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CLAIM_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_USE_SUCCESS;
@@ -12,16 +13,26 @@ import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSearchCondition;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
 import com.musinsam.couponservice.app.application.service.v1.coupon.CouponService;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -82,36 +93,27 @@ public class CouponController {
         response
     ));
   }
-//
-//  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-//  @GetMapping
-//  public ResponseEntity<ApiResponse<PagedModel<ResCouponsGetDtoApiV1>>> getCoupons(
-//      @CurrentUser CurrentUserDtoApiV1 currentUser,
-//      @RequestParam(required = false) UUID couponPolicyId,
-//      @RequestParam(required = false) String policyName,
-//      @RequestParam(required = false) String couponCode,
-//      @RequestParam(required = false) CouponStatus couponStatus,
-//      @RequestParam(required = false) DiscountType discountType,
-//      @RequestParam(required = false) Long userId,
-//      @RequestParam(required = false) UUID orderId,
-//      @RequestParam(required = false) Long companyId,
-//      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime usedFrom,
-//      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime usedTo,
-//      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime createdFrom,
-//      @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) ZonedDateTime createdTo,
-//      @PageableDefault(size = 20)
-//      @SortDefault.SortDefaults({
-//          @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC),
-//          @SortDefault(sort = "id", direction = Sort.Direction.DESC)
-//      }) Pageable pageable
-//  ) {
-//
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPONS_GET_SUCCESS.getCode(),
-//        COUPONS_GET_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
+
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @GetMapping
+  public ResponseEntity<ApiResponse<Page<ResCouponsGetDtoApiV1>>> getCoupons(
+      @CurrentUser CurrentUserDtoApiV1 currentUser,
+      @ParameterObject CouponSearchCondition condition,
+      @PageableDefault(size = 10)
+      @SortDefault.SortDefaults({
+          @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC),
+          @SortDefault(sort = "id", direction = Sort.Direction.DESC)
+      }) Pageable pageable
+  ) {
+
+    Page<ResCouponsGetDtoApiV1> response = couponService.findCouponsByCondition(condition, currentUser, pageable);
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPONS_GET_SUCCESS.getCode(),
+        COUPONS_GET_SUCCESS.getMessage(),
+        response
+    ));
+  }
 //
 //
 //  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
