@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.presentation.util.querydsl;
+package com.musinsam.couponservice.app.presentation.util.querydsl.couponPolicy;
 
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.QCouponPolicyEntity;

@@ -1,11 +1,11 @@
-package com.musinsam.couponservice.app.infrastructure.persistence.querydsl;
+package com.musinsam.couponservice.app.infrastructure.persistence.querydsl.couponPolicy;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.CouponPolicySearchCondition;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPoliciesGetDtoApiV1;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.QCouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyQueryRepository;
-import com.musinsam.couponservice.app.presentation.util.querydsl.QuerydslCouponPolicySortUtil;
+import com.musinsam.couponservice.app.presentation.util.querydsl.couponPolicy.QuerydslCouponPolicySortUtil;
 import com.musinsam.couponservice.app.presentation.util.querydsl.QuerydslUtil;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
@@ -18,8 +18,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-@Repository
 @RequiredArgsConstructor
+@Repository
 public class CouponPolicyQueryRepositoryImpl implements CouponPolicyQueryRepository {
 
   private final JPAQueryFactory queryFactory;
