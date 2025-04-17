@@ -3,12 +3,11 @@ package com.musinsam.shopservice.presentation.controller;
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_CREATE_SUCCESS;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_DELETE_SUCCESS;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_GET_COUPON_LIST_SUCCESS;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_GET_LIST_SUCCESS;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_GET_SUCCESS;
-import static com.musinsam.shopservice.global.config.ShopResponseCode.SHOP_UPDATE_SUCCESS;
+import static com.musinsam.shopservice.infrastructure.excepcion.ShopResponseCode.SHOP_CREATE_SUCCESS;
+import static com.musinsam.shopservice.infrastructure.excepcion.ShopResponseCode.SHOP_DELETE_SUCCESS;
+import static com.musinsam.shopservice.infrastructure.excepcion.ShopResponseCode.SHOP_GET_LIST_SUCCESS;
+import static com.musinsam.shopservice.infrastructure.excepcion.ShopResponseCode.SHOP_GET_SUCCESS;
+import static com.musinsam.shopservice.infrastructure.excepcion.ShopResponseCode.SHOP_UPDATE_SUCCESS;
 
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
@@ -18,7 +17,6 @@ import com.musinsam.shopservice.application.dto.request.ReqShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPutByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopDeleteByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetByShopIdDtoApiV1;
-import com.musinsam.shopservice.application.dto.response.ResShopGetCouponByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPutByShopIdDtoApiV1;
@@ -124,23 +122,6 @@ public class ShopControllerApiV1 {
         SHOP_DELETE_SUCCESS.getCode(),
         SHOP_DELETE_SUCCESS.getMessage(),
         shopServiceApiV1.deleteByShopId(shopId, currentUser)
-    ));
-  }
-
-
-  /**
-   * 상점에 적용된 쿠폰 조회
-   */
-  @GetMapping("/{shopId}/coupon")
-  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  public ResponseEntity<ApiResponse<ResShopGetCouponByShopIdDtoApiV1>> getCouponList(
-      @PathVariable UUID shopId,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
-  ) {
-    return ResponseEntity.ok(new ApiResponse<>(
-        SHOP_GET_COUPON_LIST_SUCCESS.getCode(),
-        SHOP_GET_COUPON_LIST_SUCCESS.getMessage(),
-        shopServiceApiV1.couponGetByShopId(shopId, currentUser)
     ));
   }
 }
