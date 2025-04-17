@@ -3,6 +3,7 @@ package com.musinsam.orderservice.application.service;
 import com.musinsam.common.exception.CommonErrorCode;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.orderservice.app.global.response.OrderErrorCode;
+import com.musinsam.orderservice.application.dto.client.OrderClientDto;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostCancelDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPutDtoApiV1;
@@ -15,6 +16,8 @@ import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
+import com.musinsam.orderservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
+import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientUpdateOrderStatusDto;
 import com.querydsl.core.types.Predicate;
 import java.time.ZoneId;
 import java.util.List;
@@ -79,7 +82,7 @@ public class OrderServiceApiV1 {
   }
 
   @Transactional
-  public ResOrderPutDtoApiV1 updateOrder(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
+  public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
         .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
@@ -137,7 +140,7 @@ public class OrderServiceApiV1 {
     ZoneId zoneId = ZoneId.systemDefault();
 
     orderEntity.softDelete(userId, zoneId);
-    orderEntity.updateOrderStatus(OrderStatus.DELETED);
+    orderEntity.updateOrderStatus(OrderStatus.DELETED, "In service");
 
     for (OrderItemEntity item : orderEntity.getOrderItems()) {
       item.softDelete(userId, zoneId);
@@ -174,5 +177,28 @@ public class OrderServiceApiV1 {
     if (!orderEntity.getUserId().equals(userId)) {
       throw CustomException.from(CommonErrorCode.FORBIDDEN);
     }
+  }
+
+  @Transactional
+  public OrderClientDto getOrderClientDtoById(UUID orderId) {
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+    return OrderClientDto.of(orderEntity);
+  }
+
+  @Transactional
+  public ResOrderClientUpdateOrderStatusDto updateOrderStatus(UUID orderId,
+      ReqOrderClientUpdateOrderStatusDto reqDto) {
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+
+    orderEntity.updateOrderStatus(
+        OrderStatus.valueOf(reqDto.getStatus()),
+        reqDto.getReason()
+    );
+
+    orderRepository.save(orderEntity);
+
+    return ResOrderClientUpdateOrderStatusDto.of(orderEntity);
   }
 }

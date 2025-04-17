@@ -1,8 +1,39 @@
-### 알림 등록 테스트
-POST http://localhost:14001/v1/slack-alarms
+### 1. 회원가입
+POST http://localhost:10001/v1/auth/signup
 Content-Type: application/json
-X-USER-ID: 1
-X-USER-ROLE: ROLE_USER
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
+  }
+}
+
+### 2. 로그인 (토큰 발급)
+POST http://localhost:10001/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+  client.global.set("accessToken", response.body.data.token.accessToken);
+  client.global.set("userId", response.body.data.user.userId);
+  client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
+### 알림 등록 테스트
+POST http://localhost:10000/internal/v1/slack-alarms
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 
 {
   "alarm": {
@@ -11,13 +42,15 @@ X-USER-ROLE: ROLE_USER
 }
 
 ### 알림 전체 조희 테스트
-GET http://localhost:14001/v1/slack-alarms?page=0&size=10&orderby=CREATED&sort=DESC
+GET http://localhost:10000/internal/v1/slack-alarms?page=0&size=10&orderby=CREATED&sort=DESC
 Content-Type: application/json
-X-USER-ID: 1
-X-USER-ROLE: ROLE_USER
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 
 ### 알림 단건 조희 테스트
-GET http://localhost:14001/v1/slack-alarms/37693873-4f4c-48b6-ac07-96b1c54c5a65
+GET http://localhost:10000/internal/v1/slack-alarms/76a5abec-741d-403d-b6c5-3a2f01f802ff
 Content-Type: application/json
-X-USER-ID: 1
-X-USER-ROLE: ROLE_USER
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}

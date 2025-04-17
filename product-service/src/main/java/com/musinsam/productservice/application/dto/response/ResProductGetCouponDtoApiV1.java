@@ -1,7 +1,7 @@
 package com.musinsam.productservice.application.dto.response;
 
 import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1.ProductCouponPage.ProductCoupon;
-import com.musinsam.productservice.domain.product.entity.ProductCouponEntity;
+import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -9,8 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PagedModel;
 
 @Getter
@@ -19,23 +19,26 @@ import org.springframework.data.web.PagedModel;
 @AllArgsConstructor
 public class ResProductGetCouponDtoApiV1 {
 
+  private UUID productId;
   private ProductCouponPage productCouponPage;
 
-  public static ResProductGetCouponDtoApiV1 of(Page<ProductCouponEntity> productCouponEntityPage) {
+  public static ResProductGetCouponDtoApiV1 of(List<ResShopCouponDto.Coupon> couponList,
+      UUID productId, int page, int size) {
     return ResProductGetCouponDtoApiV1.builder()
-        .productCouponPage(new ProductCouponPage(productCouponEntityPage))
+        .productId(productId)
+        .productCouponPage(new ProductCouponPage(couponList, page, size))
         .build();
   }
 
 
   public static class ProductCouponPage extends PagedModel<ProductCoupon> {
 
-    public ProductCouponPage(Page<ProductCouponEntity> productCouponEntityPage) {
+    public ProductCouponPage(List<ResShopCouponDto.Coupon> couponList, int page, int size) {
       super(
           new PageImpl<>(
-              ProductCoupon.from(productCouponEntityPage.getContent()),
-              productCouponEntityPage.getPageable(),
-              productCouponEntityPage.getTotalElements()
+              ProductCoupon.from(couponList),
+              PageRequest.of(page - 1, size),
+              couponList.size()
           )
       );
     }
@@ -46,25 +49,24 @@ public class ResProductGetCouponDtoApiV1 {
     @AllArgsConstructor
     public static class ProductCoupon {
 
-      private UUID productId;
       private Coupon coupon;
 
-      public static ProductCoupon from(ProductCouponEntity productCouponEntity) { //받아온 쿠폰 정보
+      public static ProductCoupon from(ResShopCouponDto.Coupon productCoupon) {
         Coupon coupon = Coupon.builder()
-            .couponId(productCouponEntity.getCouponId())
-            .couponName(null)
-            .endTime(null)
+            .couponId(productCoupon.getCouponId())
+            .couponName(productCoupon.getCouponName())
+            .startTime(productCoupon.getCouponPolicy().getStartTime())
+            .endTime(productCoupon.getCouponPolicy().getEndTime())
             .build();
 
         return ProductCoupon.builder()
-            .productId(productCouponEntity.getProduct().getId())
             .coupon(coupon)
             .build();
       }
 
-      public static List<ProductCoupon> from(List<ProductCouponEntity> productCouponEntityList) {
-        return productCouponEntityList.stream()
-            .map(productCouponEntity -> ProductCoupon.from(productCouponEntity))
+      public static List<ProductCoupon> from(List<ResShopCouponDto.Coupon> couponList) {
+        return couponList.stream()
+            .map(productCoupon -> ProductCoupon.from(productCoupon))
             .toList();
       }
 
@@ -77,6 +79,7 @@ public class ResProductGetCouponDtoApiV1 {
 
         private UUID couponId;
         private String couponName;
+        private ZonedDateTime startTime;
         private ZonedDateTime endTime;
       }
     }

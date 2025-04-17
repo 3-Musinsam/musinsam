@@ -36,6 +36,7 @@ public class ResOrderPostDtoApiV1 {
     private BigDecimal discountAmount;
     private BigDecimal finalAmount;
     private String request;
+    private String orderName;
     private ZonedDateTime createdAt;
 
     public static Order from(OrderEntity orderEntity) {
@@ -53,6 +54,7 @@ public class ResOrderPostDtoApiV1 {
           .discountAmount(orderEntity.getDiscountAmount())
           .finalAmount(orderEntity.getFinalAmount())
           .request(orderEntity.getRequest())
+          .orderName(orderEntity.getOrderName())
           .createdAt(orderEntity.getCreatedAt())
           .build();
     }

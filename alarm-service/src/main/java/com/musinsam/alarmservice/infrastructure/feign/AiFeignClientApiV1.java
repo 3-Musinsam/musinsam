@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "ai-service", configuration = FeignConfig.class)
 public interface AiFeignClientApiV1 {
 
-  @PostMapping("/v1/ais")
+  @PostMapping("/internal/v1/ai-messages")
   ApiResponse<String> getCompletions(@RequestBody String request);
 
 }

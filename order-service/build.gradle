@@ -8,18 +8,19 @@ plugins {
 group = 'com.musinsam'
 version = '0.0.1-SNAPSHOT'
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 repositories {
     mavenCentral()
 }
 
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
 ext {
     set('springCloudVersion', "2024.0.1")
+    set('querydslVersion', "5.1.0")
 }
 
 dependencies {
@@ -27,14 +28,8 @@ dependencies {
 
     // documentation dependencies
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
-
-    // querydsl dependencies
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -49,6 +44,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // querydsl dependencies
+    implementation "com.querydsl:querydsl-jpa:${querydslVersion}:jakarta"
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 }
 
 dependencyManagement {
@@ -57,13 +58,11 @@ dependencyManagement {
     }
 }
 
+
 tasks.named('test') {
     useJUnitPlatform()
 }
 
-compileJava {
-    dependsOn 'clean'
-}
 
 ext {
     serviceId = 'order-service'
@@ -75,7 +74,7 @@ ext {
 openapi3 {
     servers = [
             {
-                url = "http://localhost:12001"
+                url = "http://localhost:10000"
             }
     ]
     title = 'Order Service'

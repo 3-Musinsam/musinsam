@@ -1,14 +1,10 @@
 package com.musinsam.alarmservice.presentation.controller;
 
-import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
-import static com.musinsam.common.user.UserRoleType.ROLE_USER;
-
 import com.musinsam.alarmservice.application.dto.request.ReqAlarmPostDtoApiV1;
 import com.musinsam.alarmservice.application.dto.response.ResAlarmGetByIdDtoApiV1;
 import com.musinsam.alarmservice.application.dto.response.ResAlarmGetDtoApiV1;
 import com.musinsam.alarmservice.application.dto.response.ResAlarmPostDtoApiV1;
 import com.musinsam.alarmservice.application.service.AlarmServiceApiV1;
-import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
@@ -34,7 +30,6 @@ public class AlarmControllerApiV1 {
 
   private final AlarmServiceApiV1 alarmServiceApiV1;
 
-  @CustomPreAuthorize(userRoleType = {ROLE_USER})
   @PostMapping
   public ResponseEntity<ApiResponse<ResAlarmPostDtoApiV1>> postBy(@Valid
   @RequestBody ReqAlarmPostDtoApiV1 dto,
@@ -50,7 +45,6 @@ public class AlarmControllerApiV1 {
     );
   }
 
-  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_MASTER})
   @GetMapping
   public ResponseEntity<ApiResponse<ResAlarmGetDtoApiV1>> getBy(
       @Valid Pageable pageable,
@@ -66,7 +60,6 @@ public class AlarmControllerApiV1 {
     );
   }
 
-  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_MASTER})
   @GetMapping("/{id}")
   public ResponseEntity<ApiResponse<ResAlarmGetByIdDtoApiV1>> getById(@Valid @PathVariable UUID id,
       @CurrentUser CurrentUserDtoApiV1 currentUser

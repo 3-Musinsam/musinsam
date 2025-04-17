@@ -1,4 +1,4 @@
-package com.musinsam.couponservice.app.application.service.couponPolicy;
+package com.musinsam.couponservice.app.application.service.v1.couponPolicy;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.CouponPolicySearchCondition;

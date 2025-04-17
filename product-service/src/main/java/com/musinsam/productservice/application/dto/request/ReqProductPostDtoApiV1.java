@@ -1,6 +1,7 @@
 package com.musinsam.productservice.application.dto.request;
 
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
+import com.musinsam.productservice.domain.product.entity.ProductStatus;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -50,6 +51,7 @@ public class ReqProductPostDtoApiV1 {
           .shopId(shopId)
           .price(price)
           .stock(stock)
+          .status(ProductStatus.SHOW)
           .build();
     }
   }

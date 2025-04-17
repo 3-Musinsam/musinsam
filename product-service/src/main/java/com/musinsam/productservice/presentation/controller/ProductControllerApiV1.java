@@ -23,8 +23,13 @@ import com.musinsam.productservice.application.dto.response.ResProductGetByProdu
 import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
+import com.musinsam.productservice.application.service.ProductServiceApiV1;
 import jakarta.validation.Valid;
+import java.util.List;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,20 +40,30 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
 @RequestMapping("/v1/products")
+@RequiredArgsConstructor
 public class ProductControllerApiV1 {
+
+  private final ProductServiceApiV1 productService;
 
   /**
    * 상품 등록
    */
-  @PostMapping
+  @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> createProduct(
-      @Valid @RequestBody ReqProductPostDtoApiV1 dto,
+      @Valid @RequestPart ReqProductPostDtoApiV1 dto,
+      @RequestPart List<MultipartFile> images,
       @CurrentUser CurrentUserDtoApiV1 currentUser) {
+
+    productService.createProduct(currentUser, dto, images);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_CREATE_SUCCESS.getCode(),
         PRODUCT_CREATE_SUCCESS.getMessage(),
@@ -62,13 +77,12 @@ public class ProductControllerApiV1 {
   @GetMapping("/{productId}")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetByProductIdDtoApiV1>> getProduct(
-      @PathVariable UUID productId,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @PathVariable UUID productId
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_SUCCESS.getCode(),
         PRODUCT_GET_SUCCESS.getMessage(),
-        null
+        productService.getById(productId)
     ));
   }
 
@@ -78,14 +92,13 @@ public class ProductControllerApiV1 {
   @GetMapping
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetDtoApiV1>> getProductList(
-      @CurrentUser CurrentUserDtoApiV1 currentUser,
       @RequestParam(defaultValue = "1") int page,
       @RequestParam(defaultValue = "10") int size
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_LIST_SUCCESS.getCode(),
         PRODUCT_GET_LIST_SUCCESS.getMessage(),
-        null
+        productService.getProductList(page, size)
     ));
   }
 
@@ -99,6 +112,9 @@ public class ProductControllerApiV1 {
       @Valid @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.updateProduct(currentUser, productId, dto);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_SUCCESS.getCode(),
         PRODUCT_UPDATE_SUCCESS.getMessage(),
@@ -115,6 +131,9 @@ public class ProductControllerApiV1 {
       @PathVariable UUID productId,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.deleteProduct(currentUser, productId);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_DELETE_SUCCESS.getCode(),
         PRODUCT_DELETE_SUCCESS.getMessage(),
@@ -134,7 +153,7 @@ public class ProductControllerApiV1 {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_STOCK_SUCCESS.getCode(),
         PRODUCT_GET_STOCK_SUCCESS.getMessage(),
-        null
+        productService.getProductStock(currentUser, productId)
     ));
   }
 
@@ -148,6 +167,9 @@ public class ProductControllerApiV1 {
       @Valid @RequestBody ReqProductPatchByProductIdDtoApiV1 dto,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+
+    productService.updateProductStock(currentUser, productId, dto);
+
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_STOCK_SUCCESS.getCode(),
         PRODUCT_UPDATE_STOCK_SUCCESS.getMessage(),
@@ -155,55 +177,22 @@ public class ProductControllerApiV1 {
     ));
   }
 
-//  /**
-//   * 상품에 쿠폰 추가
-//   */
-//  @PostMapping("/{product_id}/coupons")
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  public ResponseEntity<ApiResponse<Void>> applyCoupon(
-//      @PathVariable("product_id") UUID productId,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser,
-//      @RequestBody ReqProductPostCouponDtoApiV1 dto
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        PRODUCT_APPLY_COUPON_SUCCESS.getCode(),
-//        PRODUCT_APPLY_COUPON_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
 
   /**
-   * 특정 상품에 적용된 쿠폰 조회
+   * 특정 상품의 적용 가능한 쿠폰 조회
    */
   @GetMapping("/{productId}/coupons")
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResProductGetCouponDtoApiV1>> getCouponList(
       @PathVariable UUID productId,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
+      @RequestParam(defaultValue = "1") int page,
+      @RequestParam(defaultValue = "10") int size
   ) {
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_GET_COUPON_SUCCESS.getCode(),
         PRODUCT_GET_COUPON_SUCCESS.getMessage(),
-        null
+        productService.getProductCouponList(productId, page, size)
     ));
   }
-
-//  /**
-//   * 적용된 쿠폰 삭제
-//   */
-//  @DeleteMapping("/{product_id}/coupons/{coupon_id}")
-//  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
-//  public ResponseEntity<ApiResponse<Void>> deleteCoupon(
-//      @PathVariable("product_id") UUID productId,
-//      @PathVariable("coupon_id") UUID couponId,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        PRODUCT_DELETE_COUPON_SUCCESS.getCode(),
-//        PRODUCT_DELETE_COUPON_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
-
 
 }

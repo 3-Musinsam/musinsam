@@ -35,6 +35,7 @@ public class ReqOrderPostDtoApiV1 {
     private List<OrderItem> orderItems;
     private ShippingInfo shippingInfo;
     private String request;
+    private String orderName;
     private UUID couponId;
     private BigDecimal totalAmount;
     private BigDecimal discountAmount;
@@ -48,6 +49,7 @@ public class ReqOrderPostDtoApiV1 {
           .finalAmount(getFinalAmount())
           .totalQuantity(calculateTotalQuantity())
           .request(getRequest())
+          .orderName(getOrderName())
           .couponId(getCouponId())
           .orderStatus(OrderStatus.PENDING)
           .build();

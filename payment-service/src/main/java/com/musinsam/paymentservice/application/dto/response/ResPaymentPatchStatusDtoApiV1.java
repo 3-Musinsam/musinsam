@@ -1,7 +1,6 @@
 package com.musinsam.paymentservice.application.dto.response;
 
 import com.musinsam.paymentservice.domain.payment.entity.PaymentEntity;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,13 +26,11 @@ public class ResPaymentPatchStatusDtoApiV1 {
   @AllArgsConstructor
   public static class Payment {
 
-    private UUID id;
-    private String paymentStatus;
-    private String updatedAt;
+    private String status;
 
     public static Payment from(PaymentEntity paymentEntity) {
       return Payment.builder()
-          // TODO:
+          .status(String.valueOf(paymentEntity.getStatus()))
           .build();
     }
   }

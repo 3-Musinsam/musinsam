@@ -12,28 +12,41 @@ spring:
     password: postgres
 
   jpa:
+    show-sql: true
     properties:
-      hibernate:
-        format_sql: true
+      hibernate.format_sql: true
+      hibernate.highlight_sql: true
+      use_sql_comments: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: false
+    defer-datasource-initialization: true
 
 eureka:
   client:
-    register-with-eureka: false
-    fetch-registry: false
+    register-with-eureka: true
+    fetch-registry: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
 springdoc:
   swagger-ui:
     enabled: true
-    path: /docs
-    url: /springdoc/openapi3-payment-service.json
-    operations-sorter: alpha
-    tags-sorter: alpha
   api-docs:
     enabled: true
-    path: /api-docs-payment-service
 
+toss:
+  payments:
+    api-url: https://api.tosspayments.com
+    client-key: test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm
+    secret-key: test_gsk_docs_OaPz8L5KdmQXkzRz3y47BMw6
+    success-redirect-url: /success.html
+    fail-redirect-url: /fail.html
+    customer-key-salt: u8n5vyheDrwecIUcnXfS
+
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.cloud.gateway: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
+    com.musinsam.paymentservice: DEBUG
