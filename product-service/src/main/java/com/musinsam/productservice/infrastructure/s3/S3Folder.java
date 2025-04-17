@@ -1,4 +1,4 @@
-package com.musinsam.productservice.infrastructure.image;
+package com.musinsam.productservice.infrastructure.s3;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

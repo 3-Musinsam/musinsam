@@ -1,6 +1,6 @@
-package com.musinsam.productservice.infrastructure.image.service;
+package com.musinsam.productservice.infrastructure.s3.service;
 
-import com.musinsam.productservice.infrastructure.image.S3Folder;
+import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface S3Service {

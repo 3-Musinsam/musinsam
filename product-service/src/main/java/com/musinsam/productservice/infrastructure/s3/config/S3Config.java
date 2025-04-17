@@ -1,4 +1,4 @@
-package com.musinsam.productservice.infrastructure.image.config;
+package com.musinsam.productservice.infrastructure.s3.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
