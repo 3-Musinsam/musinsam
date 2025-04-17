@@ -1,0 +1,37 @@
+package com.musinsam.productservice.application.service;
+
+import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPatchByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
+import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
+import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
+import jakarta.validation.Valid;
+import java.util.List;
+import java.util.UUID;
+import org.springframework.web.multipart.MultipartFile;
+
+public interface ProductServiceApiV1 {
+
+  void createProduct(CurrentUserDtoApiV1 currentUser, @Valid ReqProductPostDtoApiV1 dto,
+      List<MultipartFile> images);
+
+  ResProductGetByProductIdDtoApiV1 getById(UUID productId);
+
+  ResProductGetDtoApiV1 getProductList(int page, int size);
+
+  void updateProduct(CurrentUserDtoApiV1 currentUser, UUID productId,
+      @Valid ReqProductPutByProductIdDtoApiV1 dto);
+
+  void deleteProduct(CurrentUserDtoApiV1 currentUser, UUID productId);
+
+  ResProductGetStockDtoApiV1 getProductStock(CurrentUserDtoApiV1 currentUser, UUID productId);
+
+  void updateProductStock(CurrentUserDtoApiV1 currentUser, UUID productId,
+      @Valid ReqProductPatchByProductIdDtoApiV1 dto);
+
+  ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId,
+      int page, int size);
+}
