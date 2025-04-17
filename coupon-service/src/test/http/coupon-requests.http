@@ -125,4 +125,11 @@ Content-Type: application/json
 
 {}
 
-###
+### 쿠폰 소프트 삭제
+DELETE http://localhost:10000/v1/coupons/{{id}}
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{}
