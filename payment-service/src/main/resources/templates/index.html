@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8"/>
+  <script src="https://js.tosspayments.com/v2/standard"></script>
+</head>
+<body>
+<!-- 할인 쿠폰 -->
+<div>
+  <input type="checkbox" id="coupon-box"/>
+  <label for="coupon-box"> 쿠폰 적용 </label>
+</div>
+<!-- 결제 UI -->
+<div id="payment-method"></div>
+<!-- 이용약관 UI -->
+<div id="agreement"></div>
+<!-- 결제하기 버튼 -->
+<button class="button" id="payment-button" style="margin-top: 30px">결제하기</button>
+
+<script>
+  async function initPayment() {
+    try {
+      // 테스트 용이성을 위한 파라미터 값
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+
+      if (!orderId) {
+        return;
+      }
+
+      const paymentInitRequest = {orderId};
+
+      const response = await fetch(`/v1/payments/init`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-USER-ID': getUserId(),
+          'X-USER-ROLE': getUserRole()
+        },
+        body: JSON.stringify(paymentInitRequest)
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        // 결제 실패 로직 구현부
+        console.error("결제 승인 실패:", responseData);
+        return;
+      }
+
+      return responseData.data.payment;
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  main();
+
+  async function main() {
+    const paymentInitData = await initPayment();
+
+    const button = document.getElementById("payment-button");
+    const coupon = document.getElementById("coupon-box");
+    // ------  결제위젯 초기화 ------
+    const clientKey = paymentInitData.clientKey || "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+    const tossPayments = TossPayments(clientKey);
+    // 회원 결제
+    const customerKey = paymentInitData.customerKey;
+    const widgets = tossPayments.widgets({
+      customerKey,
+    });
+    // 비회원 결제
+    // const widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+
+    // ------ 주문의 결제 금액 설정 ------
+
+    await widgets.setAmount({
+      currency: "KRW",
+      value: parseInt(paymentInitData.finalAmount),
+    });
+
+    await Promise.all([
+      // ------  결제 UI 렌더링 ------
+      widgets.renderPaymentMethods({
+        selector: "#payment-method",
+        variantKey: "DEFAULT",
+      }),
+      // ------  이용약관 UI 렌더링 ------
+      widgets.renderAgreement({selector: "#agreement", variantKey: "AGREEMENT"}),
+    ]);
+
+    // ------  주문서의 결제 금액이 변경되었을 경우 결제 금액 업데이트 ------
+    coupon.addEventListener("change", async function () {
+      if (coupon.checked) {
+        await widgets.setAmount({
+          currency: "KRW",
+          value: parseInt(paymentInitData.finalAmount) - parseInt(paymentInitData.discountAmount),
+        });
+
+        return;
+      }
+
+      await widgets.setAmount({
+        currency: "KRW",
+        value: parseInt(paymentInitData.finalAmount),
+      });
+    });
+
+    // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
+
+    const successUrl = '/payments/success';
+    const failUrl = '/payments/fail';
+
+    button.addEventListener("click", async function () {
+      await widgets.requestPayment({
+        orderId: paymentInitData.orderId,
+        orderName: paymentInitData.orderName,
+        successUrl: window.location.origin + successUrl,
+        failUrl: window.location.origin + failUrl,
+        customerEmail: "customer123@gmail.com",
+        customerName: "김토스",
+        customerMobilePhone: "01012341234",
+      });
+    });
+  }
+
+  function getUserId() {
+    return localStorage.getItem('userId') || sessionStorage.getItem('userId') || '1';
+  }
+
+  function getUserRole() {
+    return localStorage.getItem('userRole') || sessionStorage.getItem('userRole') || 'ROLE_USER';
+  }
+</script>
+</body>
+</html>

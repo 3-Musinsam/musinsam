@@ -1,6 +1,5 @@
-package com.musinsam.paymentservice.application.dto.request;
+package com.musinsam.paymentservice.infrastructure.client.dto.response;
 
-import jakarta.validation.constraints.NotNull;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReqPaymentPostInitDtoApiV1 {
+public class ResOrderClientUpdateOrderStatusDto {
 
-  @NotNull(message = "주문 ID는 필수입니다.")
   private UUID orderId;
+  private String status;
 }

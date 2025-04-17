@@ -6,29 +6,27 @@ import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.response.ApiSuccessCode;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.common.user.UserRoleType;
-import com.musinsam.paymentservice.application.dto.request.ReqPaymentPatchStatusDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostApproveDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostCancelDtoApiV1;
-import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostInitDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentGetByIdDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentGetDtoApiV1;
-import com.musinsam.paymentservice.application.dto.response.ResPaymentPatchStatusDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostApproveDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostCancelDtoApiV1;
-import com.musinsam.paymentservice.application.dto.response.ResPaymentPostDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostInitDtoApiV1;
 import com.musinsam.paymentservice.application.service.PaymentServiceApiV1;
+import com.musinsam.paymentservice.domain.payment.entity.PaymentEntity;
+import com.querydsl.core.types.Predicate;
 import jakarta.validation.Valid;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -65,31 +63,6 @@ public class PaymentControllerApiV1 {
         ApiResponse.success(
             ApiSuccessCode.OK.getCode(),
             "Payment initialization successful",
-            responseDto
-        )
-    );
-  }
-
-  /**
-   * 결제 생성.
-   */
-  @PostMapping
-  @CustomPreAuthorize(userRoleType = {
-      UserRoleType.ROLE_MASTER,
-      UserRoleType.ROLE_COMPANY,
-      UserRoleType.ROLE_USER
-  })
-  public ResponseEntity<ApiResponse<ResPaymentPostDtoApiV1>> createPayment(
-      @Valid @RequestBody ReqPaymentPostDtoApiV1 requestDto,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
-  ) {
-    ResPaymentPostDtoApiV1 responseDto = paymentService.createPayment(requestDto,
-        currentUser.userId());
-
-    return ResponseEntity.ok().body(
-        ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment created successfully",
             responseDto
         )
     );
@@ -151,14 +124,15 @@ public class PaymentControllerApiV1 {
   @GetMapping
   @CustomPreAuthorize(userRoleType = {UserRoleType.ROLE_MASTER})
   public ResponseEntity<ApiResponse<ResPaymentGetDtoApiV1>> getPayments(
+      @QuerydslPredicate(root = PaymentEntity.class) Predicate predicate,
       @PageableDefault
       @SortDefault.SortDefaults({
           @SortDefault(sort = "createdAt", direction = Sort.Direction.DESC)
       }) Pageable pageable,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
-    ResPaymentGetDtoApiV1 responseDto = paymentService.getPaymentList(pageable,
-        currentUser.userId());
+    ResPaymentGetDtoApiV1 responseDto = paymentService.getPaymentList(
+        predicate, pageable, currentUser);
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
@@ -196,24 +170,13 @@ public class PaymentControllerApiV1 {
   }
 
   /**
-   * 결제 상태 변경.
+   * *
+   *
+   * @param payload
    */
-  @PatchMapping("/{paymentId}/status")
-  @CustomPreAuthorize(userRoleType = {UserRoleType.ROLE_MASTER})
-  public ResponseEntity<ApiResponse<ResPaymentPatchStatusDtoApiV1>> updatePaymentStatus(
-      @PathVariable UUID paymentId,
-      @Valid @RequestBody ReqPaymentPatchStatusDtoApiV1 requestDto,
-      @CurrentUser CurrentUserDtoApiV1 currentUser
-  ) {
-    ResPaymentPatchStatusDtoApiV1 responseDto = paymentService.updatePaymentStatus(
-        paymentId, requestDto, currentUser.userId());
-
-    return ResponseEntity.ok().body(
-        ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment status updated successfully",
-            responseDto
-        )
-    );
-  }
+//  @PostMapping("/webhook")
+//  public ResponseEntity<Void> receiveWebhook(@RequestBody TossWebhookPayload payload) {
+//    paymentService.handleWebhook(payload);
+//    return ResponseEntity.ok().build();
+//  }
 }
