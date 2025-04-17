@@ -1,0 +1,196 @@
+### 회원가입 - (마스터 권한)
+POST http://localhost:10000/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice"
+  }
+}
+
+### 로그인 - (마스터 권한) (토큰 발급)
+POST http://localhost:10000/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+  client.global.set("accessToken", response.body.data.token.accessToken);
+  client.global.set("userId", response.body.data.user.userId);
+  client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
+### 회원가입 - (사용자 권한)
+POST http://localhost:10000/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "user1@gmail.com",
+    "password": "User1Authorize123!",
+    "name": "User1"
+  }
+}
+
+### 로그인 - (사용자 권한) (토큰 발급)
+POST http://localhost:10000/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "user1@gmail.com",
+    "password": "User1Authorize123!"
+  }
+}
+
+> {%
+  client.global.set("accessToken", response.body.data.token.accessToken);
+  client.global.set("userId", response.body.data.user.userId);
+  client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
+### 주문 등록
+POST http://localhost:10000/v1/orders
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+{
+  "order": {
+    "orderItems": [
+      {
+        "id": "f65a955a-abcd-4b5c-9cf4-149bd662e783",
+        "productName": "Sample Product - A",
+        "price": 150000,
+        "quantity": 3
+      },
+      {
+        "id": "3f6164db-5907-4cf0-afe4-c219527516ae",
+        "productName": "Sample Product - B",
+        "price": 10000,
+        "quantity": 5
+      }
+    ],
+    "shippingInfo": {
+      "receiverName": "John Doe",
+      "receiverPhone": "010-1234-5678",
+      "zipCode": "12345",
+      "address": "Shipping Address",
+      "addressDetail": "Shipping Address Detail"
+    },
+    "request": "Request Example",
+    "orderName": "Order Name Sample",
+    "couponId": "e676a7e8-9ab4-4452-a41c-351b69bba2d1",
+    "totalAmount": 500000,
+    "discountAmount": 33333,
+    "finalAmount": 466667
+  }
+}
+
+> {%
+  client.global.set("example_order_id", response.body.data.order.id);
+%}
+
+### 주문 단일 조회
+GET http://localhost:10000/v1/orders/{{example_order_id}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+
+### 주문 전체 조회 (권한 필요)
+GET http://localhost:10000/v1/orders?page=0&size=5
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+
+### 주문 수정
+PUT http://localhost:10000/v1/orders/{{example_order_id}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+{
+  "order": {
+    "orderItems": [
+      {
+        "id": "f65a955a-abcd-4b5c-9cf4-149bd662e783",
+        "productId": "f65a955a-abcd-4b5c-9cf4-149bd662e783",
+        "productName": "Sample Product - A",
+        "quantity": 3,
+        "price": 450000
+      },
+      {
+        "id": "d8fe1ffd-e525-4ad6-973a-ad07acd039c8",
+        "productId": "3f6164db-5907-4cf0-afe4-c219527516ae",
+        "productName": "New Sample Product",
+        "quantity": 1,
+        "price": 50000
+      }
+    ],
+    "shippingInfo": {
+      "receiverName": "John Doe",
+      "receiverPhone": "010-1234-5678",
+      "zipCode": "54321",
+      "address": "Updated Shipping Address",
+      "addressDetail": "Updated Shipping Address Detail"
+    },
+    "request": "Changed Request Example",
+    "couponId": "e676a7e8-9ab4-4452-a41c-351b69bba2d1",
+    "totalAmount": 500000,
+    "discountAmount": 100000,
+    "finalAmount": 400000
+  }
+}
+
+### 주문 취소 요청
+POST http://localhost:10000/v1/orders/{{example_order_id}}/cancel
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+{
+  "order": {
+    "cancelReason": "Sample Cancel Reason",
+    "cancelType": "CUSTOMER_REQUEST"
+  }
+}
+
+### 주문 삭제 - (SOFT DELETE / ROLE_MASTER)
+# TODO: 마스터 권한은 아무 조건 없이 삭제 가능
+DELETE http://localhost:10000/v1/orders/{{example_order_id}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+
+### feign 주문 조회 요청
+GET http://localhost:12001/internal/v1/orders/{{example_order_id}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+
+
+### feign 주문 상태 변경 요청
+POST http://localhost:12001/internal/v1/orders/{{example_order_id}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "status": "CANCELED",
+  "reason": "Sample Cancel Reason"
+}
