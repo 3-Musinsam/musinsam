@@ -106,3 +106,11 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {}
+
+### 단 건 쿠폰 조회
+GET http://localhost:10000/v1/coupons/{{id}}
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
