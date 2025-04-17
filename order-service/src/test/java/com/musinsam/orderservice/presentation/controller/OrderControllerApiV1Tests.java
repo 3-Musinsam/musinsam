@@ -102,7 +102,9 @@ public class OrderControllerApiV1Tests {
             .discountAmount(new BigDecimal("25000"))
             .finalAmount(new BigDecimal("225000"))
             .shippingInfo(shippingInfo)
-            .request("Request Example").couponId(UUID.randomUUID())
+            .request("Request Example")
+            .orderName("Order Name Example")
+            .couponId(UUID.randomUUID())
             .build())
         .build();
 
@@ -128,6 +130,7 @@ public class OrderControllerApiV1Tests {
             .discountAmount(new BigDecimal("25000"))
             .finalAmount(new BigDecimal("225000"))
             .request("Request Example")
+            .orderName("Order Name Example")
             .createdAt(ZonedDateTime.now())
             .build())
         .build();
@@ -171,6 +174,7 @@ public class OrderControllerApiV1Tests {
                             fieldWithPath("order.shippingInfo.address").description("주소"),
                             fieldWithPath("order.shippingInfo.addressDetail").description("상세 주소"),
                             fieldWithPath("order.request").description("요청사항").optional(),
+                            fieldWithPath("order.orderName").description("주문 이름"),
                             fieldWithPath("order.couponId").description("쿠폰 ID"),
                             fieldWithPath("order.totalAmount").description("총 주문 금액"),
                             fieldWithPath("order.discountAmount").description("할인 금액").optional(),
@@ -192,6 +196,7 @@ public class OrderControllerApiV1Tests {
                             fieldWithPath("data.order.discountAmount").description("할인 금액").optional(),
                             fieldWithPath("data.order.finalAmount").description("최종 결제 금액").optional(),
                             fieldWithPath("data.order.request").description("요청 사항").optional(),
+                            fieldWithPath("data.order.orderName").description("주문 이름"),
                             fieldWithPath("data.order.createdAt").description("주문 생성 일시"))
                         .build()
                 )

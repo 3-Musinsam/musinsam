@@ -26,6 +26,12 @@ public class ResOrderGetDtoApiV1 {
 
   private OrderPage orderPage;
 
+  public static ResOrderGetDtoApiV1 of(Page<OrderEntity> orderEntityPage) {
+    return ResOrderGetDtoApiV1.builder()
+        .orderPage(new OrderPage(orderEntityPage))
+        .build();
+  }
+
   @Getter
   @ToString
   public static class OrderPage extends PagedModel<OrderPage.Order> {
@@ -107,11 +113,5 @@ public class ResOrderGetDtoApiV1 {
         }
       }
     }
-  }
-
-  public static ResOrderGetDtoApiV1 of(Page<OrderEntity> orderEntityPage) {
-    return ResOrderGetDtoApiV1.builder()
-        .orderPage(new OrderPage(orderEntityPage))
-        .build();
   }
 }

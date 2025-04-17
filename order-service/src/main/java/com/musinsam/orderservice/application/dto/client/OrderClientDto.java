@@ -1,4 +1,4 @@
-package com.musinsam.orderservice.application.dto.response;
+package com.musinsam.orderservice.application.dto.client;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
@@ -11,14 +11,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 주문 생성 응답 DTO.
- */
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResOrderPostDtoApiV1 {
+public class OrderClientDto {
 
   private Order order;
 
@@ -37,10 +34,13 @@ public class ResOrderPostDtoApiV1 {
     private BigDecimal finalAmount;
     private String request;
     private String orderName;
+    private UUID couponId;
+    //  private PaymentInfo paymentInfo;
+    //  private ShippingInfo shippingInfo;
     private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 
     public static Order from(OrderEntity orderEntity) {
-
       List<OrderItem> orderItems = orderEntity.getOrderItems().stream()
           .map(OrderItem::from)
           .toList();
@@ -48,14 +48,18 @@ public class ResOrderPostDtoApiV1 {
       return Order.builder()
           .id(orderEntity.getId())
           .userId(orderEntity.getUserId())
-          .orderItems(orderItems)
           .orderStatus(orderEntity.getOrderStatus().name())
+          .orderItems(orderItems)
           .totalAmount(orderEntity.getTotalAmount())
           .discountAmount(orderEntity.getDiscountAmount())
           .finalAmount(orderEntity.getFinalAmount())
           .request(orderEntity.getRequest())
           .orderName(orderEntity.getOrderName())
+          .couponId(orderEntity.getCouponId())
+          //.paymentInfo()
+          //.shippingInfo()
           .createdAt(orderEntity.getCreatedAt())
+          .updatedAt(orderEntity.getUpdatedAt())
           .build();
     }
 
@@ -65,13 +69,15 @@ public class ResOrderPostDtoApiV1 {
     @AllArgsConstructor
     public static class OrderItem {
 
+      private UUID id;
       private UUID productId;
       private String productName;
-      private Integer quantity;
       private BigDecimal price;
+      private Integer quantity;
 
       public static OrderItem from(OrderItemEntity orderItemEntity) {
         return OrderItem.builder()
+            .id(orderItemEntity.getId())
             .productId(orderItemEntity.getProductId())
             .productName(orderItemEntity.getProductName())
             .quantity(orderItemEntity.getQuantity())
@@ -92,17 +98,56 @@ public class ResOrderPostDtoApiV1 {
       private String address;
       private String addressDetail;
 
-      // TODO:
-      public static ShippingInfo from() {
-        return ShippingInfo.builder()
-            .build();
-      }
+//      // TODO:
+//      public static ShippingInfo from(OrderEntity orderEntity) {
+//        return ShippingInfo.builder()
+//            .build();
+//      }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PaymentInfo {
+
+      private UUID id;
+      private String paymentStatus;
+      private String paymentMethod;
+      private BigDecimal totalAmount;
+      private BigDecimal discountAmount;
+      private BigDecimal finalAmount;
+      private CouponInfo coupon;
+
+//      // TODO:
+//      public static PaymentInfo from(OrderEntity orderEntity) {
+//        return PaymentInfo.builder()
+//            .build();
+//      }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CouponInfo {
+
+      private UUID id;
+      private String name;
+      private BigDecimal discountAmount;
+
+//      // TODO:
+//      public static CouponInfo from(OrderEntity orderEntity) {
+//        return CouponInfo.builder()
+//            .build();
+//      }
     }
   }
 
-  public static ResOrderPostDtoApiV1 of(OrderEntity orderEntity) {
-    return ResOrderPostDtoApiV1.builder()
+  public static OrderClientDto of(OrderEntity orderEntity) {
+    return OrderClientDto.builder()
         .order(Order.from(orderEntity))
         .build();
   }
 }
+
