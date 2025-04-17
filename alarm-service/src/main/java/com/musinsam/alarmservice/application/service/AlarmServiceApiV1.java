@@ -7,8 +7,8 @@ import com.musinsam.alarmservice.application.dto.response.ResAlarmGetDtoApiV1;
 import com.musinsam.alarmservice.application.dto.response.ResAlarmPostDtoApiV1;
 import com.musinsam.alarmservice.domain.alarm.entity.AlarmEntity;
 import com.musinsam.alarmservice.domain.alarm.repository.AlarmRepository;
-import com.musinsam.alarmservice.infrastructure.client.SlackClient;
 import com.musinsam.alarmservice.infrastructure.exception.AlarmErrorCode;
+import com.musinsam.alarmservice.infrastructure.feign.SlackFeignClientApiV1;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import java.util.UUID;
@@ -24,12 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class AlarmServiceApiV1 {
 
   private final AlarmRepository alarmRepository;
-  private final SlackClient slackClient;
+  private final SlackFeignClientApiV1 slackFeignClientApiV1;
 
   @Transactional
   public ResAlarmPostDtoApiV1 postBy(ReqAlarmPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
     AlarmEntity alarmEntity = alarmRepository.save(dto.getAlarm().toEntity());
-    slackClient.sendSlack(new SlackRequest(alarmEntity.getMessage()));
+    slackFeignClientApiV1.sendSlack(new SlackRequest(alarmEntity.getMessage()));
     return ResAlarmPostDtoApiV1.of(alarmEntity);
   }
 
