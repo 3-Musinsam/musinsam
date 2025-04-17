@@ -19,6 +19,7 @@ import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
 import io.micrometer.common.util.StringUtils;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -63,8 +64,11 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     // TODO: shop feign client 호출
     String shopName = "상점이름1";
 
+    // TODO: coupon feign client 호출해서 쿠폰 리스트 받기
+    List<ResShopCouponDto.Coupon> couponList = new ArrayList<>();
+
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
-        productImages, shopName);
+        productImages, shopName, couponList);
 
     return resDto;
   }

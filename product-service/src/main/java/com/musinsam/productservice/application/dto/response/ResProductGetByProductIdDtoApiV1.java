@@ -2,6 +2,7 @@ package com.musinsam.productservice.application.dto.response;
 
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
+import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -19,9 +20,10 @@ public class ResProductGetByProductIdDtoApiV1 {
   private Product product;
 
   public static ResProductGetByProductIdDtoApiV1 of(ProductEntity productEntity,
-      List<ProductImageEntity> productImageEntity, String shopName) {
+      List<ProductImageEntity> productImageEntity, String shopName,
+      List<ResShopCouponDto.Coupon> couponList) {
     return ResProductGetByProductIdDtoApiV1.builder()
-        .product(Product.from(productEntity, productImageEntity, shopName))
+        .product(Product.from(productEntity, productImageEntity, shopName, couponList))
         .build();
   }
 
@@ -33,18 +35,19 @@ public class ResProductGetByProductIdDtoApiV1 {
   public static class Product {
 
     private UUID productId;
-    private Shop shop;
     private String name;
     private BigDecimal price;
     private BigDecimal discountPrice;
+    private Shop shop;
     private List<Image> images;
 
 
     public static Product from(ProductEntity productEntity,
-        List<ProductImageEntity> productImageEntity, String shopName) {
+        List<ProductImageEntity> productImageEntity, String shopName,
+        List<ResShopCouponDto.Coupon> couponList) {
       return Product.builder()
           .productId(productEntity.getId())
-          .shop(Shop.from(productEntity, shopName))
+          .shop(Shop.from(productEntity, shopName, couponList))
           .name(productEntity.getName())
           .price(productEntity.getPrice())
           .discountPrice(productEntity.getDiscountPrice())
@@ -58,11 +61,14 @@ public class ResProductGetByProductIdDtoApiV1 {
 
       private UUID shopId;
       private String shopName;
+      private List<ResShopCouponDto.Coupon> coupons;
 
-      public static Shop from(ProductEntity productEntity, String shopName) {
+      public static Shop from(ProductEntity productEntity, String shopName,
+          List<ResShopCouponDto.Coupon> couponList) {
         return Shop.builder()
             .shopId(productEntity.getShopId())
             .shopName(shopName)
+            .coupons(couponList)
             .build();
       }
     }
