@@ -6,7 +6,8 @@ Content-Type: application/json
   "user": {
     "email": "alice@gmail.com",
     "password": "Authorize123!",
-    "name": "alice"
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
   }
 }
 
