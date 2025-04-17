@@ -6,6 +6,7 @@ import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPONS_GET_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_CLAIM_SUCCESS;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_GET_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_USE_SUCCESS;
 
@@ -18,6 +19,7 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCoupo
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
@@ -114,21 +116,25 @@ public class CouponController {
         response
     ));
   }
-//
-//
-//  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-//  @GetMapping("/{id}")
-//  public ResponseEntity<ApiResponse<ResCouponGetDtoApiV1>> getCoupon(
-//      @PathVariable UUID id,
-//      @CurrentUser CurrentUserDtoApiV1 currentUser
-//  ) {
-//    return ResponseEntity.ok(new ApiResponse<>(
-//        COUPON_GET_SUCCESS.getCode(),
-//        COUPON_GET_SUCCESS.getMessage(),
-//        null
-//    ));
-//  }
-//
+
+
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @GetMapping("/{id}")
+  public ResponseEntity<ApiResponse<ResCouponGetDtoApiV1>> getCoupon(
+      @PathVariable UUID id,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+
+    ResCouponGetDtoApiV1 response = couponService.getCoupon(id, currentUser);
+
+
+    return ResponseEntity.ok(new ApiResponse<>(
+        COUPON_GET_SUCCESS.getCode(),
+        COUPON_GET_SUCCESS.getMessage(),
+        response
+    ));
+  }
+
 //  @CustomPreAuthorize(userRoleType = {ROLE_USER})
 //  @PostMapping("/{id}/cancel")
 //  public ResponseEntity<ApiResponse<ResCouponCancelDtoApiV1>> cancelCoupon(
