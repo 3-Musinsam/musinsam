@@ -64,6 +64,9 @@ public class OrderEntity extends BaseEntity {
   @Column(name = "request")
   private String request;
 
+  @Column(name = "order_name")
+  private String orderName;
+
   @Enumerated(EnumType.STRING)
   @Column(name = "order_status")
   private OrderStatus orderStatus;
@@ -72,8 +75,8 @@ public class OrderEntity extends BaseEntity {
   @Column(name = "cancel_type")
   private OrderCancelType cancelType;
 
-  @Column(name = "cancel_reason")
-  private String cancelReason;
+  @Column(name = "status_change_reason")
+  private String statusChangeReason;
 
   @Column(name = "canceled_at")
   private ZonedDateTime canceledAt;
@@ -104,14 +107,15 @@ public class OrderEntity extends BaseEntity {
     assignOrderItems(newOrderItems);
   }
 
-  public void updateOrderStatus(OrderStatus status) {
+  public void updateOrderStatus(OrderStatus status, String reason) {
     this.orderStatus = status;
+    this.statusChangeReason = reason;
   }
 
   public void cancel(OrderCancelType cancelType, String cancelReason) {
     this.orderStatus = OrderStatus.CANCELED;
     this.canceledAt = ZonedDateTime.now();
     this.cancelType = cancelType;
-    this.cancelReason = cancelReason;
+    this.statusChangeReason = cancelReason;
   }
 }

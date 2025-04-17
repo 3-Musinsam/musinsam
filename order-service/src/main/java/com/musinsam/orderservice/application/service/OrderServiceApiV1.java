@@ -79,7 +79,7 @@ public class OrderServiceApiV1 {
   }
 
   @Transactional
-  public ResOrderPutDtoApiV1 updateOrder(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
+  public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
         .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
@@ -137,7 +137,7 @@ public class OrderServiceApiV1 {
     ZoneId zoneId = ZoneId.systemDefault();
 
     orderEntity.softDelete(userId, zoneId);
-    orderEntity.updateOrderStatus(OrderStatus.DELETED);
+    orderEntity.updateOrderStatus(OrderStatus.DELETED, "In service");
 
     for (OrderItemEntity item : orderEntity.getOrderItems()) {
       item.softDelete(userId, zoneId);

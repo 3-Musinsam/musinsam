@@ -141,7 +141,7 @@ public class OrderControllerApiV1 {
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
 
-    ResOrderPutDtoApiV1 responseDto = orderService.updateOrder(orderId, requestDto,
+    ResOrderPutDtoApiV1 responseDto = orderService.updateOrderStatus(orderId, requestDto,
         currentUser.userId());
 
     return ResponseEntity.ok().body(
