@@ -1,6 +1,6 @@
 package com.musinsam.paymentservice.application.dto.request;
 
-import jakarta.validation.Valid;
+import com.musinsam.paymentservice.domain.payment.vo.PaymentStatus;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,17 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReqPaymentPatchStatusDtoApiV1 {
 
-  @Valid
   @NotNull
-  private PaymentStatus paymentStatus;
-
-  @Getter
-  @Builder
-  @NoArgsConstructor
-  @AllArgsConstructor
-  public static class PaymentStatus {
-
-    private String status;
-    private String reason;
-  }
+  private PaymentStatus status;
+  private String reason;
 }

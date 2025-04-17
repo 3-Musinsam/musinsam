@@ -31,18 +31,31 @@ public class ResPaymentGetByIdDtoApiV1 {
 
     private UUID id;
     private UUID orderId;
-    private UUID userId;
+    private Long userId;
+    private String paymentKey;
     private String paymentStatus;
-    private String paymentProvider;
+    private String paymentMethod;
+    private String reason;
     private BigDecimal totalAmount;
-    private BigDecimal discountAmount;
-    private BigDecimal finalAmount;
     private ZonedDateTime createdAt;
+    private Long createdBy;
     private ZonedDateTime updatedAt;
+    private Long updatedBy;
 
     public static Payment from(PaymentEntity paymentEntity) {
       return Payment.builder()
-          // TODO:
+          .id(paymentEntity.getId())
+          .orderId(UUID.fromString(paymentEntity.getProviderOrderId()))
+          .userId(paymentEntity.getUserId())
+          .paymentKey(paymentEntity.getPaymentKey())
+          .paymentMethod(String.valueOf(paymentEntity.getMethodType()))
+          .paymentStatus(String.valueOf(paymentEntity.getStatus()))
+          .reason(paymentEntity.getReason())
+          .totalAmount(paymentEntity.getAmount())
+          .createdAt(paymentEntity.getCreatedAt())
+          .createdBy(paymentEntity.getCreatedBy())
+          .updatedAt(paymentEntity.getUpdatedAt())
+          .updatedBy(paymentEntity.getUpdatedBy())
           .build();
     }
   }
