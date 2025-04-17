@@ -7,6 +7,7 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCoupo
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
@@ -23,6 +24,8 @@ public interface CouponService {
   ResCouponUseDtoApiV1 useCoupon(UUID couponId, ReqCouponUseDtoApiV1 request, CurrentUserDtoApiV1 currentUser);
 
   Page<ResCouponsGetDtoApiV1> findCouponsByCondition(CouponSearchCondition condition, CurrentUserDtoApiV1 currentUser, Pageable pageable);
+
+  ResCouponGetDtoApiV1 getCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
 }
 
 
