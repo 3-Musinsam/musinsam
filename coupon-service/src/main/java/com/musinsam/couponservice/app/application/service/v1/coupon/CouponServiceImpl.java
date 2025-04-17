@@ -9,19 +9,24 @@ import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicy
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSearchCondition;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
 import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
+import com.musinsam.couponservice.app.domain.repository.coupon.CouponQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +37,8 @@ public class CouponServiceImpl implements CouponService {
 
   private final CouponRepository couponRepository;
   private final CouponPolicyRepository couponPolicyRepository;
+  private final CouponQueryRepository couponQueryRepository; // 주입 필요!
+
 
   private CouponPolicyEntity findCouponPolicyById(UUID id) {
     return couponPolicyRepository.findById(id)
@@ -96,6 +103,13 @@ public class CouponServiceImpl implements CouponService {
     CouponPolicyEntity couponPolicyById = findCouponPolicyById(savedCouponEntity.getCouponPolicyEntity().getId());
 
     return ResCouponUseDtoApiV1.from(savedCouponEntity, couponPolicyById);
+  }
+
+
+  @Override
+  public Page<ResCouponsGetDtoApiV1> findCouponsByCondition(CouponSearchCondition condition,
+                                                            CurrentUserDtoApiV1 currentUser, Pageable pageable) {
+    return couponQueryRepository.findCouponsByCondition(condition, currentUser, pageable);
   }
 
 
