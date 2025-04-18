@@ -12,5 +12,5 @@ public interface ProductRepository {
 
   Page<ProductEntity> findByDeletedAtIsNull(PageRequest pageRequest);
 
-  void save(ProductEntity product);
+  ProductEntity save(ProductEntity product);
 }
