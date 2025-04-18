@@ -12,6 +12,6 @@ public interface CouponFeignClientApiV1 extends CouponClientApiV1 {
 
   // 쿠폰리스트 받기
   @GetMapping("/internal/v1/coupons")
-  ResShopCouponDtoApiV1 getCouponList(@RequestParam UUID shopId);
+  ResShopCouponDtoApiV1 getShopCouponList(@RequestParam UUID shopId);
 
 }
