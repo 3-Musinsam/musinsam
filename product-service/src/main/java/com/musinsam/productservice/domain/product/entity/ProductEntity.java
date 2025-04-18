@@ -47,6 +47,7 @@ public class ProductEntity extends BaseEntity {
   @Column(nullable = false)
   private Integer stock;
 
+  @Setter
   @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   private ProductStatus status;
