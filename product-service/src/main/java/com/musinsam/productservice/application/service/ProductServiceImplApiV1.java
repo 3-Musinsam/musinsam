@@ -1,4 +1,4 @@
-package com.musinsam.productservice.application.service.impl;
+package com.musinsam.productservice.application.service;
 
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.common.user.UserRoleType;
@@ -6,15 +6,15 @@ import com.musinsam.productservice.application.dto.request.ReqProductPatchByProd
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
-import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
-import com.musinsam.productservice.application.service.ProductServiceApiV1;
+import com.musinsam.productservice.application.integration.CouponServiceApiV1;
+import com.musinsam.productservice.application.integration.ShopServiceApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
-import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
+import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
 import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
 import io.micrometer.common.util.StringUtils;
@@ -38,6 +38,8 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Service s3Service;
+  private final ShopServiceApiV1 shopService;
+  private final CouponServiceApiV1 couponServiceApiV1;
 
   @Override
   @Transactional
@@ -61,11 +63,11 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     List<ProductImageEntity> productImages = productImageRepository.findByProductIdAndDeletedAtIsNull(
         productId);
 
-    // TODO: shop feign client 호출
-    String shopName = "상점이름1";
+    UUID shopId = product.getShopId();
+    String shopName = shopService.getShopNameByShopId(shopId);
 
-    // TODO: coupon feign client 호출해서 쿠폰 리스트 받기
-    List<ResShopCouponDto.Coupon> couponList = new ArrayList<>();
+    ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
+    List<ResShopCouponDtoApiV1.Coupon> couponList = new ArrayList<>();
 
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
         productImages, shopName, couponList);
@@ -91,7 +93,6 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     ProductEntity product = findProductEntityById(productId);
 
-    // TODO: ROLE_COMPANY == shop 확인
     validateShopManager(currentUser, product);
 
     dto.getProduct().updateOf(product);
@@ -103,7 +104,6 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     ProductEntity product = findProductEntityById(productId);
 
-    // TODO: ROLE_COMPANY == shop 확인
     validateShopManager(currentUser, product);
 
     List<ProductImageEntity> images = productImageRepository.findByProductIdAndDeletedAtIsNull(
@@ -142,21 +142,6 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     dto.getProduct().updateOf(product);
   }
 
-  @Override
-  @Transactional(readOnly = true)
-  public ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId, int size, int page) {
-
-    ProductEntity product = findProductEntityById(productId);
-
-    UUID shopId = product.getShopId();
-    // TODO: shop-service feign client 호출해서 쿠폰 페이지 받기
-    // return ResShopCouponDto
-
-    ResShopCouponDto resDto = null;
-
-    return ResProductGetCouponDtoApiV1.of(resDto.getCouponList(), productId, page, size);
-  }
-
 
   private ProductEntity findProductEntityById(UUID productId) {
     return productRepository.findByIdAndDeletedAtIsNull(productId)
@@ -164,13 +149,14 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   }
 
   private void validateShopManager(CurrentUserDtoApiV1 currentUser, ProductEntity product) {
-    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
-      // USER-ROLE이 ROLE_COMPANY일 경우,
-      // product의 shopId로 업체관리자가 UserId와 같은지 확인
-      // TODO: shop feign client 호출 (shopId보내서 UserId 받기)
-      UUID shopId = product.getShopId();
 
-      // 다르면 예외
+    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
+
+      UUID shopId = product.getShopId();
+      if (!currentUser.userId().equals(shopService.getShopManagerIdByShopId(shopId))) {
+        throw new RuntimeException();
+      }
+
     }
   }
 
