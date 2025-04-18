@@ -149,8 +149,8 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Override
-  public ResShopCouponDtoApiV1 getCouponsByCompanyId(ReqShopCouponDtoApiV1 request) {
-    List<CouponEntity> coupons = couponRepository.findAllByCouponPolicyEntity_CompanyId(request.getShopId());
+  public ResShopCouponDtoApiV1 getCouponsByCompanyId(UUID shopId) {
+    List<CouponEntity> coupons = couponRepository.findAllByCouponPolicyEntity_CompanyId(shopId);
 
     List<ResShopCouponDtoApiV1.Coupon> couponList = coupons.stream()
         .map(coupon -> ResShopCouponDtoApiV1.Coupon.builder()

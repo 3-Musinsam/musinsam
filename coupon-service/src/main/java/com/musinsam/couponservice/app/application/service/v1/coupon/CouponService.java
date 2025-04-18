@@ -34,7 +34,7 @@ public interface CouponService {
 
   void deleteCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
 
-  ResShopCouponDtoApiV1 getCouponsByCompanyId(ReqShopCouponDtoApiV1 request);
+  ResShopCouponDtoApiV1 getCouponsByCompanyId(UUID shopId);
 }
 
 
