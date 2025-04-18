@@ -1,6 +1,37 @@
+### 1. 회원가입
+POST http://localhost:10001/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
+  }
+}
+
+### 2. 로그인 (토큰 발급)
+POST http://localhost:10001/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+  client.global.set("accessToken", response.body.data.token.accessToken);
+  client.global.set("userId", response.body.data.user.userId);
+  client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
 ### Ai 메시지 생성
 POST http://localhost:10000/internal/v1/ai-messages
 Content-Type: application/json
+Authorization: Bearer {{accessToken}}
 
 {
   "ai": {

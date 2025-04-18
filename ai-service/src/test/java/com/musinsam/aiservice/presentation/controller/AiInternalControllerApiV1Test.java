@@ -1,7 +1,6 @@
 package com.musinsam.aiservice.presentation.controller;
 
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -27,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureRestDocs
 @ActiveProfiles
 @AutoConfigureMockMvc(addFilters = false)
-class AiControllerApiV1Test {
+class AiInternalControllerApiV1Test {
 
   @Autowired
   private MockMvc mockMvc;
@@ -51,19 +50,12 @@ class AiControllerApiV1Test {
         .build();
 
     mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/v1/ais")
-                .header("X-USER-ID", 1L)
-                .header("X-USER-ROLE", "ROLE_USER")
+            RestDocumentationRequestBuilders.post("/internal/v1/ai-messages")
                 .header("Authorization", "Bearer " + apiKey)
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(request))
         )
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(0))
-        .andExpect(
-            MockMvcResultMatchers.jsonPath("$.message")
-                .value("The ai message was successfully sent."))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.data").exists())
         .andDo(MockMvcRestDocumentationWrapper.document("알림 등록 성공",
                 preprocessRequest(prettyPrint()),
                 preprocessResponse(prettyPrint()),
@@ -71,19 +63,10 @@ class AiControllerApiV1Test {
                     .tag("Ai v1")
                     .summary("Ai 메시지 등록")
                     .description("Ai 메시지를 생성합니다.")
-                    .requestHeaders(
-                        headerWithName("X-USER-ID").description("요청자 ID"),
-                        headerWithName("X-USER-ROLE").description("요청자 역할")
-                    )
                     .requestFields(
                         fieldWithPath("ai").description("Ai 요청 정보").type(JsonFieldType.OBJECT),
                         fieldWithPath("ai.prompt").description("Ai 메시지 요청 내용")
                             .type(JsonFieldType.STRING)
-                    )
-                    .responseFields(
-                        fieldWithPath("code").description("응답 코드"),
-                        fieldWithPath("message").description("응답 메시지"),
-                        fieldWithPath("data").optional().description("응답 데이터")
                     )
                     .build()
                 )
