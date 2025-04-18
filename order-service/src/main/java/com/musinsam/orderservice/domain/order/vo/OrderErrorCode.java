@@ -1,4 +1,4 @@
-package com.musinsam.orderservice.app.global.response;
+package com.musinsam.orderservice.domain.order.vo;
 
 import com.musinsam.common.exception.ErrorCode;
 import lombok.Getter;

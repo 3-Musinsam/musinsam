@@ -15,6 +15,7 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
+import com.musinsam.orderservice.domain.order.vo.OrderErrorCode;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
 import com.musinsam.orderservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
 import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientUpdateOrderStatusDto;
