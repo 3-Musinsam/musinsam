@@ -1,5 +1,6 @@
 package com.musinsam.productservice.application.service;
 
+import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.common.user.UserRoleType;
 import com.musinsam.productservice.application.dto.request.ReqProductPatchByProductIdDtoApiV1;
@@ -15,6 +16,7 @@ import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.entity.ProductStatus;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
+import com.musinsam.productservice.global.exception.ProductErrorCode;
 import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
 import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
@@ -23,6 +25,7 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -31,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
@@ -144,16 +148,19 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
   private ProductEntity findProductEntityById(UUID productId) {
     return productRepository.findByIdAndDeletedAtIsNull(productId)
-        .orElseThrow(() -> new RuntimeException());
+        .orElseThrow(() -> new CustomException(ProductErrorCode.PRODUCT_NOT_FOUND));
   }
 
   private void validateShopManager(CurrentUserDtoApiV1 currentUser, ProductEntity product) {
 
-    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
+    log.info("UserRole : {}", currentUser.role());
+    log.info("UserId : {}", currentUser.userId());
 
+    if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
       UUID shopId = product.getShopId();
+      log.info("상점 관리자 아이디: {}", shopService.getShopManagerIdByShopId(shopId));
       if (!currentUser.userId().equals(shopService.getShopManagerIdByShopId(shopId))) {
-        throw new RuntimeException();
+        throw new CustomException(ProductErrorCode.UNAUTHORIZED_PRODUCT_ACCESS);
       }
 
     }
@@ -199,18 +206,18 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   public void saveImageFile(S3Folder s3Folder, MultipartFile file, UUID id) {
     // S3 폴더 파라미터 확인
     if (s3Folder == null) {
-      throw new RuntimeException();
+      throw new CustomException(ProductErrorCode.S3_FOLDER_NOT_SPECIFIED);
     }
 
     // 파일이 비어있는지 확인
     if (file == null || file.isEmpty()) {
-      throw new RuntimeException();
+      throw new CustomException(ProductErrorCode.FILE_IS_EMPTY);
     }
 
     // 파일 확장자 확인
     final String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
     if (StringUtils.isBlank(fileExtension) || !imageExtension.contains(fileExtension)) {
-      throw new RuntimeException();
+      throw new CustomException(ProductErrorCode.INVALID_FILE_EXTENSION);
     }
 
     // 파일 이름 생성
@@ -229,8 +236,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   public void saveProductImageInfo(S3Folder s3Folder, MultipartFile file, UUID id,
       String fileName) {
 
-    ProductEntity product = productRepository.findByIdAndDeletedAtIsNull(id)
-        .orElseThrow(() -> new RuntimeException());
+    ProductEntity product = findProductEntityById(id);
 
     ProductImageEntity productImage = ProductImageEntity.builder()
         .originFileName(file.getOriginalFilename())
