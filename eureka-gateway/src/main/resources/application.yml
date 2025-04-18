@@ -91,7 +91,7 @@ spring:
           predicates:
             - Path=/v1/coupons/**
 
-        - id: coupon-service
+        - id: coupon-Policy-service
           uri: lb://COUPON-SERVICE
           predicates:
             - Path=/v1/coupon-policies/**

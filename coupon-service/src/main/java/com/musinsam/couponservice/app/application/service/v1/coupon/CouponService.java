@@ -6,12 +6,14 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSe
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqShopCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponCancelDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResShopCouponDtoApiV1;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,6 +33,8 @@ public interface CouponService {
   ResCouponCancelDtoApiV1 cancelCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
 
   void deleteCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
+
+  ResShopCouponDtoApiV1 getCouponsByCompanyId(UUID shopId);
 }
 
 

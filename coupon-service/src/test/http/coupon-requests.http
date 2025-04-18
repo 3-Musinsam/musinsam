@@ -133,3 +133,8 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {}
+
+### 업체 ID로 모든 쿠폰 조회
+GET http://localhost:10000/internal/v1/coupons?shopId=00000000-0000-0000-0000-000000000001
+Content-Type: application/json
+
