@@ -14,18 +14,21 @@ import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSe
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqShopCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponCancelDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponsGetDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResShopCouponDtoApiV1;
 import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -143,5 +146,27 @@ public class CouponServiceImpl implements CouponService {
     CouponEntity couponEntity = findCouponById(couponId);
     couponEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
     couponRepository.save(couponEntity);
+  }
+
+  @Override
+  public ResShopCouponDtoApiV1 getCouponsByCompanyId(ReqShopCouponDtoApiV1 request) {
+    List<CouponEntity> coupons = couponRepository.findAllByCouponPolicyEntity_CompanyId(request.getShopId());
+
+    List<ResShopCouponDtoApiV1.Coupon> couponList = coupons.stream()
+        .map(coupon -> ResShopCouponDtoApiV1.Coupon.builder()
+            .couponId(coupon.getId())
+            .couponName(coupon.getCouponPolicyEntity().getName())
+            .couponPolicy(
+                ResShopCouponDtoApiV1.Coupon.CouponPolicy.builder()
+                    .startTime(coupon.getCouponPolicyEntity().getStartedAt())
+                    .endTime(coupon.getCouponPolicyEntity().getEndedAt())
+                    .build()
+            )
+            .build()
+        ).toList();
+
+    return ResShopCouponDtoApiV1.builder()
+        .couponList(couponList)
+        .build();
   }
 }
