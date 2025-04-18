@@ -20,7 +20,6 @@ import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
 import io.micrometer.common.util.StringUtils;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -67,11 +66,10 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     UUID shopId = product.getShopId();
     String shopName = shopService.getShopNameByShopId(shopId);
 
-//    ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
-    List<ResShopCouponDtoApiV1.Coupon> couponList = new ArrayList<>();
+    ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
 
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
-        productImages, shopName, couponList);
+        productImages, shopName, shopCouponDto.getCouponList());
 
     return resDto;
   }
