@@ -63,7 +63,7 @@ Content-Type: application/json
 {
   "userId": {{userId}},
   "couponPolicyId": "{{couponPolicyId}}",
-  "couponCode": "aliceCouponCode12",
+  "couponCode": "aliceCouponCode",
   "couponStatus": "AVAILABLE"
 }
 
@@ -135,10 +135,6 @@ Content-Type: application/json
 {}
 
 ### 업체 ID로 모든 쿠폰 조회
-GET http://localhost:10051/internal/v1/coupons
+GET http://localhost:10051/internal/v1/coupons?shopId=00000000-0000-0000-0000-000000000001
 Content-Type: application/json
-
-{
-  "shopId": "00000000-0000-0000-0000-000000000001"
-}
 
