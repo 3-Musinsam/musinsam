@@ -12,6 +12,7 @@ import com.musinsam.productservice.application.integration.CouponServiceApiV1;
 import com.musinsam.productservice.application.integration.ShopServiceApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
+import com.musinsam.productservice.domain.product.entity.ProductStatus;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
 import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
@@ -19,7 +20,6 @@ import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
 import io.micrometer.common.util.StringUtils;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -67,10 +67,9 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     String shopName = shopService.getShopNameByShopId(shopId);
 
     ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
-    List<ResShopCouponDtoApiV1.Coupon> couponList = new ArrayList<>();
 
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
-        productImages, shopName, couponList);
+        productImages, shopName, shopCouponDto.getCouponList());
 
     return resDto;
   }
@@ -167,12 +166,16 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     ProductEntity product = findProductEntityById(productId);
     Integer stock = product.getStock();
 
-    if (stock >= quantity) {
-      product.setStock(stock - quantity);
-      return true;
+    if (ProductStatus.SOLDOUT.equals(product.getStatus()) || stock < quantity) {
+      return false;
     }
 
-    return false;
+    product.setStock(stock - quantity);
+    if (stock.equals(quantity)) {
+      product.setStatus(ProductStatus.SOLDOUT);
+    }
+
+    return true;
   }
 
   @Override
@@ -180,6 +183,10 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   public void restoreStock(UUID productId, Integer quantity) {
     ProductEntity product = findProductEntityById(productId);
     product.setStock(product.getStock() + quantity);
+
+    if (ProductStatus.SOLDOUT.equals(product.getStatus())) {
+      product.setStatus(ProductStatus.SHOW);
+    }
   }
 
 
