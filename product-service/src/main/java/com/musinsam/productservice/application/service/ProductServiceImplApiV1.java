@@ -8,8 +8,8 @@ import com.musinsam.productservice.application.dto.request.ReqProductPutByProduc
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
-import com.musinsam.productservice.application.integration.CouponServiceApiV1;
-import com.musinsam.productservice.application.integration.ShopServiceApiV1;
+import com.musinsam.productservice.application.integration.CouponClientApiV1;
+import com.musinsam.productservice.application.integration.ShopClientApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.entity.ProductStatus;
@@ -38,8 +38,8 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Service s3Service;
-  private final ShopServiceApiV1 shopService;
-  private final CouponServiceApiV1 couponServiceApiV1;
+  private final ShopClientApiV1 shopClientApiV1;
+  private final CouponClientApiV1 couponClientApiV1;
 
   @Override
   @Transactional
@@ -64,9 +64,9 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
         productId);
 
     UUID shopId = product.getShopId();
-    String shopName = shopService.getShopNameByShopId(shopId);
+    String shopName = shopClientApiV1.getShopInfo(shopId).getShop().getName();
 
-    ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
+    ResShopCouponDtoApiV1 shopCouponDto = couponClientApiV1.getShopCouponList(shopId);
 
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
         productImages, shopName, shopCouponDto.getCouponList());
@@ -152,7 +152,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
 
       UUID shopId = product.getShopId();
-      if (!currentUser.userId().equals(shopService.getShopManagerIdByShopId(shopId))) {
+      if (!currentUser.userId().equals(shopClientApiV1.getShopInfo(shopId).getShop().getUserId())) {
         throw new RuntimeException();
       }
 
