@@ -1,4 +1,4 @@
-package com.musinsam.alarmservice.infrastructure.feign;
+package com.musinsam.shopservice.infrastructure.feign;
 
 import com.musinsam.common.config.FeignConfig;
 import com.musinsam.common.response.ApiResponse;

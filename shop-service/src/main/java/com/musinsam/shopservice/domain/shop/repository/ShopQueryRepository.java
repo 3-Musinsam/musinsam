@@ -4,7 +4,7 @@ import static com.musinsam.shopservice.domain.shop.entity.QShopEntity.shopEntity
 import static com.musinsam.shopservice.infrastructure.config.QueryDslConfig.getUsableSize;
 
 import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
-import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1.ShopDto;
+import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1.Shop;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
 import com.musinsam.shopservice.infrastructure.config.QueryDslConfig;
 import com.querydsl.core.BooleanBuilder;
@@ -51,7 +51,7 @@ public class ShopQueryRepository {
   }
 
   public Page<ShopEntity> findShopSearchList(Pageable pageable,
-      ReqShopGetSearchDtoApiV1.ShopDto shopDto) {
+      ReqShopGetSearchDtoApiV1.Shop shopDto) {
 
     int pageSize = validatePageSize(pageable.getPageSize());
 
@@ -77,19 +77,19 @@ public class ShopQueryRepository {
     return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
   }
 
-  private Predicate getShopForSearch(ShopDto shopDto) {
+  private Predicate getShopForSearch(Shop shop) {
     BooleanBuilder booleanBuilder = new BooleanBuilder();
 
-    if (shopDto.getId() != null) {
-      booleanBuilder.and(shopEntity.id.eq(shopDto.getId()));
+    if (shop.getId() != null) {
+      booleanBuilder.and(shopEntity.id.eq(shop.getId()));
     }
 
-    if (shopDto.getUserId() != null) {
-      booleanBuilder.and(shopEntity.userId.eq(shopDto.getUserId()));
+    if (shop.getUserId() != null) {
+      booleanBuilder.and(shopEntity.userId.eq(shop.getUserId()));
     }
 
-    if (shopDto.getName() != null && !shopDto.getName().isEmpty()) {
-      booleanBuilder.and(shopEntity.name.eq(shopDto.getName()));
+    if (shop.getName() != null && !shop.getName().isEmpty()) {
+      booleanBuilder.and(shopEntity.name.eq(shop.getName()));
     }
 
     return booleanBuilder;
