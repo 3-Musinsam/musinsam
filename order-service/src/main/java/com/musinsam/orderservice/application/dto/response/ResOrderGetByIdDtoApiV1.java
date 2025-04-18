@@ -37,8 +37,6 @@ public class ResOrderGetByIdDtoApiV1 {
     private BigDecimal finalAmount;
     private String request;
     private UUID couponId;
-    //  private PaymentInfo paymentInfo;
-    //  private ShippingInfo shippingInfo;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -57,8 +55,6 @@ public class ResOrderGetByIdDtoApiV1 {
           .finalAmount(orderEntity.getFinalAmount())
           .request(orderEntity.getRequest())
           .couponId(orderEntity.getCouponId())
-          //.paymentInfo()
-          //.shippingInfo()
           .createdAt(orderEntity.getCreatedAt())
           .updatedAt(orderEntity.getUpdatedAt())
           .build();
@@ -98,12 +94,6 @@ public class ResOrderGetByIdDtoApiV1 {
       private String zipCode;
       private String address;
       private String addressDetail;
-
-      // TODO:
-      public static ShippingInfo from(OrderEntity orderEntity) {
-        return ShippingInfo.builder()
-            .build();
-      }
     }
 
     @Getter
@@ -119,12 +109,6 @@ public class ResOrderGetByIdDtoApiV1 {
       private BigDecimal discountAmount;
       private BigDecimal finalAmount;
       private CouponInfo coupon;
-
-      // TODO:
-      public static PaymentInfo from(OrderEntity orderEntity) {
-        return PaymentInfo.builder()
-            .build();
-      }
     }
 
     @Getter
@@ -136,16 +120,9 @@ public class ResOrderGetByIdDtoApiV1 {
       private UUID id;
       private String name;
       private BigDecimal discountAmount;
-
-      // TODO:
-      public static CouponInfo from(OrderEntity orderEntity) {
-        return CouponInfo.builder()
-            .build();
-      }
     }
   }
 
-  // TODO:
   public static ResOrderGetByIdDtoApiV1 of(OrderEntity orderEntity) {
     return ResOrderGetByIdDtoApiV1.builder()
         .order(Order.from(orderEntity))

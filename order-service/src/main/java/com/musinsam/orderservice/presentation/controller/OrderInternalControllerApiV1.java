@@ -1,8 +1,8 @@
 package com.musinsam.orderservice.presentation.controller;
 
-import com.musinsam.orderservice.application.dto.client.OrderClientDto;
-import com.musinsam.orderservice.application.service.OrderServiceApiV1;
+import com.musinsam.orderservice.application.service.OrderInternalServiceApiV1;
 import com.musinsam.orderservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
+import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientGetByIdDto;
 import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientUpdateOrderStatusDto;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/internal/v1/orders")
 public class OrderInternalControllerApiV1 {
 
-  private final OrderServiceApiV1 orderService;
+  private final OrderInternalServiceApiV1 orderService;
 
   @GetMapping("/{orderId}")
-  public OrderClientDto getOrderClientById(@PathVariable UUID orderId) {
-    return orderService.getOrderClientDtoById(orderId);
+  public ResOrderClientGetByIdDto getOrderClientById(@PathVariable UUID orderId) {
+    return orderService.getOrderClientGetById(orderId);
   }
 
   @PostMapping("/{orderId}")

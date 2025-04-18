@@ -2,8 +2,6 @@ package com.musinsam.orderservice.application.service;
 
 import com.musinsam.common.exception.CommonErrorCode;
 import com.musinsam.common.exception.CustomException;
-import com.musinsam.orderservice.app.global.response.OrderErrorCode;
-import com.musinsam.orderservice.application.dto.client.OrderClientDto;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostCancelDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPutDtoApiV1;
@@ -17,8 +15,6 @@ import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderErrorCode;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
-import com.musinsam.orderservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
-import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientUpdateOrderStatusDto;
 import com.querydsl.core.types.Predicate;
 import java.time.ZoneId;
 import java.util.List;
@@ -44,7 +40,6 @@ public class OrderServiceApiV1 {
     validateOrderStatus(orderEntity);
 
     // TODO: 상품 서비스에 재고 확인 요청 및 차감
-    //  boolean stockAvailable = validateAndReserveStock(requestDto);
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
@@ -52,9 +47,6 @@ public class OrderServiceApiV1 {
     }
 
     OrderEntity savedOrder = orderRepository.save(orderEntity);
-
-    // TODO: 주문 이벤트 발행
-    //  publishOrderCreatedEvent(savedOrder);
 
     return ResOrderPostDtoApiV1.of(savedOrder);
   }
@@ -91,8 +83,6 @@ public class OrderServiceApiV1 {
     validateOrderOwner(orderEntity, userId);
     validateOrderStatus(orderEntity);
 
-    // TODO: 상품 서비스에 재고 확인 요청 및 차감
-    //  boolean stockAvailable = validateAndReserveStock(requestDto);
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
@@ -100,9 +90,6 @@ public class OrderServiceApiV1 {
     }
 
     requestDto.getOrder().updateEntity(orderEntity);
-
-    // TODO: 이벤트 발행
-    //  publishOrderUpdateEvent(orderEntity);
 
     return ResOrderPutDtoApiV1.of(orderEntity);
   }
@@ -124,8 +111,6 @@ public class OrderServiceApiV1 {
     );
 
     // TODO: 재고 복구 요청
-
-    // TODO: 취소 이벤트 발행
 
     return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
@@ -178,28 +163,5 @@ public class OrderServiceApiV1 {
     if (!orderEntity.getUserId().equals(userId)) {
       throw CustomException.from(CommonErrorCode.FORBIDDEN);
     }
-  }
-
-  @Transactional
-  public OrderClientDto getOrderClientDtoById(UUID orderId) {
-    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
-    return OrderClientDto.of(orderEntity);
-  }
-
-  @Transactional
-  public ResOrderClientUpdateOrderStatusDto updateOrderStatus(UUID orderId,
-      ReqOrderClientUpdateOrderStatusDto reqDto) {
-    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
-
-    orderEntity.updateOrderStatus(
-        OrderStatus.valueOf(reqDto.getStatus()),
-        reqDto.getReason()
-    );
-
-    orderRepository.save(orderEntity);
-
-    return ResOrderClientUpdateOrderStatusDto.of(orderEntity);
   }
 }
