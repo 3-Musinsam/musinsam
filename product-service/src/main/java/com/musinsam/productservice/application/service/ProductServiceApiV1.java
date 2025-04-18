@@ -8,6 +8,7 @@ import com.musinsam.productservice.application.dto.response.ResProductGetByProdu
 import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
+import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
@@ -34,4 +35,11 @@ public interface ProductServiceApiV1 {
 
   ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId,
       int page, int size);
+
+  void saveImageFile(S3Folder s3Folder, MultipartFile file, UUID id);
+
+  void saveProductImageInfo(final S3Folder s3Folder,
+      final MultipartFile file,
+      final UUID id,
+      final String fileName);
 }

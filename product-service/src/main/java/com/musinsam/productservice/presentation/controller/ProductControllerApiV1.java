@@ -5,7 +5,6 @@ import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
 import static com.musinsam.common.user.UserRoleType.ROLE_USER;
 import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_CREATE_SUCCESS;
 import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_DELETE_SUCCESS;
-import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_GET_COUPON_SUCCESS;
 import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_GET_LIST_SUCCESS;
 import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_GET_STOCK_SUCCESS;
 import static com.musinsam.productservice.global.config.ProductResponseCode.PRODUCT_GET_SUCCESS;
@@ -20,7 +19,6 @@ import com.musinsam.productservice.application.dto.request.ReqProductPatchByProd
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
-import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import com.musinsam.productservice.application.service.ProductServiceApiV1;
@@ -174,24 +172,6 @@ public class ProductControllerApiV1 {
         PRODUCT_UPDATE_STOCK_SUCCESS.getCode(),
         PRODUCT_UPDATE_STOCK_SUCCESS.getMessage(),
         null
-    ));
-  }
-
-
-  /**
-   * 특정 상품의 적용 가능한 쿠폰 조회
-   */
-  @GetMapping("/{productId}/coupons")
-  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  public ResponseEntity<ApiResponse<ResProductGetCouponDtoApiV1>> getCouponList(
-      @PathVariable UUID productId,
-      @RequestParam(defaultValue = "1") int page,
-      @RequestParam(defaultValue = "10") int size
-  ) {
-    return ResponseEntity.ok(new ApiResponse<>(
-        PRODUCT_GET_COUPON_SUCCESS.getCode(),
-        PRODUCT_GET_COUPON_SUCCESS.getMessage(),
-        productService.getProductCouponList(productId, page, size)
     ));
   }
 

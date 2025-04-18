@@ -1,7 +1,7 @@
 package com.musinsam.productservice.domain.product.entity;
 
 import com.musinsam.common.domain.BaseEntity;
-import com.musinsam.productservice.infrastructure.image.S3Folder;
+import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

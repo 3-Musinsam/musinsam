@@ -1,9 +1,9 @@
-package com.musinsam.productservice.infrastructure.image.service;
+package com.musinsam.productservice.infrastructure.s3.service;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.musinsam.productservice.infrastructure.image.S3Folder;
+import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
