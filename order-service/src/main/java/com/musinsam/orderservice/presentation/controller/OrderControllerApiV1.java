@@ -1,5 +1,12 @@
 package com.musinsam.orderservice.presentation.controller;
 
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_CANCEL_SUCCESS;
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_DELETE_SUCCESS;
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_GET_SUCCESS;
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_LIST_GET_SUCCESS;
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_POST_SUCCESS;
+import static com.musinsam.orderservice.domain.order.vo.OrderResponseCode.ORDER_PUT_SUCCESS;
+
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
@@ -16,6 +23,7 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.application.service.OrderServiceApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+
 import com.querydsl.core.types.Predicate;
 import jakarta.validation.Valid;
 import java.util.UUID;
@@ -64,8 +72,8 @@ public class OrderControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Order created successfully",
+            ORDER_POST_SUCCESS.getCode(),
+            ORDER_POST_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -89,8 +97,8 @@ public class OrderControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Order details retrieved successfully.",
+            ORDER_GET_SUCCESS.getCode(),
+            ORDER_GET_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -120,8 +128,8 @@ public class OrderControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Orders retrieved successfully.",
+            ORDER_LIST_GET_SUCCESS.getCode(),
+            ORDER_LIST_GET_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -146,8 +154,8 @@ public class OrderControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Order updated successfully.",
+            ORDER_PUT_SUCCESS.getCode(),
+            ORDER_PUT_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -172,8 +180,8 @@ public class OrderControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Order canceled successfully.",
+            ORDER_CANCEL_SUCCESS.getCode(),
+            ORDER_CANCEL_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -192,7 +200,10 @@ public class OrderControllerApiV1 {
     orderService.deleteOrder(orderId, currentUser.userId());
 
     return ResponseEntity.ok(
-        ApiResponse.success("Order deleted successfully.")
+        ApiResponse.success(
+            ORDER_DELETE_SUCCESS.getCode(),
+            ORDER_DELETE_SUCCESS.getMessage()
+        )
     );
   }
 }
