@@ -160,6 +160,28 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
     }
   }
 
+  @Override
+  @Transactional
+  public Boolean checkAndReduceStock(UUID productId, Integer quantity) {
+
+    ProductEntity product = findProductEntityById(productId);
+    Integer stock = product.getStock();
+
+    if (stock >= quantity) {
+      product.setStock(stock - quantity);
+      return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  @Transactional
+  public void restoreStock(UUID productId, Integer quantity) {
+    ProductEntity product = findProductEntityById(productId);
+    product.setStock(product.getStock() + quantity);
+  }
+
 
   @Value("${file.image-extension}")
   private String imageExtension;

@@ -5,7 +5,6 @@ import com.musinsam.productservice.application.dto.request.ReqProductPatchByProd
 import com.musinsam.productservice.application.dto.request.ReqProductPostDtoApiV1;
 import com.musinsam.productservice.application.dto.request.ReqProductPutByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
-import com.musinsam.productservice.application.dto.response.ResProductGetCouponDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
 import com.musinsam.productservice.infrastructure.s3.S3Folder;
@@ -33,13 +32,14 @@ public interface ProductServiceApiV1 {
   void updateProductStock(CurrentUserDtoApiV1 currentUser, UUID productId,
       @Valid ReqProductPatchByProductIdDtoApiV1 dto);
 
-  ResProductGetCouponDtoApiV1 getProductCouponList(UUID productId,
-      int page, int size);
-
   void saveImageFile(S3Folder s3Folder, MultipartFile file, UUID id);
 
   void saveProductImageInfo(final S3Folder s3Folder,
       final MultipartFile file,
       final UUID id,
       final String fileName);
+
+  Boolean checkAndReduceStock(UUID productId, Integer quantity);
+
+  void restoreStock(UUID productId, Integer quantity);
 }
