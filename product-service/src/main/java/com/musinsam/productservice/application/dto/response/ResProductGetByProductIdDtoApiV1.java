@@ -2,7 +2,7 @@ package com.musinsam.productservice.application.dto.response;
 
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
-import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDto;
+import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -21,7 +21,7 @@ public class ResProductGetByProductIdDtoApiV1 {
 
   public static ResProductGetByProductIdDtoApiV1 of(ProductEntity productEntity,
       List<ProductImageEntity> productImageEntity, String shopName,
-      List<ResShopCouponDto.Coupon> couponList) {
+      List<ResShopCouponDtoApiV1.Coupon> couponList) {
     return ResProductGetByProductIdDtoApiV1.builder()
         .product(Product.from(productEntity, productImageEntity, shopName, couponList))
         .build();
@@ -44,7 +44,7 @@ public class ResProductGetByProductIdDtoApiV1 {
 
     public static Product from(ProductEntity productEntity,
         List<ProductImageEntity> productImageEntity, String shopName,
-        List<ResShopCouponDto.Coupon> couponList) {
+        List<ResShopCouponDtoApiV1.Coupon> couponList) {
       return Product.builder()
           .productId(productEntity.getId())
           .shop(Shop.from(productEntity, shopName, couponList))
@@ -61,10 +61,10 @@ public class ResProductGetByProductIdDtoApiV1 {
 
       private UUID shopId;
       private String shopName;
-      private List<ResShopCouponDto.Coupon> coupons;
+      private List<ResShopCouponDtoApiV1.Coupon> coupons;
 
       public static Shop from(ProductEntity productEntity, String shopName,
-          List<ResShopCouponDto.Coupon> couponList) {
+          List<ResShopCouponDtoApiV1.Coupon> couponList) {
         return Shop.builder()
             .shopId(productEntity.getShopId())
             .shopName(shopName)

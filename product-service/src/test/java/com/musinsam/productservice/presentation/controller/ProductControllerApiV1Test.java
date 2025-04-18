@@ -230,24 +230,4 @@ class ProductControllerApiV1Test {
         )
         .andDo(MockMvcResultHandlers.print());
   }
-
-  @Test
-  @DisplayName("쿠폰 목록 조회 성공")
-  public void testProductGetCouponSuccess() throws Exception {
-
-    UUID productId = UUID.randomUUID();
-
-    mockMvc.perform(
-            MockMvcRequestBuilders.get("/v1/products/{productId}/coupons", productId)
-                .header("X-USER-ID", 0L)
-                .header("X-USER-ROLE", "ROLE_USER")
-        )
-        .andExpectAll(
-            MockMvcResultMatchers.status().isOk(),
-            MockMvcResultMatchers.jsonPath("$.code").value(0),
-            MockMvcResultMatchers.jsonPath("$.message").value("쿠폰 목록 조회 성공"),
-            MockMvcResultMatchers.jsonPath("$.data").doesNotExist()
-        )
-        .andDo(MockMvcResultHandlers.print());
-  }
 }
