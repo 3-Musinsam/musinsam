@@ -71,3 +71,17 @@ Content-Type: application/json
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
+
+### 상점 단건 조회 테스트 (내부용)
+GET http://localhost:10000/internal/v1/shops/af80aa19-9c74-49dc-b115-8f4533de0f7b
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+### 상점 검색 테스트 (내부용)
+GET http://localhost:10000/internal/v1/shops/search
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "userId": 1
+}

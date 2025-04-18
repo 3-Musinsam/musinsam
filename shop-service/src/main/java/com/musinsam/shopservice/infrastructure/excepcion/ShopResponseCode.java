@@ -1,4 +1,4 @@
-package com.musinsam.shopservice.global.config;
+package com.musinsam.shopservice.infrastructure.excepcion;
 
 import com.musinsam.common.response.SuccessCode;
 import lombok.Getter;

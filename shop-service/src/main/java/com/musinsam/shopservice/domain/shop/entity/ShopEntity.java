@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -34,7 +33,4 @@ public class ShopEntity extends BaseEntity {
   @Column
   private String name;
 
-  public void setName(@NotBlank(message = "상점 이름을 입력해주세요.") String name) {
-
-  }
 }

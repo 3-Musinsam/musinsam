@@ -1,4 +1,4 @@
-package com.musinsam.aiservice.infrastructure.client;
+package com.musinsam.aiservice.infrastructure.feign;
 
 import com.musinsam.aiservice.application.dto.request.ChatGptRequest;
 import com.musinsam.aiservice.application.dto.response.ChatGptResponse;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(name = "chatGptClient", url = "https://api.openai.com/v1/", configuration = ChatGptRequest.class)
-public interface ChatGptClient {
+public interface ChatGptFeignClientApiV1 {
 
   @PostMapping("/chat/completions")
   ChatGptResponse aiCompletions(@RequestHeader("Authorization") String apiKey,

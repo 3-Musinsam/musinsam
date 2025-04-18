@@ -2,8 +2,10 @@ package com.musinsam.shopservice.application.service;
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPutByShopIdDtoApiV1;
+import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopDeleteByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetCouponByShopIdDtoApiV1;
@@ -11,6 +13,7 @@ import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPutByShopIdDtoApiV1;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
+import com.musinsam.shopservice.domain.shop.repository.ShopQueryRepository;
 import com.musinsam.shopservice.domain.shop.repository.ShopRepository;
 import com.musinsam.shopservice.infrastructure.dto.CouponDto;
 import com.musinsam.shopservice.infrastructure.excepcion.ShopErrorCode;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopServiceApiV1 {
 
   private final ShopRepository shopRepository;
+  private final ShopQueryRepository shopQueryRepository;
 
   @Transactional
   public ResShopPostDtoApiV1 postBy(ReqShopPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
@@ -68,9 +72,24 @@ public class ShopServiceApiV1 {
     return ResShopDeleteByShopIdDtoApiV1.of(shopEntity);
   }
 
+  /**
+   * 내부 호출용
+   */
+  @Transactional
+  public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
+    ShopEntity shopEntity = shopRepository.findById(id)
+        .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
+    return ResInternalShopGetByShopIdDtoApiV1.of(shopEntity);
+  }
+
   @Transactional(readOnly = true)
-  public ResShopGetCouponByShopIdDtoApiV1 couponGetByShopId(UUID id,
-      CurrentUserDtoApiV1 currentUser) {
+  public ResShopGetDtoApiV1 internalGetBy(Pageable pageable, ReqShopGetSearchDtoApiV1.ShopDto dto) {
+    Page<ShopEntity> shopEntityPage = shopQueryRepository.findShopSearchList(pageable, dto);
+    return ResShopGetDtoApiV1.of(shopEntityPage);
+  }
+
+  @Transactional(readOnly = true)
+  public ResShopGetCouponByShopIdDtoApiV1 couponGetByShopId(UUID id) {
     // TODO : feign 으로 쿠폰 목록 조회
     Page<CouponDto> couponDto = null;
     return ResShopGetCouponByShopIdDtoApiV1.of(couponDto);
