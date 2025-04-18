@@ -159,6 +159,8 @@ public class CouponController {
       @PathVariable UUID id,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
+    couponService.deleteCoupon(id, currentUser);
+
     return ResponseEntity.ok(new ApiResponse<>(
         COUPON_DELETE_SUCCESS.getCode(),
         COUPON_DELETE_SUCCESS.getMessage(),

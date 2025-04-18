@@ -25,6 +25,7 @@ import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEnt
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
+import java.time.ZoneId;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -134,5 +135,13 @@ public class CouponServiceImpl implements CouponService {
     CouponPolicyEntity couponPolicyById = findCouponPolicyById(savedCouponEntity.getCouponPolicyEntity().getId());
 
     return ResCouponCancelDtoApiV1.from(savedCouponEntity, couponPolicyById);
+  }
+
+  @Transactional
+  @Override
+  public void deleteCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser) {
+    CouponEntity couponEntity = findCouponById(couponId);
+    couponEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
+    couponRepository.save(couponEntity);
   }
 }

@@ -29,6 +29,8 @@ public interface CouponService {
   ResCouponGetDtoApiV1 getCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
 
   ResCouponCancelDtoApiV1 cancelCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
+
+  void deleteCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser);
 }
 
 

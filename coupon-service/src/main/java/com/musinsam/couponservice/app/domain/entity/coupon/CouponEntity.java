@@ -20,7 +20,6 @@ import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -91,6 +90,11 @@ public class CouponEntity extends BaseEntity {
 
   public void updateOrderId(UUID orderId) {
     this.orderId = orderId;
+  }
+
+  @Override
+  public void softDelete(Long userId, ZoneId zoneId) {
+    super.softDelete(userId, zoneId);
   }
 
 }
