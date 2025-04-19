@@ -1,6 +1,11 @@
 package com.musinsam.couponservice.app.domain.entity.coupon;
 
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_ALREADY_CLAIMED;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.AVAILABLE;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.ISSUED;
+
 import com.musinsam.common.domain.BaseEntity;
+import com.musinsam.common.exception.CustomException;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
 import jakarta.persistence.Column;
@@ -77,12 +82,32 @@ public class CouponEntity extends BaseEntity {
     return new CouponEntity(couponPolicyEntity, userId, orderId, couponCode, couponStatus, usedAt);
   }
 
+  // 선착순 정책인 경우에만 수량 차감 (단, 미리 발급된 쿠폰일 경우엔 이미 차감됨)
   public void claimCoupon(Long userId) {
+    if (this.userId != null || this.couponStatus != AVAILABLE) {
+      throw new CustomException(COUPON_ALREADY_CLAIMED);
+    }
+
     this.userId = userId;
+    this.couponStatus = ISSUED;
+
+    if (couponPolicyEntity.isLimitedIssue()) {
+      couponPolicyEntity.decreaseQuantity();
+    }
   }
 
   public void updateCouponStatus(CouponStatus couponStatus) {
     this.couponStatus = couponStatus;
+  }
+
+  public void markAsUsed(UUID couponId) {
+    this.couponStatus = CouponStatus.USED;
+    this.usedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    this.orderId = couponId;
+
+    if (!couponPolicyEntity.isLimitedIssue()) {
+      couponPolicyEntity.decreaseQuantity(); // 퍼블릭 풀만 사용 시 감소
+    }
   }
 
   public void updateUsedAt() {
