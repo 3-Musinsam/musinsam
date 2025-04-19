@@ -1,7 +1,9 @@
 package com.musinsam.couponservice.app.application.dto.v1.coupon.response;
 
 import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
+import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
+import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -27,8 +29,9 @@ public class ResCouponIssueDtoApiV1 {
   private Long updatedBy;
   private ZonedDateTime deletedAt;
   private Long deletedBy;
+  private CouponPolicy couponPolicy;
 
-  public static ResCouponIssueDtoApiV1 from(CouponEntity couponEntity) {
+  public static ResCouponIssueDtoApiV1 from(CouponEntity couponEntity, CouponPolicyEntity couponPolicyEntity) {
     return ResCouponIssueDtoApiV1.builder()
         .couponId(couponEntity.getId())
         .couponPolicyId(couponEntity.getCouponPolicyEntity().getId())
@@ -43,8 +46,54 @@ public class ResCouponIssueDtoApiV1 {
         .updatedBy(couponEntity.getUpdatedBy())
         .deletedAt(couponEntity.getDeletedAt())
         .deletedBy(couponEntity.getDeletedBy())
+        .couponPolicy(CouponPolicy.from(couponPolicyEntity))
         .build();
   }
 
 
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class CouponPolicy {
+    private UUID id;
+    private String name;
+    private String description;
+    private DiscountType discountType;
+    private Integer discountValue;
+    private Integer minimumOrderAmount;
+    private Integer maximumDiscountAmount;
+    private Integer totalQuantity;
+    private ZonedDateTime startedAt;
+    private ZonedDateTime endedAt;
+    private UUID companyId;
+    private ZonedDateTime createdAt;
+    private Long createdBy;
+    private ZonedDateTime updatedAt;
+    private Long updatedBy;
+    private ZonedDateTime deletedAt;
+    private Long deletedBy;
+
+    public static CouponPolicy from(CouponPolicyEntity couponPolicyEntity) {
+      return CouponPolicy.builder()
+          .id(couponPolicyEntity.getId())
+          .name(couponPolicyEntity.getName())
+          .description(couponPolicyEntity.getDescription())
+          .discountType(couponPolicyEntity.getDiscountType())
+          .discountValue(couponPolicyEntity.getDiscountValue())
+          .minimumOrderAmount(couponPolicyEntity.getMinimumOrderAmount())
+          .maximumDiscountAmount(couponPolicyEntity.getMaximumDiscountAmount())
+          .totalQuantity(couponPolicyEntity.getTotalQuantity())
+          .startedAt(couponPolicyEntity.getStartedAt())
+          .endedAt(couponPolicyEntity.getEndedAt())
+          .companyId(couponPolicyEntity.getCompanyId())
+          .createdAt(couponPolicyEntity.getCreatedAt())
+          .createdBy(couponPolicyEntity.getCreatedBy())
+          .updatedAt(couponPolicyEntity.getUpdatedAt())
+          .updatedBy(couponPolicyEntity.getUpdatedBy())
+          .deletedAt(couponPolicyEntity.getDeletedAt())
+          .deletedBy(couponPolicyEntity.getDeletedBy())
+          .build();
+    }
+  }
 }

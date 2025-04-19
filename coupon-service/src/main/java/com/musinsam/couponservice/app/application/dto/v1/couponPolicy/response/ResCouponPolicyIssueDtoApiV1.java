@@ -22,6 +22,7 @@ public class ResCouponPolicyIssueDtoApiV1 {
   private ZonedDateTime startedAt;
   private ZonedDateTime endedAt;
   private UUID companyId;
+  private boolean isLimitedIssue;
 
   public static ResCouponPolicyIssueDtoApiV1 from(CouponPolicyEntity couponPolicyEntity) {
     return ResCouponPolicyIssueDtoApiV1.builder()
@@ -36,6 +37,7 @@ public class ResCouponPolicyIssueDtoApiV1 {
         .startedAt(couponPolicyEntity.getStartedAt())
         .endedAt(couponPolicyEntity.getEndedAt())
         .companyId(couponPolicyEntity.getCompanyId())
+        .isLimitedIssue(couponPolicyEntity.isLimitedIssue())
         .build();
   }
 }
