@@ -70,7 +70,7 @@ public class OrderServiceApiV1 {
       String searchKeyword,
       Long userId
   ) {
-    Page<OrderEntity> orderPage = orderRepository.findAllWithOrderItems(predicate, pageable);
+    Page<OrderEntity> orderPage = orderRepository.findAll(predicate, pageable);
 
     return ResOrderGetDtoApiV1.of(orderPage);
   }
