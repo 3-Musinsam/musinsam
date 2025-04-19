@@ -22,11 +22,13 @@ Content-Type: application/json
   }
 }
 
+
 > {%
     client.global.set("accessToken", response.body.data.token.accessToken);
     client.global.set("userId", response.body.data.user.userId);
     client.global.set("userRole", response.body.data.user.userRoleType);
 %}
+
 
 ### 쿠폰 정책 발급 (선착순 발급)
 POST http://localhost:10000/v1/coupon-policies
@@ -49,28 +51,6 @@ Content-Type: application/json
   "limitedIssue": true
 }
 
-### 쿠폰 정책 발행 (퍼블릭 풀)
-POST http://localhost:10000/v1/coupon-policies
-Authorization: Bearer {{accessToken}}
-X-User-Id: {{userId}}
-X-User-Role: {{userRole}}
-Content-Type: application/json
-
-{
-  "name": "다시 구매 할인 정책!",
-  "description": "첫 구매자에게 10% 할인 제공",
-  "discountType": "FIXED_AMOUNT",
-  "discountValue": 1000,
-  "minimumOrderAmount": 10000,
-  "maximumDiscountAmount": 5000,
-  "totalQuantity": 1000,
-  "startedAt": "2025-04-01T00:00:00+09:00",
-  "endedAt": "2025-06-01T00:00:00+09:00",
-  "companyId": "00000000-0000-0000-0000-000000000001",
-  "limitedIssue": false
-}
-
-
 > {%
     client.global.set("couponPolicyId", response.body.data.id);
 %}
@@ -83,10 +63,7 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {
-  "userId": {{userId}},
-  "couponPolicyId": "{{couponPolicyId}}",
-  "couponCode": "aliceCouponCode11",
-  "couponStatus": "AVAILABLE"
+  "couponPolicyId": "{{couponPolicyId}}"
 }
 
 > {%
@@ -100,14 +77,15 @@ X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 Content-Type: application/json
 
-
 {
   "couponId": "{{couponId}}"
 }
 
+
 > {%
     client.global.set("claimedCouponId", response.body.data.couponId);
 %}
+
 
 ### 쿠폰 사용
 POST http://localhost:10000/v1/coupons/{{claimedCouponId}}/use
@@ -119,6 +97,7 @@ Content-Type: application/json
 {
   "orderId": "00000000-0000-0000-0000-000000000001"
 }
+
 
 ### 동적 쿠폰 조회
 GET http://localhost:10000/v1/coupons
