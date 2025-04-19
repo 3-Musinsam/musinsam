@@ -16,7 +16,14 @@ public enum CouponErrorCode implements ErrorCode {
   COUPON_ALREADY_USED(-1, "Coupon has already been used.", BAD_REQUEST),
   COUPON_ISSUE_LIMIT_EXCEEDED(-1, "Coupon issue limit exceeded.", BAD_REQUEST),
   INVALID_COUPON_CONDITION(-1, "Invalid coupon usage conditions.", BAD_REQUEST),
-  COUPON_CODE_ALREADY_EXISTS(-1, "Coupon code already exists.", BAD_REQUEST);
+  COUPON_CODE_ALREADY_EXISTS(-1, "Coupon code already exists.", BAD_REQUEST),
+  INVALID_COUPON_DATE(-1, "Invalid coupon usage date", BAD_REQUEST),
+  INVALID_COUPON_COMPANY_ID(-1, "Invalid coupon company id.", BAD_REQUEST),
+  INVALID_COUPON_MINIMUM_ORDER(-1, "Invalid coupon usage minimum order.", BAD_REQUEST),
+  COUPON_DOSE_NOT_BELONG_TO_USER(-1, "Coupon dose not belong to user.", BAD_REQUEST),
+  COUPON_ALREADY_DELETED(-1, "Coupon already deleted.", BAD_REQUEST),
+  COUPON_ALREADY_ISSUED_BY_USER(-1, "Coupon already issued by user.", BAD_REQUEST),
+  COUPON_ALREADY_CLAIMED(-1, "Coupon already claimed.", BAD_REQUEST);
 
   private final Integer code;
   private final String message;

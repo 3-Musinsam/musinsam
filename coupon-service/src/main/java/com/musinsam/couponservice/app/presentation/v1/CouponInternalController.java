@@ -9,8 +9,10 @@ import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqAvailableCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponValidateDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResAvailableCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponValidateDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResShopCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.service.v1.coupon.CouponService;
 import java.math.BigDecimal;
@@ -65,11 +67,15 @@ public class CouponInternalController {
     return ResponseEntity.ok(coupons);
   }
 
-//  @GetMapping("/{id}/validate")
-//  public ResponseEntity<?> couponValidate() {
-//    return null;
-//  }
-//
+  @PostMapping("/{id}/validate")
+  public ResponseEntity<ResCouponValidateDtoApiV1> couponValidate(
+      @PathVariable UUID id,
+      @RequestBody ReqCouponValidateDtoApiV1 request
+  ) {
+    ResCouponValidateDtoApiV1 response = couponService.validateCoupon(id, request);
+    return ResponseEntity.ok(response);
+  }
+
 //  @GetMapping("/{id}/restore")
 //  public ResponseEntity<?> couponRestore() {
 //    return null;

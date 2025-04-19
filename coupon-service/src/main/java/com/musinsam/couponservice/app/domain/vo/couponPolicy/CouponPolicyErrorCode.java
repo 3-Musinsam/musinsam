@@ -19,7 +19,9 @@ public enum CouponPolicyErrorCode implements ErrorCode {
   INVALID_DISCOUNT_VALUE(-1, "Invalid discount value for the discount type.", BAD_REQUEST),
   DUPLICATED_COUPON_POLICY(-1, "Coupon policy with the same name already exists.", CONFLICT),
   EXPIRED_COUPON_POLICY(-1, "Coupon policy is expired.", BAD_REQUEST),
-  INVALID_COMPANY_ID(-1, "Invalid Company not found.", BAD_REQUEST);
+  INVALID_COMPANY_ID(-1, "Invalid Company not found.", BAD_REQUEST),
+  COUPON_POLICY_ALREADY_DELETED(-1, "Coupon already deleted.", BAD_REQUEST),
+  COUPON_POLICY_EXHAUSTED(-1, "Coupon exhausted.", BAD_REQUEST);
 
 
   private final Integer code;

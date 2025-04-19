@@ -4,9 +4,9 @@ Content-Type: application/json
 
 {
   "user": {
-    "email": "alice@gmail.com",
+    "email": "eve@gmail.com",
     "password": "Authorize123!",
-    "name": "alice",
+    "name": "eve",
     "userRoleType": "ROLE_MASTER"
   }
 }
@@ -17,10 +17,11 @@ Content-Type: application/json
 
 {
   "user": {
-    "email": "alice@gmail.com",
+    "email": "eve@gmail.com",
     "password": "Authorize123!"
   }
 }
+
 
 > {%
     client.global.set("accessToken", response.body.data.token.accessToken);
@@ -28,28 +29,8 @@ Content-Type: application/json
     client.global.set("userRole", response.body.data.user.userRoleType);
 %}
 
-### 쿠폰 정책 발급 (선착순 발급)
-POST http://localhost:10000/v1/coupon-policies
-Authorization: Bearer {{accessToken}}
-X-User-Id: {{userId}}
-X-User-Role: {{userRole}}
-Content-Type: application/json
 
-{
-  "name": "선착순 쿠폰 정책",
-  "description": "빠른 사람만 가져가세요!",
-  "discountType": "FIXED_AMOUNT",
-  "discountValue": 3000,
-  "minimumOrderAmount": 10000,
-  "maximumDiscountAmount": 10000,
-  "totalQuantity": 100,
-  "startedAt": "2025-04-01T00:00:00+09:00",
-  "endedAt": "2025-06-01T00:00:00+09:00",
-  "companyId": "00000000-0000-0000-0000-000000000001",
-  "limitedIssue": true
-}
-
-### 쿠폰 정책 발행 (퍼블릭 풀)
+### 쿠폰 정책 발급 (퍼블릭 풀)
 POST http://localhost:10000/v1/coupon-policies
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
@@ -70,7 +51,6 @@ Content-Type: application/json
   "limitedIssue": false
 }
 
-
 > {%
     client.global.set("couponPolicyId", response.body.data.id);
 %}
@@ -84,33 +64,30 @@ Content-Type: application/json
 
 {
   "userId": {{userId}},
-  "couponPolicyId": "{{couponPolicyId}}",
-  "couponCode": "aliceCouponCode11",
-  "couponStatus": "AVAILABLE"
+  "couponPolicyId": "{{couponPolicyId}}"
 }
 
 > {%
     client.global.set("couponId", response.body.data.couponId);
 %}
 
-### 쿠폰 발급
+### 쿠폰 발급 (이미 받았다면 에러 발생)
 POST http://localhost:10000/v1/coupons/claim
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 Content-Type: application/json
 
-
 {
   "couponId": "{{couponId}}"
 }
 
 > {%
-    client.global.set("claimedCouponId", response.body.data.couponId);
+    client.global.set("couponId", response.body.data.couponId);
 %}
 
 ### 쿠폰 사용
-POST http://localhost:10000/v1/coupons/{{claimedCouponId}}/use
+POST http://localhost:10000/v1/coupons/{{couponId}}/use
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -119,6 +96,7 @@ Content-Type: application/json
 {
   "orderId": "00000000-0000-0000-0000-000000000001"
 }
+
 
 ### 동적 쿠폰 조회
 GET http://localhost:10000/v1/coupons
@@ -130,7 +108,7 @@ Content-Type: application/json
 {}
 
 ### 단 건 쿠폰 조회
-GET http://localhost:10000/v1/coupons/{{claimedCouponId}}
+GET http://localhost:10000/v1/coupons/{{couponId}}
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -139,7 +117,7 @@ Content-Type: application/json
 {}
 
 ### 쿠폰 사용 취소
-POST http://localhost:10000/v1/coupons/{{claimedCouponId}}/cancel
+POST http://localhost:10000/v1/coupons/{{couponId}}/cancel
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -148,7 +126,7 @@ Content-Type: application/json
 {}
 
 ### 쿠폰 소프트 삭제
-DELETE http://localhost:10000/v1/coupons/{{claimedCouponId}}
+DELETE http://localhost:10000/v1/coupons/{{couponId}}
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}

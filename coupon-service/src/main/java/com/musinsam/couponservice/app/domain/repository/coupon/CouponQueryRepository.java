@@ -23,4 +23,7 @@ public interface CouponQueryRepository {
       BigDecimal totalAmount,
       ZonedDateTime now
   );
+
+  boolean existsByUserIdAndCouponPolicyId(Long userId, UUID couponPolicyId);
+
 }

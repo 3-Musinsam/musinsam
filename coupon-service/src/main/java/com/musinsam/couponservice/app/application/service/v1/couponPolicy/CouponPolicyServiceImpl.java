@@ -73,7 +73,8 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         response.getTotalQuantity(),
         response.getStartedAt(),
         response.getEndedAt(),
-        response.getCompanyId()
+        response.getCompanyId(),
+        response.isLimitedIssue()
     );
     CouponPolicyEntity savedCouponPolicyEntity = couponPolicyRepository.save(couponPolicyEntity);
 

@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ResCouponsGetDtoApiV1 {
   private UUID couponId;
-  private UUID couponPolicyId;
   private Long userId;
   private UUID orderId;
   private String couponCode;

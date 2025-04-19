@@ -80,6 +80,10 @@ public class CouponQueryRepositoryImpl implements CouponQueryRepository {
     return PageableExecutionUtils.getPage(dtoList, pageable, countQuery::fetchOne);
   }
 
+  private static BooleanExpression eqIfNotNullByCouponStatus(SimpleExpression<CouponStatus> field, CouponStatus value) {
+    return value != null ? field.eq(value) : null;
+  }
+
   @Override
   public List<CouponEntity> findAvailableCoupons(Long userId, List<UUID> companyIds, BigDecimal totalAmount,
                                                  ZonedDateTime now) {
@@ -99,8 +103,16 @@ public class CouponQueryRepositoryImpl implements CouponQueryRepository {
         .fetch();
   }
 
-  private static BooleanExpression eqIfNotNullByCouponStatus(SimpleExpression<CouponStatus> field, CouponStatus value) {
-    return value != null ? field.eq(value) : null;
+  @Override
+  public boolean existsByUserIdAndCouponPolicyId(Long userId, UUID couponPolicyId) {
+    return queryFactory.selectOne()
+        .from(coupon)
+        .where(
+            coupon.userId.eq(userId),
+            coupon.couponPolicyEntity.id.eq(couponPolicyId),
+            coupon.couponStatus.eq(CouponStatus.ISSUED)
+        )
+        .fetchFirst() != null;
   }
 
 }
