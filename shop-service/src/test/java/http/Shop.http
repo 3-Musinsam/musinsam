@@ -46,11 +46,15 @@ X-User-Role: {{userRole}}
 GET http://localhost:10000/v1/shops?page=0&size=10&orderby=CREATED&sort=DESC
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 
 ### 상점 상세 조회 테스트
 GET http://localhost:10000/v1/shops/af80aa19-9c74-49dc-b115-8f4533de0f7b
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
 
 ### 상점 수정 테스트
 PUT http://localhost:10000/v1/shops/66abd648-b994-494d-90bb-1a5b984010f6
@@ -85,3 +89,8 @@ Authorization: Bearer {{accessToken}}
 {
   "userId": 1
 }
+
+### 상점에 적용된 쿠폰 조회 (내부용)
+GET http://localhost:10000/internal/v1/shops/coupons?shopId=af80aa19-9c74-49dc-b115-8f4533de0f7b
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

@@ -6,17 +6,17 @@ import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1
 import com.musinsam.shopservice.application.dto.request.ReqShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPutByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
+import com.musinsam.shopservice.application.dto.response.ResShopCouponDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopDeleteByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetByShopIdDtoApiV1;
-import com.musinsam.shopservice.application.dto.response.ResShopGetCouponByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPutByShopIdDtoApiV1;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
 import com.musinsam.shopservice.domain.shop.repository.ShopQueryRepository;
 import com.musinsam.shopservice.domain.shop.repository.ShopRepository;
-import com.musinsam.shopservice.infrastructure.dto.CouponDto;
 import com.musinsam.shopservice.infrastructure.excepcion.ShopErrorCode;
+import com.musinsam.shopservice.infrastructure.feign.CouponFeignClientApiV1;
 import java.time.ZoneId;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +31,7 @@ public class ShopServiceApiV1 {
 
   private final ShopRepository shopRepository;
   private final ShopQueryRepository shopQueryRepository;
+  private final CouponFeignClientApiV1 couponFeignClientApiV1;
 
   @Transactional
   public ResShopPostDtoApiV1 postBy(ReqShopPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
@@ -83,15 +84,13 @@ public class ShopServiceApiV1 {
   }
 
   @Transactional(readOnly = true)
-  public ResShopGetDtoApiV1 internalGetBy(Pageable pageable, ReqShopGetSearchDtoApiV1.ShopDto dto) {
+  public ResShopGetDtoApiV1 internalGetShopListSearch(Pageable pageable, ReqShopGetSearchDtoApiV1.Shop dto) {
     Page<ShopEntity> shopEntityPage = shopQueryRepository.findShopSearchList(pageable, dto);
     return ResShopGetDtoApiV1.of(shopEntityPage);
   }
 
   @Transactional(readOnly = true)
-  public ResShopGetCouponByShopIdDtoApiV1 couponGetByShopId(UUID id) {
-    // TODO : feign 으로 쿠폰 목록 조회
-    Page<CouponDto> couponDto = null;
-    return ResShopGetCouponByShopIdDtoApiV1.of(couponDto);
+  public ResShopCouponDtoApiV1 internalCouponGetByShopId(UUID shopId) {
+    return couponFeignClientApiV1.getCouponsByCompanyId(shopId);
   }
 }

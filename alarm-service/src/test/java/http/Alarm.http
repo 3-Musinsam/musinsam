@@ -32,8 +32,6 @@ Content-Type: application/json
 POST http://localhost:10000/internal/v1/slack-alarms
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
-X-User-Id: {{userId}}
-X-User-Role: {{userRole}}
 
 {
   "alarm": {
@@ -45,12 +43,8 @@ X-User-Role: {{userRole}}
 GET http://localhost:10000/internal/v1/slack-alarms?page=0&size=10&orderby=CREATED&sort=DESC
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
-X-User-Id: {{userId}}
-X-User-Role: {{userRole}}
 
 ### 알림 단건 조희 테스트
 GET http://localhost:10000/internal/v1/slack-alarms/76a5abec-741d-403d-b6c5-3a2f01f802ff
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
-X-User-Id: {{userId}}
-X-User-Role: {{userRole}}
