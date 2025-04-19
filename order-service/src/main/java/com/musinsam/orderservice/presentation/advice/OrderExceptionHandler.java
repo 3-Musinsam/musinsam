@@ -1,9 +1,16 @@
-package com.musinsam.orderservice.domain.order.exception;
+package com.musinsam.orderservice.presentation.advice;
 
 import com.musinsam.common.exception.CommonErrorCode;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.exception.ErrorCode;
 import com.musinsam.common.exception.ErrorResponse;
+import com.musinsam.orderservice.domain.order.exception.OrderAccessDeniedException;
+import com.musinsam.orderservice.domain.order.exception.OrderControlException;
+import com.musinsam.orderservice.domain.order.exception.OrderCouponException;
+import com.musinsam.orderservice.domain.order.exception.OrderException;
+import com.musinsam.orderservice.domain.order.exception.OrderNotFoundException;
+import com.musinsam.orderservice.domain.order.exception.OrderProductException;
+import com.musinsam.orderservice.domain.order.exception.OrderStatusException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
