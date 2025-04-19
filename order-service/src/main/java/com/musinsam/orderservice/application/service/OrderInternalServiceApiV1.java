@@ -1,7 +1,7 @@
 package com.musinsam.orderservice.application.service;
 
-import com.musinsam.common.exception.CustomException;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.exception.OrderException;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderErrorCode;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
@@ -22,7 +22,7 @@ public class OrderInternalServiceApiV1 {
   @Transactional
   public ResOrderClientGetByIdDto getOrderClientGetById(UUID orderId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
     return ResOrderClientGetByIdDto.of(orderEntity);
   }
 
@@ -30,7 +30,7 @@ public class OrderInternalServiceApiV1 {
   public ResOrderClientUpdateOrderStatusDto updateOrderStatus(UUID orderId,
       ReqOrderClientUpdateOrderStatusDto reqDto) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     orderEntity.updateOrderStatus(
         OrderStatus.valueOf(reqDto.getStatus()),

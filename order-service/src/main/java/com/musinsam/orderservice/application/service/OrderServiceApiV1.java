@@ -12,6 +12,7 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
+import com.musinsam.orderservice.domain.order.exception.OrderException;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
 import com.musinsam.orderservice.domain.order.vo.OrderErrorCode;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
@@ -43,7 +44,7 @@ public class OrderServiceApiV1 {
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
-      throw CustomException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
+      throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
 
     OrderEntity savedOrder = orderRepository.save(orderEntity);
@@ -55,7 +56,7 @@ public class OrderServiceApiV1 {
   public ResOrderGetByIdDtoApiV1 getOrder(UUID orderId, Long userId) {
 
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
 
@@ -69,7 +70,7 @@ public class OrderServiceApiV1 {
       String searchKeyword,
       Long userId
   ) {
-    Page<OrderEntity> orderPage = orderRepository.findAll(predicate, pageable);
+    Page<OrderEntity> orderPage = orderRepository.findAllWithOrderItems(predicate, pageable);
 
     return ResOrderGetDtoApiV1.of(orderPage);
   }
@@ -78,7 +79,7 @@ public class OrderServiceApiV1 {
   public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
     validateOrderStatus(orderEntity);
@@ -86,7 +87,7 @@ public class OrderServiceApiV1 {
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
-      throw CustomException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
+      throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
 
     requestDto.getOrder().updateEntity(orderEntity);
@@ -99,7 +100,7 @@ public class OrderServiceApiV1 {
       Long userId) {
 
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
 
@@ -118,7 +119,7 @@ public class OrderServiceApiV1 {
   @Transactional
   public void deleteOrder(UUID orderId, Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
     validateDeletableStatus(orderEntity);
@@ -139,7 +140,7 @@ public class OrderServiceApiV1 {
     );
 
     if (!deletableStatuses.contains(orderEntity.getOrderStatus())) {
-      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_DELETED);
+      throw OrderException.from(OrderErrorCode.ORDER_CANNOT_BE_DELETED);
     }
   }
 
@@ -149,13 +150,13 @@ public class OrderServiceApiV1 {
     );
 
     if (!cancelableStatuses.contains(orderEntity.getOrderStatus())) {
-      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
+      throw OrderException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
     }
   }
 
   private void validateOrderStatus(OrderEntity orderEntity) {
     if (!orderEntity.getOrderStatus().equals(OrderStatus.PENDING)) {
-      throw CustomException.from(OrderErrorCode.ORDER_INVALID_STATUS);
+      throw OrderException.from(OrderErrorCode.ORDER_INVALID_STATUS);
     }
   }
 
