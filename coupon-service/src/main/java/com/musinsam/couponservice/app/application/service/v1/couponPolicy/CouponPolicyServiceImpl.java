@@ -1,9 +1,12 @@
 package com.musinsam.couponservice.app.application.service.v1.couponPolicy;
 
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.DUPLICATED_COUPON_POLICY;
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.INVALID_COMPANY_ID;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.NOT_FOUND_COUPON_POLICY;
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
+import com.musinsam.couponservice.app.application.client.ShopClient;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.CouponPolicySearchCondition;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.request.ReqCouponPolicyIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.couponPolicy.response.ResCouponPoliciesGetDtoApiV1;
@@ -30,6 +33,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
   private final CouponPolicyRepository couponPolicyRepository;
   private final CouponPolicyQueryRepository couponPolicyQueryRepository;
+  private final ShopClient shopClient;
 
   private CouponPolicyEntity findCouponPolicyById(UUID id) {
     return couponPolicyRepository.findById(id)
@@ -40,6 +44,12 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     return couponPolicyRepository.existsCouponPolicyByName(name);
   }
 
+  private void validateCompanyExists(UUID companyId) {
+    if (companyId != null && !shopClient.existsShopById(companyId.toString())) {
+      throw new CustomException(INVALID_COMPANY_ID);
+    }
+  }
+
   @Transactional
   @Override
   public ResCouponPolicyIssueDtoApiV1 issueCouponPolicy(
@@ -47,8 +57,11 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
       CurrentUserDtoApiV1 currentUser
   ) {
     if (existsCouponPolicyByName(response.getName())) {
-      throw new CustomException(CouponPolicyErrorCode.DUPLICATED_COUPON_POLICY);
+      throw new CustomException(DUPLICATED_COUPON_POLICY);
     }
+
+    // TODO: shop-service 에서 existsShopById 구현되면 사용
+//    validateCompanyExists(response.getCompanyId());
 
     CouponPolicyEntity couponPolicyEntity = CouponPolicyEntity.of(
         response.getName(),
@@ -93,4 +106,6 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
     couponPolicyEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
     couponPolicyRepository.save(couponPolicyEntity);
   }
+
+
 }

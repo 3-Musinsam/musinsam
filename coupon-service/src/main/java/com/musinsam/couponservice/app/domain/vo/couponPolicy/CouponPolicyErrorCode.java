@@ -18,7 +18,9 @@ public enum CouponPolicyErrorCode implements ErrorCode {
   INVALID_DATE_RANGE(-1, "Start date must be before end date.", BAD_REQUEST),
   INVALID_DISCOUNT_VALUE(-1, "Invalid discount value for the discount type.", BAD_REQUEST),
   DUPLICATED_COUPON_POLICY(-1, "Coupon policy with the same name already exists.", CONFLICT),
-  EXPIRED_COUPON_POLICY(-1, "Coupon policy is expired.", BAD_REQUEST);
+  EXPIRED_COUPON_POLICY(-1, "Coupon policy is expired.", BAD_REQUEST),
+  INVALID_COMPANY_ID(-1, "Invalid Company not found.", BAD_REQUEST);
+
 
   private final Integer code;
   private final String message;
