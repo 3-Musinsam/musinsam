@@ -11,9 +11,11 @@ import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicy
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.CouponSearchCondition;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqAvailableCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponIssueDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
+import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResAvailableCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponCancelDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponClaimDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResCouponGetDtoApiV1;
@@ -26,7 +28,10 @@ import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEnt
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponQueryRepository;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
+import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
+import java.math.BigDecimal;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -167,5 +172,20 @@ public class CouponServiceImpl implements CouponService {
     return ResShopCouponDtoApiV1.builder()
         .couponList(couponList)
         .build();
+  }
+
+  @Override
+  public List<ResAvailableCouponDtoApiV1> getAvailableCoupons(Long userId, List<UUID> companyIds, BigDecimal totalAmount) {
+    ZonedDateTime now = ZonedDateTime.now();
+
+    List<CouponEntity> coupons = couponQueryRepository.findAvailableCoupons(
+        userId,
+        companyIds,
+        totalAmount,
+        now);
+
+    return coupons.stream()
+        .map(coupon -> ResAvailableCouponDtoApiV1.from(coupon, coupon.getCouponPolicyEntity()))
+        .toList();
   }
 }
