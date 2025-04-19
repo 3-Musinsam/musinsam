@@ -1,0 +1,7 @@
+
+
+### 주문에서 사용 가능한 쿠폰 조회
+GET http://localhost:8080/internal/v1/coupons/available?userId=1
+    &companyIds=3f88c1c1-6d35-4e11-b7df-2c7b8a4b7770,cfbc138d-4f2e-48da-8cb2-cedf1c1159e4
+    &totalAmount=60000
+Content-Type: application/json

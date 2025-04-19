@@ -15,39 +15,22 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResCouponClaimDtoApiV1 {
-
+public class ResAvailableCouponDtoApiV1 {
   private UUID couponId;
   private Long userId;
-  private UUID orderId;
   private String couponCode;
   private CouponStatus couponStatus;
-  private ZonedDateTime usedAt;
-  private ZonedDateTime createdAt;
-  private Long createdBy;
-  private ZonedDateTime updatedAt;
-  private Long updatedBy;
-  private ZonedDateTime deletedAt;
-  private Long deletedBy;
   private CouponPolicy couponPolicy;
 
-
-  public static ResCouponClaimDtoApiV1 from(CouponEntity savedCouponEntity, CouponPolicyEntity couponPolicyEntity) {
-    return ResCouponClaimDtoApiV1.builder()
-        .couponId(savedCouponEntity.getId())
-        .userId(savedCouponEntity.getUserId())
-        .orderId(savedCouponEntity.getOrderId())
-        .couponCode(savedCouponEntity.getCouponCode())
-        .couponStatus(savedCouponEntity.getCouponStatus())
-        .usedAt(savedCouponEntity.getUsedAt())
-        .createdAt(savedCouponEntity.getCreatedAt())
-        .createdBy(savedCouponEntity.getCreatedBy())
-        .updatedAt(savedCouponEntity.getUpdatedAt())
-        .updatedBy(savedCouponEntity.getUpdatedBy())
-        .deletedAt(savedCouponEntity.getDeletedAt())
-        .deletedBy(savedCouponEntity.getDeletedBy())
+  public static ResAvailableCouponDtoApiV1 from(CouponEntity couponEntity, CouponPolicyEntity couponPolicyEntity) {
+    return ResAvailableCouponDtoApiV1.builder()
+        .couponId(couponEntity.getId())
+        .userId(couponEntity.getUserId())
+        .couponCode(couponEntity.getCouponCode())
+        .couponStatus(couponEntity.getCouponStatus())
         .couponPolicy(CouponPolicy.from(couponPolicyEntity))
         .build();
+
   }
 
   @Getter
@@ -55,43 +38,29 @@ public class ResCouponClaimDtoApiV1 {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class CouponPolicy {
-    private UUID id;
+    private UUID couponPolicyId;
     private String name;
     private String description;
     private DiscountType discountType;
     private Integer discountValue;
     private Integer minimumOrderAmount;
     private Integer maximumDiscountAmount;
-    private Integer totalQuantity;
     private ZonedDateTime startedAt;
     private ZonedDateTime endedAt;
     private UUID companyId;
-    private ZonedDateTime createdAt;
-    private Long createdBy;
-    private ZonedDateTime updatedAt;
-    private Long updatedBy;
-    private ZonedDateTime deletedAt;
-    private Long deletedBy;
 
     public static CouponPolicy from(CouponPolicyEntity couponPolicyEntity) {
       return CouponPolicy.builder()
-          .id(couponPolicyEntity.getId())
+          .couponPolicyId(couponPolicyEntity.getId())
           .name(couponPolicyEntity.getName())
           .description(couponPolicyEntity.getDescription())
           .discountType(couponPolicyEntity.getDiscountType())
           .discountValue(couponPolicyEntity.getDiscountValue())
           .minimumOrderAmount(couponPolicyEntity.getMinimumOrderAmount())
           .maximumDiscountAmount(couponPolicyEntity.getMaximumDiscountAmount())
-          .totalQuantity(couponPolicyEntity.getTotalQuantity())
           .startedAt(couponPolicyEntity.getStartedAt())
           .endedAt(couponPolicyEntity.getEndedAt())
           .companyId(couponPolicyEntity.getCompanyId())
-          .createdAt(couponPolicyEntity.getCreatedAt())
-          .createdBy(couponPolicyEntity.getCreatedBy())
-          .updatedAt(couponPolicyEntity.getUpdatedAt())
-          .updatedBy(couponPolicyEntity.getUpdatedBy())
-          .deletedAt(couponPolicyEntity.getDeletedAt())
-          .deletedBy(couponPolicyEntity.getDeletedBy())
           .build();
     }
   }

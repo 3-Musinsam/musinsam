@@ -36,14 +36,14 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {
-  "name": "첫구매 할인 정책",
+  "name": "다시 구매 할인 정책!",
   "description": "첫 구매자에게 10% 할인 제공",
   "discountType": "FIXED_AMOUNT",
   "discountValue": 1000,
   "minimumOrderAmount": 10000,
   "maximumDiscountAmount": 5000,
   "totalQuantity": 1000,
-  "startedAt": "2025-05-01T00:00:00+09:00",
+  "startedAt": "2025-04-01T00:00:00+09:00",
   "endedAt": "2025-06-01T00:00:00+09:00",
   "companyId": "00000000-0000-0000-0000-000000000001"
 }
@@ -63,7 +63,7 @@ Content-Type: application/json
 {
   "userId": {{userId}},
   "couponPolicyId": "{{couponPolicyId}}",
-  "couponCode": "aliceCouponCode",
+  "couponCode": "aliceCouponCode11",
   "couponStatus": "AVAILABLE"
 }
 
@@ -138,3 +138,14 @@ Content-Type: application/json
 GET http://localhost:10000/internal/v1/coupons?shopId=00000000-0000-0000-0000-000000000001
 Content-Type: application/json
 
+{}
+
+
+### 주문에서 사용 가능한 쿠폰 조회
+GET http://localhost:10000/internal/v1/coupons/available
+    ?userId={{userId}}
+    &companyIds=00000000-0000-0000-0000-000000000001
+    &totalAmount=10000
+Content-Type: application/json
+
+{}
