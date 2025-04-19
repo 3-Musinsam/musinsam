@@ -12,4 +12,5 @@ public interface CouponRepository {
   CouponEntity save(CouponEntity couponEntity);
   Boolean existsCouponByCouponCode(String couponCode);
   List<CouponEntity> findAllByCouponPolicyEntity_CompanyId(UUID companyId);
+  List<CouponEntity> findValidCouponsByUserId(Long userId);
 }

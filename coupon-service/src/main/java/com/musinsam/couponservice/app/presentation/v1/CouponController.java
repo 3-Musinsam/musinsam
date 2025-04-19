@@ -86,11 +86,11 @@ public class CouponController {
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   @PostMapping("/{id}/use")
   public ResponseEntity<ApiResponse<ResCouponUseDtoApiV1>> useCoupon(
-        @PathVariable UUID id,
-        @RequestBody ReqCouponUseDtoApiV1 request,
-        @CurrentUser CurrentUserDtoApiV1 currentUser
-    ) {
-      ResCouponUseDtoApiV1 response = couponService.useCoupon(id, request, currentUser);
+      @PathVariable UUID id,
+      @RequestBody ReqCouponUseDtoApiV1 request,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+    ResCouponUseDtoApiV1 response = couponService.useCoupon(id, request, currentUser);
 
     return ResponseEntity.ok(new ApiResponse<>(
         COUPON_USE_SUCCESS.getCode(),

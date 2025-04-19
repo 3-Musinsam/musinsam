@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class ResCouponClaimDtoApiV1 {
 
   private UUID couponId;
-  private UUID couponPolicyId;
   private Long userId;
   private UUID orderId;
   private String couponCode;
