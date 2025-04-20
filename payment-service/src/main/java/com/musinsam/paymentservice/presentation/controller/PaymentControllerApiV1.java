@@ -1,9 +1,14 @@
 package com.musinsam.paymentservice.presentation.controller;
 
+import static com.musinsam.paymentservice.domain.payment.vo.PaymentResponseCode.PAYMENT_APPROVE_SUCCESS;
+import static com.musinsam.paymentservice.domain.payment.vo.PaymentResponseCode.PAYMENT_CANCEL_SUCCESS;
+import static com.musinsam.paymentservice.domain.payment.vo.PaymentResponseCode.PAYMENT_GET_SUCCESS;
+import static com.musinsam.paymentservice.domain.payment.vo.PaymentResponseCode.PAYMENT_INIT_SUCCESS;
+import static com.musinsam.paymentservice.domain.payment.vo.PaymentResponseCode.PAYMENT_LIST_GET_SUCCESS;
+
 import com.musinsam.common.aop.CustomPreAuthorize;
 import com.musinsam.common.resolver.CurrentUser;
 import com.musinsam.common.response.ApiResponse;
-import com.musinsam.common.response.ApiSuccessCode;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.common.user.UserRoleType;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostApproveDtoApiV1;
@@ -61,8 +66,8 @@ public class PaymentControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment initialization successful",
+            PAYMENT_INIT_SUCCESS.getCode(),
+            PAYMENT_INIT_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -86,8 +91,8 @@ public class PaymentControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment approved successfully",
+            PAYMENT_APPROVE_SUCCESS.getCode(),
+            PAYMENT_APPROVE_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -111,8 +116,8 @@ public class PaymentControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment details retrieved successfully",
+            PAYMENT_GET_SUCCESS.getCode(),
+            PAYMENT_GET_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -136,8 +141,8 @@ public class PaymentControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payments retrieved successfully",
+            PAYMENT_LIST_GET_SUCCESS.getCode(),
+            PAYMENT_LIST_GET_SUCCESS.getMessage(),
             responseDto
         )
     );
@@ -162,8 +167,8 @@ public class PaymentControllerApiV1 {
 
     return ResponseEntity.ok().body(
         ApiResponse.success(
-            ApiSuccessCode.OK.getCode(),
-            "Payment cancelled successfully",
+            PAYMENT_CANCEL_SUCCESS.getCode(),
+            PAYMENT_CANCEL_SUCCESS.getMessage(),
             responseDto
         )
     );
