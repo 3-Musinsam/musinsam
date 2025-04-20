@@ -261,6 +261,19 @@ public class CouponServiceImpl implements CouponService {
         .build();
   }
 
+  @Transactional
+  @Override
+  public void restoreCoupon(UUID couponId, CurrentUserDtoApiV1 currentUser) {
+    CouponEntity coupon = findCouponById(couponId);
+
+    if (!coupon.getUserId().equals(currentUser.userId())) {
+      throw new CustomException(COUPON_DOSE_NOT_BELONG_TO_USER);
+    }
+
+    coupon.restore();
+    couponRepository.save(coupon);
+  }
+
   private int calculateDiscount(CouponPolicyEntity policy, BigDecimal totalAmount) {
     if (policy.getDiscountType() == DiscountType.FIXED_AMOUNT) {
       return policy.getDiscountValue();

@@ -76,8 +76,12 @@ public class CouponInternalController {
     return ResponseEntity.ok(response);
   }
 
-//  @GetMapping("/{id}/restore")
-//  public ResponseEntity<?> couponRestore() {
-//    return null;
-//  }
+  @PostMapping("/{id}/restore")
+  public ResponseEntity<Void> couponRestore(
+      @PathVariable UUID id,
+      @CurrentUser CurrentUserDtoApiV1 currentUser
+  ) {
+    couponService.restoreCoupon(id, currentUser);
+    return ResponseEntity.ok().build();
+  }
 }
