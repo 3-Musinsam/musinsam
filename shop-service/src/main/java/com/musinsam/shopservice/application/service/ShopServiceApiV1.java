@@ -2,11 +2,8 @@ package com.musinsam.shopservice.application.service;
 
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.request.ReqShopPutByShopIdDtoApiV1;
-import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
-import com.musinsam.shopservice.application.dto.response.ResShopCouponDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopDeleteByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetByShopIdDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
@@ -71,26 +68,5 @@ public class ShopServiceApiV1 {
         .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
     shopEntity.softDelete(currentUser.userId(), ZoneId.of("Asia/Seoul"));
     return ResShopDeleteByShopIdDtoApiV1.of(shopEntity);
-  }
-
-  /**
-   * 내부 호출용
-   */
-  @Transactional
-  public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
-    ShopEntity shopEntity = shopRepository.findById(id)
-        .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
-    return ResInternalShopGetByShopIdDtoApiV1.of(shopEntity);
-  }
-
-  @Transactional(readOnly = true)
-  public ResShopGetDtoApiV1 internalGetShopListSearch(Pageable pageable, ReqShopGetSearchDtoApiV1.Shop dto) {
-    Page<ShopEntity> shopEntityPage = shopQueryRepository.findShopSearchList(pageable, dto);
-    return ResShopGetDtoApiV1.of(shopEntityPage);
-  }
-
-  @Transactional(readOnly = true)
-  public ResShopCouponDtoApiV1 internalCouponGetByShopId(UUID shopId) {
-    return couponFeignClientApiV1.getCouponsByCompanyId(shopId);
   }
 }
