@@ -1,4 +1,4 @@
-package com.musinsam.productservice.global.config;
+package com.musinsam.productservice.global;
 
 import com.musinsam.common.response.SuccessCode;
 import lombok.Getter;
