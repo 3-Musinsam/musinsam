@@ -1,4 +1,4 @@
-package com.musinsam.orderservice.application.dto.client;
+package com.musinsam.orderservice.infrastructure.client.dto.response;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
@@ -15,9 +15,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderClientDto {
+public class ResOrderClientGetByIdDto {
 
   private Order order;
+
+  public static ResOrderClientGetByIdDto of(OrderEntity orderEntity) {
+    return ResOrderClientGetByIdDto.builder()
+        .order(Order.from(orderEntity))
+        .build();
+  }
 
   @Getter
   @Builder
@@ -35,8 +41,6 @@ public class OrderClientDto {
     private String request;
     private String orderName;
     private UUID couponId;
-    //  private PaymentInfo paymentInfo;
-    //  private ShippingInfo shippingInfo;
     private ZonedDateTime createdAt;
     private ZonedDateTime updatedAt;
 
@@ -56,8 +60,6 @@ public class OrderClientDto {
           .request(orderEntity.getRequest())
           .orderName(orderEntity.getOrderName())
           .couponId(orderEntity.getCouponId())
-          //.paymentInfo()
-          //.shippingInfo()
           .createdAt(orderEntity.getCreatedAt())
           .updatedAt(orderEntity.getUpdatedAt())
           .build();
@@ -97,12 +99,6 @@ public class OrderClientDto {
       private String zipCode;
       private String address;
       private String addressDetail;
-
-//      // TODO:
-//      public static ShippingInfo from(OrderEntity orderEntity) {
-//        return ShippingInfo.builder()
-//            .build();
-//      }
     }
 
     @Getter
@@ -119,11 +115,10 @@ public class OrderClientDto {
       private BigDecimal finalAmount;
       private CouponInfo coupon;
 
-//      // TODO:
-//      public static PaymentInfo from(OrderEntity orderEntity) {
-//        return PaymentInfo.builder()
-//            .build();
-//      }
+      public static PaymentInfo from(OrderEntity orderEntity) {
+        return PaymentInfo.builder()
+            .build();
+      }
     }
 
     @Getter
@@ -135,19 +130,7 @@ public class OrderClientDto {
       private UUID id;
       private String name;
       private BigDecimal discountAmount;
-
-//      // TODO:
-//      public static CouponInfo from(OrderEntity orderEntity) {
-//        return CouponInfo.builder()
-//            .build();
-//      }
     }
-  }
-
-  public static OrderClientDto of(OrderEntity orderEntity) {
-    return OrderClientDto.builder()
-        .order(Order.from(orderEntity))
-        .build();
   }
 }
 

@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -83,6 +84,7 @@ public class OrderEntity extends BaseEntity {
 
   @Builder.Default
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+  @BatchSize(size = 100)
   private List<OrderItemEntity> orderItems = new ArrayList<>();
 
   public void assignOrderItems(List<OrderItemEntity> orderItems) {
