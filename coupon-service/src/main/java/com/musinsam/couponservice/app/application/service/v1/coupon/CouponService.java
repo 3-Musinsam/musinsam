@@ -45,6 +45,8 @@ public interface CouponService {
   List<ResAvailableCouponDtoApiV1> getAvailableCoupons(Long userId, List<UUID> companyIds, BigDecimal totalAmount);
 
   ResCouponValidateDtoApiV1 validateCoupon(UUID couponId, ReqCouponValidateDtoApiV1 request);
+
+  void restoreCoupon(UUID id, CurrentUserDtoApiV1 currentUser);
 }
 
 
