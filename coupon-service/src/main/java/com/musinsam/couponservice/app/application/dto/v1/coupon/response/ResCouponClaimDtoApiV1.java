@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 public class ResCouponClaimDtoApiV1 {
 
   private UUID couponId;
-  private UUID couponPolicyId;
   private Long userId;
   private UUID orderId;
   private String couponCode;
@@ -73,6 +72,7 @@ public class ResCouponClaimDtoApiV1 {
     private Long updatedBy;
     private ZonedDateTime deletedAt;
     private Long deletedBy;
+    private boolean limitedIssue;
 
     public static CouponPolicy from(CouponPolicyEntity couponPolicyEntity) {
       return CouponPolicy.builder()
@@ -93,6 +93,7 @@ public class ResCouponClaimDtoApiV1 {
           .updatedBy(couponPolicyEntity.getUpdatedBy())
           .deletedAt(couponPolicyEntity.getDeletedAt())
           .deletedBy(couponPolicyEntity.getDeletedBy())
+          .limitedIssue(couponPolicyEntity.isLimitedIssue())
           .build();
     }
   }

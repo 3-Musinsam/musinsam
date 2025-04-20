@@ -12,11 +12,17 @@ import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.entity.coupon.QCouponEntity;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.QCouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponQueryRepository;
+import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,13 +35,13 @@ public class CouponQueryRepositoryImpl implements CouponQueryRepository {
 
   private final JPAQueryFactory queryFactory;
 
+  QCouponEntity coupon = QCouponEntity.couponEntity;
+  QCouponPolicyEntity policy = QCouponPolicyEntity.couponPolicyEntity;
+
   @Override
   public Page<ResCouponsGetDtoApiV1> findCouponsByCondition(CouponSearchCondition condition,
                                                             CurrentUserDtoApiV1 currentUser,
                                                             Pageable pageable) {
-
-    QCouponEntity coupon = QCouponEntity.couponEntity;
-    QCouponPolicyEntity policy = QCouponPolicyEntity.couponPolicyEntity;
 
     BooleanBuilder builder = new BooleanBuilder()
         .and(eqIfNotNull(coupon.id, condition.getCouponId()))
@@ -73,4 +79,40 @@ public class CouponQueryRepositoryImpl implements CouponQueryRepository {
 
     return PageableExecutionUtils.getPage(dtoList, pageable, countQuery::fetchOne);
   }
+
+  private static BooleanExpression eqIfNotNullByCouponStatus(SimpleExpression<CouponStatus> field, CouponStatus value) {
+    return value != null ? field.eq(value) : null;
+  }
+
+  @Override
+  public List<CouponEntity> findAvailableCoupons(Long userId, List<UUID> companyIds, BigDecimal totalAmount,
+                                                 ZonedDateTime now) {
+
+    Integer orderAmount = totalAmount.intValue();
+
+    return queryFactory.selectFrom(coupon)
+        .join(coupon.couponPolicyEntity, policy).fetchJoin()
+        .where(
+            coupon.userId.eq(userId),
+            eqIfNotNullByCouponStatus(coupon.couponStatus, CouponStatus.ISSUED),
+            policy.companyId.in(companyIds),
+            policy.startedAt.before(now),
+            policy.endedAt.after(now),
+            policy.minimumOrderAmount.loe(orderAmount)
+        )
+        .fetch();
+  }
+
+  @Override
+  public boolean existsByUserIdAndCouponPolicyId(Long userId, UUID couponPolicyId) {
+    return queryFactory.selectOne()
+        .from(coupon)
+        .where(
+            coupon.userId.eq(userId),
+            coupon.couponPolicyEntity.id.eq(couponPolicyId),
+            coupon.couponStatus.eq(CouponStatus.ISSUED)
+        )
+        .fetchFirst() != null;
+  }
+
 }

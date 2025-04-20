@@ -2,8 +2,6 @@ package com.musinsam.orderservice.application.service;
 
 import com.musinsam.common.exception.CommonErrorCode;
 import com.musinsam.common.exception.CustomException;
-import com.musinsam.orderservice.app.global.response.OrderErrorCode;
-import com.musinsam.orderservice.application.dto.client.OrderClientDto;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostCancelDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.request.ReqOrderPutDtoApiV1;
@@ -14,10 +12,10 @@ import com.musinsam.orderservice.application.dto.response.ResOrderPostDtoApiV1;
 import com.musinsam.orderservice.application.dto.response.ResOrderPutDtoApiV1;
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
+import com.musinsam.orderservice.domain.order.exception.OrderException;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
+import com.musinsam.orderservice.domain.order.vo.OrderErrorCode;
 import com.musinsam.orderservice.domain.order.vo.OrderStatus;
-import com.musinsam.orderservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
-import com.musinsam.orderservice.infrastructure.client.dto.response.ResOrderClientUpdateOrderStatusDto;
 import com.querydsl.core.types.Predicate;
 import java.time.ZoneId;
 import java.util.List;
@@ -43,17 +41,13 @@ public class OrderServiceApiV1 {
     validateOrderStatus(orderEntity);
 
     // TODO: 상품 서비스에 재고 확인 요청 및 차감
-    //  boolean stockAvailable = validateAndReserveStock(requestDto);
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
-      throw CustomException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
+      throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
 
     OrderEntity savedOrder = orderRepository.save(orderEntity);
-
-    // TODO: 주문 이벤트 발행
-    //  publishOrderCreatedEvent(savedOrder);
 
     return ResOrderPostDtoApiV1.of(savedOrder);
   }
@@ -62,7 +56,7 @@ public class OrderServiceApiV1 {
   public ResOrderGetByIdDtoApiV1 getOrder(UUID orderId, Long userId) {
 
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
 
@@ -85,23 +79,18 @@ public class OrderServiceApiV1 {
   public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
     validateOrderStatus(orderEntity);
 
-    // TODO: 상품 서비스에 재고 확인 요청 및 차감
-    //  boolean stockAvailable = validateAndReserveStock(requestDto);
     boolean stockAvailable = true;
 
     if (!stockAvailable) {
-      throw CustomException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
+      throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
 
     requestDto.getOrder().updateEntity(orderEntity);
-
-    // TODO: 이벤트 발행
-    //  publishOrderUpdateEvent(orderEntity);
 
     return ResOrderPutDtoApiV1.of(orderEntity);
   }
@@ -111,7 +100,7 @@ public class OrderServiceApiV1 {
       Long userId) {
 
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
 
@@ -124,15 +113,13 @@ public class OrderServiceApiV1 {
 
     // TODO: 재고 복구 요청
 
-    // TODO: 취소 이벤트 발행
-
     return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
 
   @Transactional
   public void deleteOrder(UUID orderId, Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
     validateDeletableStatus(orderEntity);
@@ -153,7 +140,7 @@ public class OrderServiceApiV1 {
     );
 
     if (!deletableStatuses.contains(orderEntity.getOrderStatus())) {
-      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_DELETED);
+      throw OrderException.from(OrderErrorCode.ORDER_CANNOT_BE_DELETED);
     }
   }
 
@@ -163,13 +150,13 @@ public class OrderServiceApiV1 {
     );
 
     if (!cancelableStatuses.contains(orderEntity.getOrderStatus())) {
-      throw CustomException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
+      throw OrderException.from(OrderErrorCode.ORDER_CANNOT_BE_CANCELED);
     }
   }
 
   private void validateOrderStatus(OrderEntity orderEntity) {
     if (!orderEntity.getOrderStatus().equals(OrderStatus.PENDING)) {
-      throw CustomException.from(OrderErrorCode.ORDER_INVALID_STATUS);
+      throw OrderException.from(OrderErrorCode.ORDER_INVALID_STATUS);
     }
   }
 
@@ -177,28 +164,5 @@ public class OrderServiceApiV1 {
     if (!orderEntity.getUserId().equals(userId)) {
       throw CustomException.from(CommonErrorCode.FORBIDDEN);
     }
-  }
-
-  @Transactional
-  public OrderClientDto getOrderClientDtoById(UUID orderId) {
-    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
-    return OrderClientDto.of(orderEntity);
-  }
-
-  @Transactional
-  public ResOrderClientUpdateOrderStatusDto updateOrderStatus(UUID orderId,
-      ReqOrderClientUpdateOrderStatusDto reqDto) {
-    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
-        .orElseThrow(() -> CustomException.from(OrderErrorCode.ORDER_NOT_FOUND));
-
-    orderEntity.updateOrderStatus(
-        OrderStatus.valueOf(reqDto.getStatus()),
-        reqDto.getReason()
-    );
-
-    orderRepository.save(orderEntity);
-
-    return ResOrderClientUpdateOrderStatusDto.of(orderEntity);
   }
 }

@@ -1,6 +1,9 @@
 package com.musinsam.couponservice.app.domain.entity.couponPolicy;
 
+import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.COUPON_POLICY_EXHAUSTED;
+
 import com.musinsam.common.domain.BaseEntity;
+import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import jakarta.persistence.Column;
@@ -57,13 +60,16 @@ public class CouponPolicyEntity extends BaseEntity {
   @Column(name = "ended_at", nullable = false)
   private ZonedDateTime endedAt;
 
-  @Column(name = "seller_id", nullable = false)
+  @Column(name = "company_id", nullable = false)
   private UUID companyId;
+
+  @Column(name = "limited_issue", nullable = false)
+  private boolean limitedIssue; // true: 선착순 발급, false: 퍼블릭 풀
 
   @Builder
   private CouponPolicyEntity(String name, String description, DiscountType discountType, Integer discountValue,
                              Integer minimumOrderAmount, Integer maximumDiscountAmount, Integer totalQuantity,
-                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID companyId) {
+                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID companyId, boolean limitedIssue) {
     this.name = name;
     this.description = description;
     this.discountType = discountType;
@@ -74,6 +80,7 @@ public class CouponPolicyEntity extends BaseEntity {
     this.startedAt = startedAt;
     this.endedAt = endedAt;
     this.companyId = companyId;
+    this.limitedIssue = limitedIssue;
   }
 
   public static CouponPolicyEntity of(String name,
@@ -85,7 +92,8 @@ public class CouponPolicyEntity extends BaseEntity {
                                       Integer totalQuantity,
                                       ZonedDateTime startedAt,
                                       ZonedDateTime endedAt,
-                                      UUID companyId) {
+                                      UUID companyId,
+                                      boolean limitedIssue) {
     return CouponPolicyEntity.builder()
         .name(name)
         .description(description)
@@ -97,6 +105,7 @@ public class CouponPolicyEntity extends BaseEntity {
         .startedAt(startedAt)
         .endedAt(endedAt)
         .companyId(companyId)
+        .limitedIssue(limitedIssue)
         .build();
   }
 
@@ -105,4 +114,15 @@ public class CouponPolicyEntity extends BaseEntity {
     super.softDelete(userId, zoneId);
   }
 
+  public void decreaseQuantity() {
+    if (this.totalQuantity <= 0) {
+      throw new CustomException(COUPON_POLICY_EXHAUSTED);
+    }
+    this.totalQuantity -= 1;
+  }
+
+  // 쿠폰 수량 복구 전용
+  public void increaseQuantity() {
+    this.totalQuantity += 1;
+  }
 }

@@ -28,7 +28,7 @@ Content-Type: application/json
     client.global.set("userRole", response.body.data.user.userRoleType);
 %}
 
-### 쿠폰 정책 발행
+### 쿠폰 정책 발급 (선착순 발급)
 POST http://localhost:10000/v1/coupon-policies
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
@@ -36,16 +36,38 @@ X-User-Role: {{userRole}}
 Content-Type: application/json
 
 {
-  "name": "첫구매 할인 정책",
+  "name": "선착순 쿠폰 정책",
+  "description": "빠른 사람만 가져가세요!",
+  "discountType": "FIXED_AMOUNT",
+  "discountValue": 3000,
+  "minimumOrderAmount": 10000,
+  "maximumDiscountAmount": 10000,
+  "totalQuantity": 100,
+  "startedAt": "2025-04-01T00:00:00+09:00",
+  "endedAt": "2025-06-01T00:00:00+09:00",
+  "companyId": "00000000-0000-0000-0000-000000000001",
+  "limitedIssue": true
+}
+
+### 쿠폰 정책 발행 (퍼블릭 풀)
+POST http://localhost:10000/v1/coupon-policies
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "name": "다시 구매 할인 정책!",
   "description": "첫 구매자에게 10% 할인 제공",
   "discountType": "FIXED_AMOUNT",
   "discountValue": 1000,
   "minimumOrderAmount": 10000,
   "maximumDiscountAmount": 5000,
   "totalQuantity": 1000,
-  "startedAt": "2025-05-01T00:00:00+09:00",
+  "startedAt": "2025-04-01T00:00:00+09:00",
   "endedAt": "2025-06-01T00:00:00+09:00",
-  "companyId": "00000000-0000-0000-0000-000000000001"
+  "companyId": "00000000-0000-0000-0000-000000000001",
+  "limitedIssue": false
 }
 
 
@@ -63,7 +85,7 @@ Content-Type: application/json
 {
   "userId": {{userId}},
   "couponPolicyId": "{{couponPolicyId}}",
-  "couponCode": "aliceCouponCode",
+  "couponCode": "aliceCouponCode11",
   "couponStatus": "AVAILABLE"
 }
 
@@ -84,11 +106,11 @@ Content-Type: application/json
 }
 
 > {%
-    client.global.set("id", response.body.data.couponId);
+    client.global.set("claimedCouponId", response.body.data.couponId);
 %}
 
 ### 쿠폰 사용
-POST http://localhost:10000/v1/coupons/{{id}}/use
+POST http://localhost:10000/v1/coupons/{{claimedCouponId}}/use
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -108,7 +130,7 @@ Content-Type: application/json
 {}
 
 ### 단 건 쿠폰 조회
-GET http://localhost:10000/v1/coupons/{{id}}
+GET http://localhost:10000/v1/coupons/{{claimedCouponId}}
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -117,7 +139,7 @@ Content-Type: application/json
 {}
 
 ### 쿠폰 사용 취소
-POST http://localhost:10000/v1/coupons/{{id}}/cancel
+POST http://localhost:10000/v1/coupons/{{claimedCouponId}}/cancel
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -126,7 +148,7 @@ Content-Type: application/json
 {}
 
 ### 쿠폰 소프트 삭제
-DELETE http://localhost:10000/v1/coupons/{{id}}
+DELETE http://localhost:10000/v1/coupons/{{claimedCouponId}}
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
@@ -138,3 +160,44 @@ Content-Type: application/json
 GET http://localhost:10000/internal/v1/coupons?shopId=00000000-0000-0000-0000-000000000001
 Content-Type: application/json
 
+{}
+
+
+### 주문 전: 주문에서 사용 가능한 쿠폰 조회
+GET http://localhost:10000/internal/v1/coupons/available
+    ?userId={{userId}}
+    &companyIds=00000000-0000-0000-0000-000000000001
+    &totalAmount=10000
+Content-Type: application/json
+
+{}
+
+
+> {%
+    client.global.set("id", response.body.data.couponId);
+%}
+
+### 주문 생성 직전: 쿠폰 유효성 확인 + 할인 금액 계산
+POST http://localhost:10000/internal/v1/coupons/{{id}}/validate
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "companyId": "00000000-0000-0000-0000-000000000001",
+  "totalAmount": 60000
+}
+
+> {%
+    client.global.set("couponId", response.body.data.couponId);
+%}
+
+### 주문 생성 후: 쿠폰 실제 사용 처리
+POST http://localhost:10000/v1/coupons/{{couponId}}/use
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "orderId": "00000000-0000-0000-0000-000000000001"
+}

@@ -1,7 +1,6 @@
 package com.musinsam.paymentservice.domain.payment.vo;
 
 import com.musinsam.common.exception.CustomException;
-import com.musinsam.paymentservice.global.response.PaymentErrorCode;
 import java.util.Arrays;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -49,4 +49,7 @@ public class ReqCouponPolicyIssueDtoApiV1 {
 
   @NotNull(message = "Seller ID is required.")
   private UUID companyId;
+
+  @NotNull
+  private boolean limitedIssue;
 }

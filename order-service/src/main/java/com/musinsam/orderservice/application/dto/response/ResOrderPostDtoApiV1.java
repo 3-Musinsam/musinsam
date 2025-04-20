@@ -91,12 +91,6 @@ public class ResOrderPostDtoApiV1 {
       private String zipCode;
       private String address;
       private String addressDetail;
-
-      // TODO:
-      public static ShippingInfo from() {
-        return ShippingInfo.builder()
-            .build();
-      }
     }
   }
 

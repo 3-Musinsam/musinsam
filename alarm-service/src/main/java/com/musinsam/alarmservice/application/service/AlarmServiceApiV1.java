@@ -26,15 +26,14 @@ public class AlarmServiceApiV1 {
   private final SlackFeignClientApiV1 slackFeignClientApiV1;
 
   @Transactional
-  public ResAlarmPostDtoApiV1 postBy(ReqAlarmPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
+  public ResAlarmPostDtoApiV1 postBy(ReqAlarmPostDtoApiV1 dto) {
     AlarmEntity alarmEntity = alarmRepository.save(dto.getAlarm().toEntity());
     slackFeignClientApiV1.sendSlack(new SlackRequest(alarmEntity.getMessage()));
     return ResAlarmPostDtoApiV1.of(alarmEntity);
   }
 
   @Transactional(readOnly = true)
-  public ResAlarmGetDtoApiV1 getBy(Pageable pageable,
-      CurrentUserDtoApiV1 currentUser) {
+  public ResAlarmGetDtoApiV1 getBy(Pageable pageable) {
 
     Page<AlarmEntity> alarmEntityPage;
     alarmEntityPage = alarmRepository.findByDeletedAtIsNullOrderByIdDesc(
@@ -43,7 +42,7 @@ public class AlarmServiceApiV1 {
   }
 
   @Transactional(readOnly = true)
-  public ResAlarmGetByIdDtoApiV1 getById(UUID id, CurrentUserDtoApiV1 currentUser) {
+  public ResAlarmGetByIdDtoApiV1 getById(UUID id) {
     AlarmEntity alarmEntity = alarmRepository.findById(id)
         .orElseThrow(() -> new CustomException(AlarmErrorCode.ALARM_NOT_FOUND));
     return ResAlarmGetByIdDtoApiV1.of(alarmEntity);

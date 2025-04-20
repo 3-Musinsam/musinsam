@@ -9,14 +9,14 @@ import com.musinsam.productservice.application.dto.request.ReqProductPutByProduc
 import com.musinsam.productservice.application.dto.response.ResProductGetByProductIdDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetDtoApiV1;
 import com.musinsam.productservice.application.dto.response.ResProductGetStockDtoApiV1;
-import com.musinsam.productservice.application.integration.CouponServiceApiV1;
-import com.musinsam.productservice.application.integration.ShopServiceApiV1;
+import com.musinsam.productservice.application.integration.CouponClientApiV1;
+import com.musinsam.productservice.application.integration.ShopClientApiV1;
 import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
-import com.musinsam.productservice.domain.product.entity.ProductStatus;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
 import com.musinsam.productservice.global.exception.ProductErrorCode;
+import com.musinsam.productservice.domain.product.vo.ProductStatus;
 import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
 import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
@@ -42,8 +42,8 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   private final ProductRepository productRepository;
   private final ProductImageRepository productImageRepository;
   private final S3Service s3Service;
-  private final ShopServiceApiV1 shopService;
-  private final CouponServiceApiV1 couponServiceApiV1;
+  private final ShopClientApiV1 shopClientApiV1;
+  private final CouponClientApiV1 couponClientApiV1;
 
   @Override
   @Transactional
@@ -68,9 +68,9 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
         productId);
 
     UUID shopId = product.getShopId();
-    String shopName = shopService.getShopNameByShopId(shopId);
+    String shopName = shopClientApiV1.getShopInfo(shopId).getShop().getName();
 
-    ResShopCouponDtoApiV1 shopCouponDto = couponServiceApiV1.getShopCouponList(shopId);
+    ResShopCouponDtoApiV1 shopCouponDto = couponClientApiV1.getShopCouponList(shopId);
 
     ResProductGetByProductIdDtoApiV1 resDto = ResProductGetByProductIdDtoApiV1.of(product,
         productImages, shopName, shopCouponDto.getCouponList());
@@ -158,8 +158,7 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
 
     if ((UserRoleType.ROLE_COMPANY).equals(currentUser.role())) {
       UUID shopId = product.getShopId();
-      log.info("상점 관리자 아이디: {}", shopService.getShopManagerIdByShopId(shopId));
-      if (!currentUser.userId().equals(shopService.getShopManagerIdByShopId(shopId))) {
+      if (!currentUser.userId().equals(shopClientApiV1.getShopInfo(shopId).getShop().getUserId())) {
         throw new CustomException(ProductErrorCode.UNAUTHORIZED_PRODUCT_ACCESS);
       }
 

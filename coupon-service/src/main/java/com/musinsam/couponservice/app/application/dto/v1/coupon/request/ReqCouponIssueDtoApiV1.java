@@ -14,5 +14,4 @@ import lombok.NoArgsConstructor;
 public class ReqCouponIssueDtoApiV1 {
   private Long userId;
   private UUID couponPolicyId;
-  private String couponCode;
 }
