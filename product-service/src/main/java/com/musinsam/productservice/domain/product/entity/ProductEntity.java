@@ -1,6 +1,7 @@
 package com.musinsam.productservice.domain.product.entity;
 
 import com.musinsam.common.domain.BaseEntity;
+import com.musinsam.productservice.domain.product.vo.ProductStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

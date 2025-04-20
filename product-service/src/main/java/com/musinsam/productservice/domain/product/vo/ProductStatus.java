@@ -1,4 +1,4 @@
-package com.musinsam.productservice.domain.product.entity;
+package com.musinsam.productservice.domain.product.vo;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.stream.Stream;
