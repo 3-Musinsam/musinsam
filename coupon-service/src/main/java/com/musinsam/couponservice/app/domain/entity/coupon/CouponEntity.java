@@ -1,6 +1,7 @@
 package com.musinsam.couponservice.app.domain.entity.coupon;
 
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_ALREADY_CLAIMED;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_NOT_USED;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.AVAILABLE;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.ISSUED;
 
@@ -123,4 +124,18 @@ public class CouponEntity extends BaseEntity {
     super.softDelete(userId, zoneId);
   }
 
+  public void restore() {
+    if (this.couponStatus != CouponStatus.USED) {
+      throw new CustomException(COUPON_NOT_USED);
+    }
+
+    this.couponStatus = (this.userId != null) ? CouponStatus.ISSUED : CouponStatus.AVAILABLE;
+    this.usedAt = null;
+    this.orderId = null;
+
+    // 퍼블릭 풀인 경우만 수량 복구
+    if (!couponPolicyEntity.isLimitedIssue()) {
+      couponPolicyEntity.increaseQuantity();
+    }
+  }
 }
