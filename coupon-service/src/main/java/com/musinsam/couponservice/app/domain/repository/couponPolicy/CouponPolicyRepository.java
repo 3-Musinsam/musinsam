@@ -11,4 +11,6 @@ public interface CouponPolicyRepository {
   Optional<CouponPolicyEntity> findById(UUID id);
   Boolean existsCouponPolicyByName(String name);
   List<CouponPolicyEntity> findAllByCompanyId(UUID companyId);
+
+  Optional<CouponPolicyEntity> findByIdWithPessimisticLock(UUID couponPolicyId);
 }

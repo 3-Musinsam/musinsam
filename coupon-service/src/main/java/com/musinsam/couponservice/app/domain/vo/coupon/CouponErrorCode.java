@@ -24,7 +24,8 @@ public enum CouponErrorCode implements ErrorCode {
   COUPON_ALREADY_DELETED(-1, "Coupon already deleted.", BAD_REQUEST),
   COUPON_ALREADY_ISSUED_BY_USER(-1, "Coupon already issued by user.", BAD_REQUEST),
   COUPON_ALREADY_CLAIMED(-1, "Coupon already claimed.", BAD_REQUEST),
-  COUPON_NOT_USED(-1, "Coupon is not in a state eligible for restoration.", BAD_REQUEST);
+  COUPON_NOT_USED(-1, "Coupon is not in a state eligible for restoration.", BAD_REQUEST),
+  COUPONS_ALL_USED_UP(-1, "All coupons have been used up.", BAD_REQUEST);
 
   private final Integer code;
   private final String message;
