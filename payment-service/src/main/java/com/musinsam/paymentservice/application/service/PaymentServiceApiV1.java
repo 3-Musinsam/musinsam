@@ -1,6 +1,5 @@
 package com.musinsam.paymentservice.application.service;
 
-import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostApproveDtoApiV1;
 import com.musinsam.paymentservice.application.dto.request.ReqPaymentPostCancelDtoApiV1;
@@ -11,10 +10,11 @@ import com.musinsam.paymentservice.application.dto.response.ResPaymentPostApprov
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostCancelDtoApiV1;
 import com.musinsam.paymentservice.application.dto.response.ResPaymentPostInitDtoApiV1;
 import com.musinsam.paymentservice.domain.payment.entity.PaymentEntity;
+import com.musinsam.paymentservice.domain.payment.exception.PaymentException;
+import com.musinsam.paymentservice.domain.payment.vo.PaymentErrorCode;
 import com.musinsam.paymentservice.domain.payment.vo.PaymentMethod;
 import com.musinsam.paymentservice.domain.payment.vo.PaymentStatus;
 import com.musinsam.paymentservice.domain.repository.PaymentRepository;
-import com.musinsam.paymentservice.global.response.PaymentErrorCode;
 import com.musinsam.paymentservice.infrastructure.client.OrderFeignClient;
 import com.musinsam.paymentservice.infrastructure.client.TossPaymentFeignClient;
 import com.musinsam.paymentservice.infrastructure.client.dto.request.ReqOrderClientUpdateOrderStatusDto;
@@ -49,11 +49,11 @@ public class PaymentServiceApiV1 {
         requestDto.getOrderId());
 
     if (!responseOrderClientDto.getOrder().getUserId().equals(userId)) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
     }
 
     if (!responseOrderClientDto.getOrder().getOrderStatus().equals("PENDING")) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_INVALID_ORDER_STATUS);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_INVALID_ORDER_STATUS);
     }
 
     return ResPaymentPostInitDtoApiV1.of(responseOrderClientDto, paymentConfig);
@@ -69,12 +69,12 @@ public class PaymentServiceApiV1 {
         UUID.fromString(requestDto.getPaymentApproval().getOrderId()));
 
     if (!responseOrderClientDto.getOrder().getUserId().equals(userId)) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
     }
 
     if (responseOrderClientDto.getOrder().getFinalAmount()
         .compareTo(requestDto.getPaymentApproval().getAmount()) != 0) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_AMOUNT_MISMATCH);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_AMOUNT_MISMATCH);
     }
 
     ReqTossPaymentApproveDto tossRequest = ReqTossPaymentApproveDto.of(requestDto);
@@ -129,7 +129,7 @@ public class PaymentServiceApiV1 {
   @Transactional(readOnly = true)
   public ResPaymentGetByIdDtoApiV1 getPayment(UUID paymentId, Long userId) {
     PaymentEntity paymentEntity = paymentRepository.findById(paymentId)
-        .orElseThrow(() -> CustomException.from(PaymentErrorCode.PAYMENT_NOT_FOUND));
+        .orElseThrow(() -> PaymentException.from(PaymentErrorCode.PAYMENT_NOT_FOUND));
 
     return ResPaymentGetByIdDtoApiV1.of(paymentEntity);
   }
@@ -149,14 +149,14 @@ public class PaymentServiceApiV1 {
       ReqPaymentPostCancelDtoApiV1 requestDto, Long userId) {
 
     PaymentEntity paymentEntity = paymentRepository.findById(paymentId)
-        .orElseThrow(() -> CustomException.from(PaymentErrorCode.PAYMENT_NOT_FOUND));
+        .orElseThrow(() -> PaymentException.from(PaymentErrorCode.PAYMENT_NOT_FOUND));
 
     if (!paymentEntity.getUserId().equals(userId)) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_UNAUTHORIZED);
     }
 
     if (PaymentStatus.CANCELED.equals(paymentEntity.getStatus())) {
-      throw CustomException.from(PaymentErrorCode.PAYMENT_INVALID_STATUS);
+      throw PaymentException.from(PaymentErrorCode.PAYMENT_INVALID_STATUS);
     }
 
     tossPaymentFeignClient.cancelPayment(
