@@ -1,13 +1,8 @@
 package com.musinsam.couponservice.app.presentation.v1;
 
 
-import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_GET_SUCCESS;
-import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_USE_SUCCESS;
-
 import com.musinsam.common.resolver.CurrentUser;
-import com.musinsam.common.response.ApiResponse;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
-import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqAvailableCouponDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponUseDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.request.ReqCouponValidateDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v1.coupon.response.ResAvailableCouponDtoApiV1;
@@ -21,7 +16,6 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
