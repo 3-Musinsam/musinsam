@@ -1,0 +1,65 @@
+### 1. 회원가입
+POST http://localhost:10000/v1/auth/signup
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!",
+    "name": "alice",
+    "userRoleType": "ROLE_MASTER"
+  }
+}
+
+### 2. 로그인 (토큰 발급)
+POST http://localhost:10000/v1/auth/login
+Content-Type: application/json
+
+{
+  "user": {
+    "email": "alice@gmail.com",
+    "password": "Authorize123!"
+  }
+}
+
+> {%
+    client.global.set("accessToken", response.body.data.token.accessToken);
+    client.global.set("userId", response.body.data.user.userId);
+    client.global.set("userRole", response.body.data.user.userRoleType);
+%}
+
+### 쿠폰 정책 발급 (선착순 발급)
+POST http://localhost:10051/v1/coupon-policies
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "name": "선착순 쿠폰 정책",
+  "description": "빠른 사람만 가져가세요!",
+  "discountType": "FIXED_AMOUNT",
+  "discountValue": 3000,
+  "minimumOrderAmount": 10000,
+  "maximumDiscountAmount": 10000,
+  "totalQuantity": 100,
+  "startedAt": "2025-04-01T00:00:00+09:00",
+  "endedAt": "2025-06-01T00:00:00+09:00",
+  "companyId": "00000000-0000-0000-0000-000000000001",
+  "limitedIssue": true
+}
+
+> {%
+    client.global.set("couponPolicyId", response.body.data.id);
+%}
+
+### 쿠폰 발행
+POST http://localhost:10051/v2/coupons
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "couponPolicyId": "{{couponPolicyId}}"
+}

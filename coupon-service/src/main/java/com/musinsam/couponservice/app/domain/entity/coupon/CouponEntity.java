@@ -19,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -48,7 +47,7 @@ public class CouponEntity extends BaseEntity {
   @Column(name = "order_id")
   private UUID orderId;
 
-  @Column(name = "coupon_code", nullable = false, unique = true)
+  @Column(name = "coupon_code", nullable = false)
   private String couponCode;
 
   @Enumerated(EnumType.STRING)
@@ -137,5 +136,12 @@ public class CouponEntity extends BaseEntity {
     if (!couponPolicyEntity.isLimitedIssue()) {
       couponPolicyEntity.increaseQuantity();
     }
+  }
+
+  public void issue() {
+    if (couponPolicyEntity.isLimitedIssue()) {
+      couponPolicyEntity.decreaseQuantity(); // 선착순인 경우에만 수량 감소
+    }
+    this.couponStatus = CouponStatus.ISSUED;
   }
 }

@@ -81,15 +81,14 @@ public class CouponServiceImpl implements CouponService {
   @Override
   public ResCouponIssueDtoApiV1 issueCoupon(ReqCouponIssueDtoApiV1 request, CurrentUserDtoApiV1 currentUser) {
     CouponPolicyEntity couponPolicy = findCouponPolicyById(request.getCouponPolicyId());
+    if (request.getUserId() != null && couponPolicy.isLimitedIssue()) { couponPolicy.decreaseQuantity(); }
 
-    String couponCode = couponPolicy.getId().toString();
-
-    // 상태는 userId가 있으면 바로 ISSUED, 아니면 AVAILABLE
+    String couponCode = UUID.randomUUID().toString().substring(0, 8);
     CouponStatus status = request.getUserId() == null ? AVAILABLE : ISSUED;
 
     CouponEntity coupon = CouponEntity.of(
         couponPolicy,
-        request.getUserId(), // 유저 있으면 바로 등록
+        request.getUserId(),
         null,
         couponCode,
         status,

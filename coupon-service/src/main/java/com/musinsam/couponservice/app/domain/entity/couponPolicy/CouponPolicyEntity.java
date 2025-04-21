@@ -1,5 +1,6 @@
 package com.musinsam.couponservice.app.domain.entity.couponPolicy;
 
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPONS_ALL_USED_UP;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyErrorCode.COUPON_POLICY_EXHAUSTED;
 
 import com.musinsam.common.domain.BaseEntity;
@@ -124,5 +125,13 @@ public class CouponPolicyEntity extends BaseEntity {
   // 쿠폰 수량 복구 전용
   public void increaseQuantity() {
     this.totalQuantity += 1;
+  }
+
+  public void checkAndDecreaseQuantityIfLimited() {
+    if (!this.limitedIssue) return;
+    if (this.totalQuantity <= 0) {
+      throw new CustomException(COUPONS_ALL_USED_UP);
+    }
+    this.totalQuantity -= 1;
   }
 }
