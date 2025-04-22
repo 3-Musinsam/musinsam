@@ -47,7 +47,7 @@ management:
 slack:
   webhook:
     url: https://hooks.slack.com/services/
-    key: T08LC8E12F8/B08MBTX27V4/rRjOPIGYtpj6R8DNwdZkauJR
+    key: ${WEBHOOK-KEY}
     "display_information":
       "name": "Musinsam Alarmbot"
     "settings":
