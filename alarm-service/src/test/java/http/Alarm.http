@@ -35,7 +35,7 @@ Authorization: Bearer {{accessToken}}
 
 {
   "alarm": {
-    "message": "Name: John Doe\nEmail: johndoe@example.com\nPhone Number: 555-555-5555\n Order Number: 1234\nOrder Total: $50.00\nMessage: Urgent - Please check on the status of my order.\n\n"
+    "message": "오늘부터 2025년 5월 31일까지, 선착순으로 제공되는 쿠폰이 등장했습니다! 지금 이 매장에서 쇼핑을 하시면, 15% 할인 혜택을 누리실 수 있어요. 얼른 확인해보세요!"
   }
 }
 
@@ -48,3 +48,20 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:10000/internal/v1/slack-alarms/76a5abec-741d-403d-b6c5-3a2f01f802ff
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### 슬랙 USERID 조회
+GET https://slack.com/api/users.lookupByEmail?email=soo0864@gmail.com
+Authorization: Bearer {{botToken}}
+
+### 슬랙 전체 유저 리스트에서 찾기
+GET https://slack.com/api/users.list
+Authorization: Bearer {{botToken}}
+
+### 슬랙 DM 채널 열기
+POST https://slack.com/api/conversations.open
+Authorization: Bearer {{botToken}}
+Content-Type: application/json
+
+{
+  "users": "U08LC8E2JVC"
+}
