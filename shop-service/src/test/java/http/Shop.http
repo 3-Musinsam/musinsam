@@ -94,3 +94,9 @@ Authorization: Bearer {{accessToken}}
 GET http://localhost:10000/internal/v1/shops/coupons?shopId=af80aa19-9c74-49dc-b115-8f4533de0f7b
 Content-Type: application/json
 Authorization: Bearer {{accessToken}}
+
+### 배치 실행 API (테스트용)
+POST http://localhost:10000/internal/v1/shops/batch/weekly-coupon
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+

@@ -55,14 +55,59 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 
+    implementation 'org.springframework.kafka:spring-kafka'
+
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
     testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.19.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    testImplementation 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-junit-jupiter'
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+ext {
+    serviceId = 'shop-service'
+    apiTitle = 'Shop Service API'
+    apiVersion = project.version
+    apiDescription = 'Shop Service API'
+}
+
+openapi3 {
+    servers = [
+            {
+                url = "http://localhost:10000"
+            }
+    ]
+    title = 'Shop Service'
+    version = '1.0.0'
+    description = ''
+    format = 'json'
+}
+
+tasks.register('setDocs') {
+    dependsOn 'openapi3'
+    doLast {
+        copy {
+            from "build/api-spec"
+            include "*.json"
+            include "*.yaml"
+            into "build/resources/main/static/springdoc"
+            rename { String fileName ->
+                if (fileName.endsWith('.json')) {
+                    return fileName.replace('.json', '-shop-service.json')
+                } else if (fileName.endsWith('.yaml')) {
+                    return fileName.replace('.yaml', '-shop-service.yml')
+                }
+                return fileName
+            }
+        }
     }
 }
 
@@ -86,4 +131,16 @@ tasks.withType(JavaCompile).configureEach {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+compileJava {
+    dependsOn 'clean'
+}
+
+bootRun {
+    dependsOn 'setDocs'
+}
+
+bootJar {
+    dependsOn 'setDocs'
 }
