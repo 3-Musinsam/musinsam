@@ -55,6 +55,15 @@ slack:
       "socket_mode_enabled": false,
       "is_hosted": false,
       "token_rotation_enabled": false
+  userlist:
+    url: https://slack.com/api/users.list
+  conversations:
+    open:
+      url: https://slack.com/api/conversations.open
+  chat:
+    postMessage:
+      url: https://slack.com/api/chat.postMessage
+  bot-token: ${BOT-TOKEN}
 
 eureka:
   client:
