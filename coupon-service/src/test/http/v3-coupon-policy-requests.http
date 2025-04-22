@@ -43,7 +43,7 @@ Content-Type: application/json
   "minimumOrderAmount": 10000,
   "maximumDiscountAmount": 5000,
   "totalQuantity": 1000,
-  "startedAt": "2025-05-01T00:00:00+09:00",
+  "startedAt": "2025-04-01T00:00:00+09:00",
   "endedAt": "2025-06-01T00:00:00+09:00",
   "companyId": "00000000-0000-0000-0000-000000000001",
   "limitedIssue": true
@@ -62,10 +62,18 @@ Content-Type: application/json
 
 {}
 
-### 모든 쿠폰 정책 조회
-GET http://localhost:10051/v3/coupon-policies
+> {%
+    client.global.set("couponPolicyId", response.body.data.id);
+%}
+
+### 쿠폰 발행
+POST http://localhost:10051/v3/coupons/issue
 Authorization: Bearer {{accessToken}}
 X-User-Id: {{userId}}
 X-User-Role: {{userRole}}
 Content-Type: application/json
+
+{
+  "couponPolicyId": "{{couponPolicyId}}"
+}
 

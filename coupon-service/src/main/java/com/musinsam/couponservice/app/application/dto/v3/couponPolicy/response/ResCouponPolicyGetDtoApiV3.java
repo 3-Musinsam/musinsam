@@ -38,4 +38,21 @@ public record ResCouponPolicyGetDtoApiV3(
         .isLimitedIssue(couponPolicyEntity.isLimitedIssue())
         .build();
   }
+
+  public CouponPolicyEntity toEntity() {
+    return CouponPolicyEntity.of(
+        id,
+        name,
+        description,
+        discountType,
+        discountValue,
+        minimumOrderAmount,
+        maximumDiscountAmount,
+        totalQuantity,
+        startedAt,
+        endedAt,
+        companyId,
+        isLimitedIssue
+    );
+  }
 }
