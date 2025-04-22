@@ -21,6 +21,12 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 10
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: alarm-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 springdoc:
   api-docs:

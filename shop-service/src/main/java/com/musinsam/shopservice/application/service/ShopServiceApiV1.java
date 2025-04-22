@@ -10,10 +10,8 @@ import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPostDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopPutByShopIdDtoApiV1;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
-import com.musinsam.shopservice.domain.shop.repository.ShopQueryRepository;
 import com.musinsam.shopservice.domain.shop.repository.ShopRepository;
 import com.musinsam.shopservice.infrastructure.excepcion.ShopErrorCode;
-import com.musinsam.shopservice.infrastructure.feign.CouponFeignClientApiV1;
 import java.time.ZoneId;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShopServiceApiV1 {
 
   private final ShopRepository shopRepository;
-  private final ShopQueryRepository shopQueryRepository;
-  private final CouponFeignClientApiV1 couponFeignClientApiV1;
 
   @Transactional
   public ResShopPostDtoApiV1 postBy(ReqShopPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
