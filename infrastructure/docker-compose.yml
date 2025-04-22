@@ -86,6 +86,8 @@ services:
 
   k6:
     image: grafana/k6
+    profiles:
+      - "test"
     volumes:
       - ./k6-scripts:/k6-scripts
     command: run -o experimental-prometheus-rw /k6-scripts/order-api-stress-test.js
