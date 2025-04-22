@@ -1,5 +1,6 @@
 package com.musinsam.couponservice.app.domain.repository.couponPolicy;
 
+import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.ResCouponPolicyGetDtoApiV3;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import java.util.List;
 import java.util.Optional;
@@ -13,4 +14,6 @@ public interface CouponPolicyRepository {
   List<CouponPolicyEntity> findAllByCompanyId(UUID companyId);
 
   Optional<CouponPolicyEntity> findByIdWithPessimisticLock(UUID couponPolicyId);
+
+  List<CouponPolicyEntity> findAll();
 }

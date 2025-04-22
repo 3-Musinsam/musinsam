@@ -14,7 +14,9 @@ import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.R
 import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.ResCouponPolicyIssueDtoApiV3;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
 import com.musinsam.couponservice.app.domain.repository.couponPolicy.CouponPolicyRepository;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RAtomicLong;
@@ -85,6 +87,14 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
         .orElseThrow(() -> new CustomException(NOT_FOUND_COUPON_POLICY));
 
     return ResCouponPolicyGetDtoApiV3.from(couponPolicyEntity);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<ResCouponPolicyGetDtoApiV3> getAllCouponPolicies() {
+    return couponPolicyRepository.findAll().stream()
+        .map(ResCouponPolicyGetDtoApiV3::from)
+        .collect(Collectors.toList());
   }
 }
 
