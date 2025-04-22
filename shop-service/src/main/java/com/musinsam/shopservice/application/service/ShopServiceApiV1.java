@@ -26,6 +26,12 @@ public class ShopServiceApiV1 {
 
   private final ShopRepository shopRepository;
 
+  /**
+   * Creates a new shop entity from the provided data and returns its representation.
+   *
+   * @param dto the data transfer object containing shop creation details
+   * @return a response DTO representing the newly created shop
+   */
   @Transactional
   public ResShopPostDtoApiV1 postBy(ReqShopPostDtoApiV1 dto, CurrentUserDtoApiV1 currentUser) {
     ShopEntity shopEntity = shopRepository.save(dto.getShop().toEntity());

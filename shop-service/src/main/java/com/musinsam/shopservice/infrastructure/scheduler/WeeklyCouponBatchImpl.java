@@ -16,7 +16,13 @@ public class WeeklyCouponBatchImpl extends WeeklyCouponBatch {
 
   private final ShopInternalServiceApiV1 shopInternalServiceApiV1;
 
-  // 생성자 주입을 위해 부모 클래스의 생성자에도 넘겨줌
+  /**
+   * Constructs a WeeklyCouponBatchImpl with the required service dependencies.
+   *
+   * @param shopInternalServiceApiV1 service for retrieving shop information
+   * @param aiFeignClientApiV1 AI client for external API interactions
+   * @param alarmKafkaProducer producer for sending alarm notifications
+   */
   public WeeklyCouponBatchImpl(
       ShopInternalServiceApiV1 shopInternalServiceApiV1,
       AiFeignClientApiV1 aiFeignClientApiV1,
@@ -26,6 +32,11 @@ public class WeeklyCouponBatchImpl extends WeeklyCouponBatch {
     this.shopInternalServiceApiV1 = shopInternalServiceApiV1;
   }
 
+  /**
+   * Retrieves up to 100 shop UUIDs from the internal shop service for batch processing.
+   *
+   * @return a list of shop UUIDs, limited to the first 100 shops
+   */
   @Override
   protected List<UUID> getShopIds() {
     // 최대 100개 상점만 페이징 조회
