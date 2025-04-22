@@ -17,7 +17,6 @@ import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.R
 import com.musinsam.couponservice.app.application.service.v3.couponPolicy.CouponPolicyService;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -73,5 +72,4 @@ public class CouponPolicyController {
         ApiResponse.success(couponPolicyService.getAllCouponPolicies())
     );
   }
-
 }
