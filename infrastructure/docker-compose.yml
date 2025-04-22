@@ -36,8 +36,74 @@ services:
     networks:
       - laboratory-network
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - --web.enable-remote-write-receiver
+      - --enable-feature=native-histograms
+      - --config.file=/etc/prometheus/prometheus.yml
+    networks:
+      - laboratory-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana-dashboard:/dashboard
+    depends_on:
+      - prometheus
+      - loki
+    networks:
+      - laboratory-network
+
+  loki:
+    image: grafana/loki:2.9.3
+    container_name: loki
+    command: -config.file=/etc/loki/loki-config.yaml
+    volumes:
+      - ./loki/loki-config.yaml:/etc/loki/loki-config.yaml
+      - ./loki/wal:/loki/wal            # ← WAL 저장용
+      - ./loki/chunks:/loki/chunks      # ← chunk 저장용
+      - ./loki/index:/loki/index        # ← index 저장용
+      - ./loki/cache:/loki/cache        # ← cache 저장용
+      - ./loki/compactor:/loki/compactor
+    ports:
+      - "3100:3100"
+    networks:
+      - laboratory-network
+
+  k6:
+    image: grafana/k6
+    volumes:
+      - ./k6-scripts:/k6-scripts
+    command: run -o experimental-prometheus-rw /k6-scripts/order-api-stress-test.js
+    env_file:
+      - ../.env
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - prometheus
+    networks:
+      - laboratory-network
+
 volumes:
   postgres_data:
+  grafana-storage:
 
 networks:
   laboratory-network:
