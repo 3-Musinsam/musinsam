@@ -62,4 +62,10 @@ Content-Type: application/json
 
 {}
 
+### 모든 쿠폰 정책 조회
+GET http://localhost:10051/v3/coupon-policies
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
 

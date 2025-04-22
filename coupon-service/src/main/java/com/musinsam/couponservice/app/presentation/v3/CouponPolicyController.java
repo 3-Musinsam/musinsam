@@ -2,6 +2,7 @@ package com.musinsam.couponservice.app.presentation.v3;
 
 import static com.musinsam.common.user.UserRoleType.ROLE_COMPANY;
 import static com.musinsam.common.user.UserRoleType.ROLE_MASTER;
+import static com.musinsam.common.user.UserRoleType.ROLE_USER;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponResponseCode.COUPON_ISSUE_SUCCESS;
 import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicyResponseCode.COUPON_POLICY_GET_SUCCESS;
 
@@ -14,7 +15,9 @@ import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.request.Re
 import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.ResCouponPolicyGetDtoApiV3;
 import com.musinsam.couponservice.app.application.dto.v3.couponPolicy.response.ResCouponPolicyIssueDtoApiV3;
 import com.musinsam.couponservice.app.application.service.v3.couponPolicy.CouponPolicyService;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +50,7 @@ public class CouponPolicyController {
     ));
   }
 
-  @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
   @GetMapping("/{couponPolicyId}")
   public ResponseEntity<ApiResponse<ResCouponPolicyGetDtoApiV3>> getCouponPolicy(
       @PathVariable UUID couponPolicyId,
@@ -62,4 +65,13 @@ public class CouponPolicyController {
         response
     ));
   }
+
+  @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
+  @GetMapping
+  public ResponseEntity<ApiResponse<List<ResCouponPolicyGetDtoApiV3>>> getAllCouponPolicies() {
+    return ResponseEntity.ok(
+        ApiResponse.success(couponPolicyService.getAllCouponPolicies())
+    );
+  }
+
 }
