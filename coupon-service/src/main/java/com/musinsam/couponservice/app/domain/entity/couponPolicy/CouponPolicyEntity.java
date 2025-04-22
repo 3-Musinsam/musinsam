@@ -5,7 +5,6 @@ import static com.musinsam.couponservice.app.domain.vo.couponPolicy.CouponPolicy
 
 import com.musinsam.common.domain.BaseEntity;
 import com.musinsam.common.exception.CustomException;
-import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.domain.vo.couponPolicy.DiscountType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -110,6 +110,45 @@ public class CouponPolicyEntity extends BaseEntity {
         .build();
   }
 
+  private CouponPolicyEntity(UUID id, String name, String description, DiscountType discountType, Integer discountValue,
+                             Integer minimumOrderAmount, Integer maximumDiscountAmount, Integer totalQuantity,
+                             ZonedDateTime startedAt, ZonedDateTime endedAt, UUID companyId, boolean limitedIssue) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.discountType = discountType;
+    this.discountValue = discountValue;
+    this.minimumOrderAmount = minimumOrderAmount;
+    this.maximumDiscountAmount = maximumDiscountAmount;
+    this.totalQuantity = totalQuantity;
+    this.startedAt = startedAt;
+    this.endedAt = endedAt;
+    this.companyId = companyId;
+    this.limitedIssue = limitedIssue;
+  }
+
+
+  public static CouponPolicyEntity of(UUID id, String name, String description, DiscountType discountType,
+                                      Integer discountValue,
+                                      Integer minimumOrderAmount, Integer maximumDiscountAmount, Integer totalQuantity,
+                                      ZonedDateTime startedAt, ZonedDateTime endedAt, UUID companyId,
+                                      boolean limitedIssue) {
+    return new CouponPolicyEntity(
+        id,
+        name,
+        description,
+        discountType,
+        discountValue,
+        minimumOrderAmount,
+        maximumDiscountAmount,
+        totalQuantity,
+        startedAt,
+        endedAt,
+        companyId,
+        limitedIssue
+    );
+  }
+
   @Override
   public void softDelete(Long userId, ZoneId zoneId) {
     super.softDelete(userId, zoneId);
@@ -128,7 +167,9 @@ public class CouponPolicyEntity extends BaseEntity {
   }
 
   public void checkAndDecreaseQuantityIfLimited() {
-    if (!this.limitedIssue) return;
+    if (!this.limitedIssue) {
+      return;
+    }
     if (this.totalQuantity <= 0) {
       throw new CustomException(COUPONS_ALL_USED_UP);
     }
