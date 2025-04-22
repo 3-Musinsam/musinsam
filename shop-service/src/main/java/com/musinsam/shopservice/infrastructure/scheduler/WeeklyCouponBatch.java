@@ -22,7 +22,11 @@ public abstract class WeeklyCouponBatch {
   private final AiFeignClientApiV1 aiFeignClientApiV1;
   private final AlarmKafkaProducer alarmKafkaProducer;
 
-  // 매주 월요일 오전 3시에 실행
+  /**
+   * Executes a scheduled batch job every Monday at 3 AM to process coupons for multiple shops.
+   *
+   * For each shop ID provided by {@link #getShopIds()}, retrieves available coupons, generates AI-based marketing messages for each coupon, and sends notifications via Slack. Logs processing statistics and handles errors per shop and coupon to ensure robust batch execution.
+   */
   @Scheduled(cron = "0 0 3 ? * MON")
 //  @Scheduled(cron = "0 0/1 * * * *") // 테스트용
   public void runWeeklyCouponCheck() {
@@ -85,6 +89,14 @@ public abstract class WeeklyCouponBatch {
         processedShopCount == 0 ? 0 : totalTime / processedShopCount);
   }
 
+  /**
+   * Constructs an AI prompt request for generating a marketing message based on coupon and shop details.
+   *
+   * @param coupon the coupon for which to generate the prompt; must have a non-null coupon policy
+   * @param shopId the unique identifier of the shop associated with the coupon
+   * @return a request DTO containing the formatted AI prompt
+   * @throws IllegalArgumentException if the coupon policy is missing
+   */
   private ReqAiPostDtoApiV1 buildAiPrompt(ResShopCouponDtoApiV1.Coupon coupon, UUID shopId) {
     var policy = coupon.getCouponPolicy();
 
@@ -116,6 +128,12 @@ public abstract class WeeklyCouponBatch {
         .build();
   }
 
-  // 구현체에서 정의
+  /**
+ * Returns the list of shop IDs to be processed by the weekly coupon batch.
+ *
+ * Implementations must provide the specific shop IDs for which coupons should be checked and processed.
+ *
+ * @return a list of shop UUIDs to process
+ */
   protected abstract List<UUID> getShopIds();
 }

@@ -14,6 +14,11 @@ public class WeeklyCouponBatchControllerV1 {
 
   private final WeeklyCouponBatchImpl weeklyCouponBatchImpl;
 
+  /**
+   * Triggers the execution of the weekly coupon batch process.
+   *
+   * @return HTTP 200 OK response with a success message upon triggering the batch process
+   */
   @PostMapping("/weekly-coupon")
   public ResponseEntity<String> runWeeklyCouponBatch() {
     weeklyCouponBatchImpl.runWeeklyCouponCheck(); // 직접 실행

@@ -14,6 +14,14 @@ public class AlarmKafkaConsumer {
 
   private final ObjectMapper objectMapper;
 
+  /**
+   * Consumes and processes alarm messages from the "coupon.alarm" Kafka topic.
+   *
+   * Deserializes the incoming JSON message into a {@code ReqAlarmPostDtoApiV1} object and logs the contained alarm message.
+   * Logs an error if message processing fails.
+   *
+   * @param message the raw JSON message received from Kafka
+   */
   @KafkaListener(topics = "coupon.alarm", groupId = "alarm-service-group")
   public void listen(String message) {
     try {

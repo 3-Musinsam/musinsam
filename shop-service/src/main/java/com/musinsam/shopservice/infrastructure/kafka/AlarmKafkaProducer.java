@@ -18,6 +18,11 @@ public class AlarmKafkaProducer {
 
   private static final String TOPIC = "coupon.alarm";
 
+  /**
+   * Sends an alarm message to the Kafka topic after serializing the provided alarm data to JSON.
+   *
+   * @param alarmDto the alarm data to be serialized and sent
+   */
   public void sendAlarm(ReqAlarmPostDtoApiV1 alarmDto) {
     try {
       String message = objectMapper.writeValueAsString(alarmDto);
