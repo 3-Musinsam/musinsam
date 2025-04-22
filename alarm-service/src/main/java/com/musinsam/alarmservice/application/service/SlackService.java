@@ -14,6 +14,12 @@ public class SlackService {
 
   private final SlackFeignClientApiV2 slackFeignClientApiV2;
 
+  /**
+   * Sends a direct message to a specified Slack user.
+   *
+   * @param userId the Slack user ID to whom the message will be sent
+   * @param message the message content to send
+   */
   public void sendDmToUser(String userId, String message) {
     log.info("Slack DM 전송 시작 - 대상 사용자: {}", userId);
     // 1. DM 채널 오픈
