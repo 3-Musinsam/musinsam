@@ -6,6 +6,10 @@ spring:
     name: order-service
 
   datasource:
+    hikari:
+      maximum-pool-size: 50
+      minimum-idle: 20
+      connection-timeout: 3000
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5433/postgres
     username: postgres
@@ -34,6 +38,14 @@ springdoc:
     enabled: true
   api-docs:
     enabled: true
+
+management:
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
 
 logging:
   level:

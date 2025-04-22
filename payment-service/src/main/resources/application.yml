@@ -35,6 +35,14 @@ springdoc:
   api-docs:
     enabled: true
 
+management:
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+
 toss:
   payments:
     api-url: https://api.tosspayments.com
