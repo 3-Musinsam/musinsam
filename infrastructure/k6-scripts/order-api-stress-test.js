@@ -1,4 +1,5 @@
 import http from 'k6/http';
+import {check} from 'k6';
 
 const token = __ENV.TEST_AUTH_TOKEN;
 const userId = __ENV.TEST_USER_ID;
@@ -60,5 +61,10 @@ export default function () {
     },
   };
 
-  http.post(url, payload, params);
+  const response = http.post(url, payload, params);
+
+  check(response, {
+    'status is 200': (r) => r.status === 200,
+    'response time < 500ms': (r) => r.timings.duration < 500
+  });
 }
