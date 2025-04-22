@@ -5,7 +5,7 @@
 .idea/
 postgres-data/
 /infrastructure/loki/
-!loki/loki-config.yaml
+!infrastructure/loki/loki-config.yaml
 
 # Env Files
 **/.env*
