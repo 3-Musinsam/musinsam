@@ -107,11 +107,12 @@ public class ProductControllerApiV1 {
   @CustomPreAuthorize(userRoleType = {ROLE_COMPANY, ROLE_MASTER})
   public ResponseEntity<ApiResponse<Void>> updateProduct(
       @PathVariable UUID productId,
-      @Valid @RequestBody ReqProductPutByProductIdDtoApiV1 dto,
+      @Valid @RequestPart ReqProductPutByProductIdDtoApiV1 dto,
+      @RequestPart List<MultipartFile> images,
       @CurrentUser CurrentUserDtoApiV1 currentUser
   ) {
 
-    productService.updateProduct(currentUser, productId, dto);
+    productService.updateProduct(currentUser, productId, dto, images);
 
     return ResponseEntity.ok(new ApiResponse<>(
         PRODUCT_UPDATE_SUCCESS.getCode(),

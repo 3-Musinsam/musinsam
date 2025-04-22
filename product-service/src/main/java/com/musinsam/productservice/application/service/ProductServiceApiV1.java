@@ -23,7 +23,8 @@ public interface ProductServiceApiV1 {
   ResProductGetDtoApiV1 getProductList(int page, int size);
 
   void updateProduct(CurrentUserDtoApiV1 currentUser, UUID productId,
-      @Valid ReqProductPutByProductIdDtoApiV1 dto);
+      @Valid ReqProductPutByProductIdDtoApiV1 dto,
+      List<MultipartFile> images);
 
   void deleteProduct(CurrentUserDtoApiV1 currentUser, UUID productId);
 

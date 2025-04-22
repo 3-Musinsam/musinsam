@@ -37,23 +37,12 @@ public class ReqProductPutByProductIdDtoApiV1 {
     @PositiveOrZero(message = "상품 가격은 0원 이상이어야 합니다.")
     private BigDecimal price;
 
-    private Image image;
+    private List<UUID> deletedImages;
 
 
     public void updateOf(ProductEntity productEntity) {
       productEntity.setName(name);
       productEntity.setPrice(price);
-    }
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class Image {
-
-      private List<UUID> imageId;
-      private List<String> imageUrl;
-
     }
   }
 

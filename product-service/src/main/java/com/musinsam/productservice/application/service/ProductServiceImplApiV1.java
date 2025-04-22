@@ -15,8 +15,8 @@ import com.musinsam.productservice.domain.product.entity.ProductEntity;
 import com.musinsam.productservice.domain.product.entity.ProductImageEntity;
 import com.musinsam.productservice.domain.product.repository.ProductImageRepository;
 import com.musinsam.productservice.domain.product.repository.ProductRepository;
-import com.musinsam.productservice.global.exception.ProductErrorCode;
 import com.musinsam.productservice.domain.product.vo.ProductStatus;
+import com.musinsam.productservice.global.exception.ProductErrorCode;
 import com.musinsam.productservice.infrastructure.dto.res.ResShopCouponDtoApiV1;
 import com.musinsam.productservice.infrastructure.s3.S3Folder;
 import com.musinsam.productservice.infrastructure.s3.service.S3Service;
@@ -92,11 +92,25 @@ public class ProductServiceImplApiV1 implements ProductServiceApiV1 {
   @Override
   @Transactional
   public void updateProduct(CurrentUserDtoApiV1 currentUser, UUID productId,
-      ReqProductPutByProductIdDtoApiV1 dto) {
+      ReqProductPutByProductIdDtoApiV1 dto, List<MultipartFile> newImages) {
 
     ProductEntity product = findProductEntityById(productId);
-
     validateShopManager(currentUser, product);
+
+    List<ProductImageEntity> originImages = productImageRepository.findByProductIdAndDeletedAtIsNull(
+        productId);
+    List<UUID> deletedImageIds = dto.getProduct().getDeletedImages();
+
+    for (ProductImageEntity originImage : originImages) {
+      if (deletedImageIds.contains(originImage.getId())) {
+        originImage.softDelete(currentUser.userId(), ZoneId.systemDefault());
+        s3Service.removeFile(originImage.getImageUrl(), originImage.getS3Folder());
+      }
+    }
+
+    for (MultipartFile image : newImages) {
+      saveImageFile(S3Folder.PRODUCT, image, product.getId());
+    }
 
     dto.getProduct().updateOf(product);
   }
