@@ -4,6 +4,8 @@
 ### Wish List
 .idea/
 postgres-data/
+/infrastructure/loki/
+!loki/loki-config.yaml
 
 # Env Files
 **/.env*
