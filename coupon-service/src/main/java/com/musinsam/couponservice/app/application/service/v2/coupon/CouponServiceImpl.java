@@ -35,14 +35,14 @@ public class CouponServiceImpl implements CouponService {
   @Override
   public ResCouponIssueDtoApiV2 issueCoupon(ReqCouponIssueDtoApiV2 request, CurrentUserDtoApiV1 currentUser) {
     CouponPolicyEntity couponPolicyEntity = couponPolicyRepository.findByIdWithPessimisticLock(
-            request.getCouponPolicyId())
+            request.couponPolicyId())
         .orElseThrow(() -> new CustomException(NOT_FOUND_COUPON_POLICY));
 
     ZonedDateTime now = ZonedDateTime.now();
     if (now.isBefore(couponPolicyEntity.getStartedAt()) || now.isAfter(couponPolicyEntity.getEndedAt())) {
       throw new CustomException(INVALID_COUPON_DATE);
     }
-    
+
     couponPolicyEntity.checkAndDecreaseQuantityIfLimited();
 
     CouponEntity couponEntity = CouponEntity.of(

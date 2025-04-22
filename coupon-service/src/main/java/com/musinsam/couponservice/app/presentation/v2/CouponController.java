@@ -27,7 +27,7 @@ public class CouponController {
   private final CouponService couponService;
 
   @CustomPreAuthorize(userRoleType = {ROLE_USER, ROLE_COMPANY, ROLE_MASTER})
-  @PostMapping
+  @PostMapping("/issue")
   public ResponseEntity<ApiResponse<ResCouponIssueDtoApiV2>> issueCoupon(
       @RequestBody ReqCouponIssueDtoApiV2 request,
       @CurrentUser CurrentUserDtoApiV1 currentUser

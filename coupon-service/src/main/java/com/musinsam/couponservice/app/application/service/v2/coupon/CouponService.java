@@ -6,5 +6,4 @@ import com.musinsam.couponservice.app.application.dto.v2.coupon.response.ResCoup
 
 public interface CouponService {
   ResCouponIssueDtoApiV2 issueCoupon(ReqCouponIssueDtoApiV2 request, CurrentUserDtoApiV1 currentUser);
-
 }
