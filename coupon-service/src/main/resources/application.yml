@@ -26,12 +26,12 @@ spring:
         format_sql: true
         use_sql_comments: true
 
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
-#      username: default
-#      password: systempass
+  data:
+    redis:
+      host: localhost
+      port: 6380
+      username: default
+      password: systempass
 
 eureka:
   client:

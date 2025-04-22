@@ -77,7 +77,7 @@ spring:
         - id: internal-coupon-service
           uri: lb://COUPON-SERVICE
           predicates:
-            - Path=/internal/v1/coupons/**
+            - Path=/internal/v1/coupons/**, /internal/v2/coupons/**, /internal/v3/coupons/**, /internal/v4/coupons/**
 
         - id: swagger-coupon-service
           uri: lb://COUPON-SERVICE
@@ -89,12 +89,12 @@ spring:
         - id: coupon-service
           uri: lb://COUPON-SERVICE
           predicates:
-            - Path=/v1/coupons/**
+            - Path=/v1/coupons/**, /v2/coupons/**, /v3/coupons/**, /v4/coupons/**
 
         - id: coupon-Policy-service
           uri: lb://COUPON-SERVICE
           predicates:
-            - Path=/v1/coupon-policies/**
+            - Path=/v1/coupon-policies/**,/v2/coupon-policies/**,/v3/coupon-policies/**, /v4/coupon-policies/**,
 
         - id: internal-event-service
           uri: lb://EVENT-SERVICE
