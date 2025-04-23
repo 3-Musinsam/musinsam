@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 public class OrderStockRestoreException extends OrderException {
 
-  public OrderStockRestoreException(OrderErrorCode errorCode) {
+  public OrderStockRestoreException() {
     super(OrderErrorCode.ORDER_STOCK_RESTORE_FAILED);
   }
 }
