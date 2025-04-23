@@ -81,6 +81,17 @@ Content-Type: application/json
     client.global.set("couponId", response.body.data.couponId);
 %}
 
+### 쿠폰 발행
+POST http://localhost:10051/api/v4/coupons/issue
+Authorization: Bearer {{accessToken}}
+X-User-Id: {{userId}}
+X-User-Role: {{userRole}}
+Content-Type: application/json
+
+{
+  "couponPolicyId": "{{couponPolicyId}}"
+}
+
 
 ### 쿠폰 사용
 POST http://localhost:10051/internal/v3/coupons/{{couponId}}/use
@@ -92,4 +103,3 @@ Content-Type: application/json
 {
   "orderId": "00000000-0000-0000-0000-000000000001"
 }
-
