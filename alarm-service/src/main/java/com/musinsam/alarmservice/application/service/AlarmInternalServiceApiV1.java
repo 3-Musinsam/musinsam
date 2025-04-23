@@ -10,7 +10,6 @@ import com.musinsam.alarmservice.domain.alarm.repository.AlarmRepository;
 import com.musinsam.alarmservice.infrastructure.exception.AlarmErrorCode;
 import com.musinsam.alarmservice.infrastructure.feign.SlackFeignClientApiV1;
 import com.musinsam.common.exception.CustomException;
-import com.musinsam.common.user.CurrentUserDtoApiV1;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class AlarmServiceApiV1 {
+public class AlarmInternalServiceApiV1 {
 
   private final AlarmRepository alarmRepository;
   private final SlackFeignClientApiV1 slackFeignClientApiV1;
