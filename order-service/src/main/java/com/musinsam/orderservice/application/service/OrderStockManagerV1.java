@@ -2,6 +2,7 @@ package com.musinsam.orderservice.application.service;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
+import com.musinsam.orderservice.domain.order.exception.OrderProductException;
 import com.musinsam.orderservice.domain.order.exception.OrderStockRestoreException;
 import com.musinsam.orderservice.infrastructure.client.ProductFeignClient;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -36,8 +37,15 @@ public class OrderStockManagerV1 {
 
       if (!success) {
         log.debug("상품 재고 차감 실패, 롤백 시작: 상품 ID={}", item.getProductId());
-        rollbackStockReduction(processedItems);
-        return false;
+
+        try {
+          rollbackStockReduction(processedItems);
+          log.warn("상품 재고 부족 : {}", item.getProductId());
+          throw OrderProductException.notAvailable();
+        } catch (OrderStockRestoreException e) {
+          log.error("재고 롤백 실패: 롤백이 완료되지 않았습니다.");
+          throw e;
+        }
       }
 
       processedItems.add(item);
