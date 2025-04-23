@@ -51,6 +51,6 @@ public class AlarmInternalServiceApiV1 {
 
   @Transactional
   public void postById(SlackOpenImResponse dto) {
-    slackService.sendDmToUser("U08LC8E2JVC", "🚨 [입고알림] 양수영님, 새 상품이 입고되었습니다!");
+    slackService.sendDmToUser(dto.getChannel().getId(), "🚨 [입고알림] 새 상품이 입고되었습니다!");
   }
 }

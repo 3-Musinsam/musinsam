@@ -29,14 +29,14 @@ public class ShopInternalServiceApiV1 {
   /**
    * 내부 호출용
    */
-  @Transactional
+  @Transactional(readOnly = true)
   public ResInternalShopGetDtoApiV1 internalGetShopList(Pageable pageable) {
     Page<ShopEntity> shopEntityPage;
     shopEntityPage = shopRepository.findByDeletedAtIsNullOrderByIdDesc(pageable);
     return ResInternalShopGetDtoApiV1.of(shopEntityPage);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
     ShopEntity shopEntity = shopRepository.findById(id)
         .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -55,7 +55,7 @@ public class ShopInternalServiceApiV1 {
     return couponFeignClientApiV1.getCouponsByCompanyId(shopId);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Boolean internalExistsShopById(UUID id) {
     return shopRepository.existsById(id);
   }
