@@ -6,6 +6,7 @@
 postgres-data/
 /infrastructure/loki/
 !infrastructure/loki/loki-config.yaml
+/infrastructure/data/**
 
 # Env Files
 **/.env*

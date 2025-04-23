@@ -71,9 +71,9 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
 
   @Transactional(readOnly = true)
   @Override
-  public ResCouponPolicyGetDtoApiV3 getCouponPolicy(UUID id, CurrentUserDtoApiV1 currentUser) {
+  public ResCouponPolicyGetDtoApiV3 getCouponPolicy(UUID couponPolicyId, CurrentUserDtoApiV1 currentUser) {
     // 캐시 우선 조회(Caching Read-Through) 패턴 적용
-    String policyKey = COUPON_POLICY_KEY + id;
+    String policyKey = COUPON_POLICY_KEY + couponPolicyId;
     RBucket<String> bucket = redissonClient.getBucket(policyKey);
     String policyJson = bucket.get();
 
@@ -85,7 +85,7 @@ public class CouponPolicyServiceImpl implements CouponPolicyService {
       }
     }
 
-    CouponPolicyEntity couponPolicyEntity = couponPolicyRepository.findById(id)
+    CouponPolicyEntity couponPolicyEntity = couponPolicyRepository.findById(couponPolicyId)
         .orElseThrow(() -> new CustomException(NOT_FOUND_COUPON_POLICY));
 
     return ResCouponPolicyGetDtoApiV3.from(couponPolicyEntity);
