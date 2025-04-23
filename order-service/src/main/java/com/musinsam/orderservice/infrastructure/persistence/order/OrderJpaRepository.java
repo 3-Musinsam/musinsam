@@ -28,5 +28,5 @@ public interface OrderJpaRepository extends
   @Override
   @Lock(LockModeType.PESSIMISTIC_WRITE)
   @Query("SELECT o FROM OrderEntity o LEFT JOIN FETCH o.orderItems WHERE o.id = :orderId")
-  Optional<OrderEntity> findByIdWithOrderItemsForUpdate(@Param("id") UUID orderId);
+  Optional<OrderEntity> findByIdWithOrderItemsForUpdate(@Param("orderId") UUID orderId);
 }
