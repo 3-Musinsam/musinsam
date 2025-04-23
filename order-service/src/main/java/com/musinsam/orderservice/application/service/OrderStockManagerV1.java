@@ -60,7 +60,7 @@ public class OrderStockManagerV1 {
 
   }
 
-  @Retry(name = "product-service", fallbackMethod = "restoreProductStockFallback")
+  @Retry(name = "product-service", fallbackMethod = "rollbackStockReductionFallback")
   public void rollbackStockReduction(List<OrderItemEntity> processedItems) {
     if (processedItems.isEmpty()) {
       return;
@@ -77,6 +77,10 @@ public class OrderStockManagerV1 {
     }
 
     log.debug("모든 상품 재고 롤백 완료: 처리된 상품 수={}", processedItems.size());
+  }
+
+  public void rollbackStockReductionFallback(List<OrderItemEntity> processedItems, Exception e) {
+    log.error("재고 롤백 과정에서 복구 오류 발생: {}", e.getMessage());
   }
 
   @Retry(name = "product-service", fallbackMethod = "restoreProductStockFallback")
