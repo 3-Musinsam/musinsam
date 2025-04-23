@@ -32,12 +32,13 @@ public class ShopInternalServiceApiV1 {
    * @param pageable pagination and sorting information
    * @return a DTO containing a page of shops not marked as deleted, ordered by descending ID
    */
-  @Transactional
+  @Transactional(readOnly = true)
   public ResInternalShopGetDtoApiV1 internalGetShopList(Pageable pageable) {
     Page<ShopEntity> shopEntityPage;
     shopEntityPage = shopRepository.findByDeletedAtIsNullOrderByIdDesc(pageable);
     return ResInternalShopGetDtoApiV1.of(shopEntityPage);
   }
+
 
   /**
    * Retrieves a shop by its UUID.
@@ -46,7 +47,7 @@ public class ShopInternalServiceApiV1 {
    * @return a DTO representing the shop
    * @throws CustomException if the shop is not found
    */
-  @Transactional
+  @Transactional(readOnly = true)
   public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
     ShopEntity shopEntity = shopRepository.findById(id)
         .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -65,7 +66,7 @@ public class ShopInternalServiceApiV1 {
     return couponFeignClientApiV1.getCouponsByCompanyId(shopId);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Boolean internalExistsShopById(UUID id) {
     return shopRepository.existsById(id);
   }
