@@ -85,11 +85,13 @@ public class OrderServiceApiV1 {
   @Transactional
   public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
-    OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
+    OrderEntity orderEntity = orderRepository.findByIdWithOrderItemsForUpdate(orderId)
         .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
     validateOrderOwner(orderEntity, userId);
     validateOrderStatus(orderEntity);
+
+    restoreProductStock(orderEntity);
 
     boolean stockAvailable = checkAndReduceStock(orderEntity);
 

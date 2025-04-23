@@ -13,5 +13,7 @@ public interface OrderRepository {
 
   Optional<OrderEntity> findByIdWithOrderItems(UUID orderId);
 
+  Optional<OrderEntity> findByIdWithOrderItemsForUpdate(UUID orderId);
+
   Page<OrderEntity> findAll(Predicate predicate, Pageable pageable);
 }
