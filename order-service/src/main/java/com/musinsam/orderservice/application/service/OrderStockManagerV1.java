@@ -106,6 +106,7 @@ public class OrderStockManagerV1 {
 
   public void rollbackStockReductionFallback(List<OrderItemEntity> processedItems, Exception e) {
     log.error("재고 롤백 과정에서 복구 오류 발생: {}", e.getMessage());
+    throw new OrderStockRestoreException();
   }
 
   /**
