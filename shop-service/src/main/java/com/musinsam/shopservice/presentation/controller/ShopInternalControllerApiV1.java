@@ -28,7 +28,10 @@ public class ShopInternalControllerApiV1 {
   private final ShopInternalServiceApiV1 shopInternalServiceApiV1;
 
   /**
-   * 상점 전체 조회
+   * Retrieves a paginated list of all shops.
+   *
+   * @param pageable pagination and sorting information
+   * @return a ResponseEntity containing the paginated shop list
    */
   @GetMapping
   public ResponseEntity<ResInternalShopGetDtoApiV1> internalGetShopList(@Valid Pageable pageable

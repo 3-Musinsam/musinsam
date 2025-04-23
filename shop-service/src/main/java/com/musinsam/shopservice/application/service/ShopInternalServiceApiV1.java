@@ -27,7 +27,10 @@ public class ShopInternalServiceApiV1 {
   private final CouponFeignClientApiV1 couponFeignClientApiV1;
 
   /**
-   * 내부 호출용
+   * Retrieves a paginated list of active shops for internal use.
+   *
+   * @param pageable pagination and sorting information
+   * @return a DTO containing a page of shops not marked as deleted, ordered by descending ID
    */
   @Transactional
   public ResInternalShopGetDtoApiV1 internalGetShopList(Pageable pageable) {
@@ -36,6 +39,13 @@ public class ShopInternalServiceApiV1 {
     return ResInternalShopGetDtoApiV1.of(shopEntityPage);
   }
 
+  /**
+   * Retrieves a shop by its UUID.
+   *
+   * @param id the UUID of the shop to retrieve
+   * @return a DTO representing the shop
+   * @throws CustomException if the shop is not found
+   */
   @Transactional
   public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
     ShopEntity shopEntity = shopRepository.findById(id)
