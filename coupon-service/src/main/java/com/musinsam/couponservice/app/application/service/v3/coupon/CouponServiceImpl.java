@@ -5,9 +5,12 @@ import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.CO
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.common.user.CurrentUserDtoApiV1;
 import com.musinsam.couponservice.app.application.dto.v3.coupon.request.ReqCouponIssueDtoApiV3;
+import com.musinsam.couponservice.app.application.dto.v3.coupon.request.ReqCouponUseDtoApiV3;
 import com.musinsam.couponservice.app.application.dto.v3.coupon.response.ResCouponIssueDtoApiV3;
+import com.musinsam.couponservice.app.application.dto.v3.coupon.response.ResCouponUseDtoApiV3;
 import com.musinsam.couponservice.app.domain.entity.coupon.CouponEntity;
 import com.musinsam.couponservice.app.domain.repository.coupon.CouponRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,5 +32,17 @@ public class CouponServiceImpl implements CouponService {
     couponStateService.updateCouponState(couponRepository.findById(couponEntity.getId())
         .orElseThrow(() -> new CustomException(COUPON_NOT_FOUND)));
     return ResCouponIssueDtoApiV3.from(couponEntity, couponEntity.getCouponPolicyEntity());
+  }
+
+  @Transactional
+  @Override
+  public ResCouponUseDtoApiV3 useCoupon(UUID couponId, ReqCouponUseDtoApiV3 request, CurrentUserDtoApiV1 currentUser) {
+    CouponEntity couponEntity = couponRepository.findByIdWithLock(couponId)
+        .orElseThrow(() -> new CustomException(COUPON_NOT_FOUND));
+
+    couponEntity.useForV3(request.orderId());
+    couponStateService.updateCouponState(couponEntity);
+
+    return ResCouponUseDtoApiV3.from(couponEntity, couponEntity.getCouponPolicyEntity());
   }
 }

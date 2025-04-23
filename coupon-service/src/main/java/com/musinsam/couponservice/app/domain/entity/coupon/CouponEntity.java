@@ -1,13 +1,16 @@
 package com.musinsam.couponservice.app.domain.entity.coupon;
 
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.*;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_ALREADY_CLAIMED;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode.COUPON_NOT_USED;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.AVAILABLE;
 import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.ISSUED;
+import static com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus.USED;
 
 import com.musinsam.common.domain.BaseEntity;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.couponservice.app.domain.entity.couponPolicy.CouponPolicyEntity;
+import com.musinsam.couponservice.app.domain.vo.coupon.CouponErrorCode;
 import com.musinsam.couponservice.app.domain.vo.coupon.CouponStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +23,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -101,13 +105,32 @@ public class CouponEntity extends BaseEntity {
   }
 
   public void markAsUsed(UUID couponId) {
-    this.couponStatus = CouponStatus.USED;
+    this.couponStatus = USED;
     this.usedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     this.orderId = couponId;
 
     if (!couponPolicyEntity.isLimitedIssue()) {
       couponPolicyEntity.decreaseQuantity(); // 퍼블릭 풀만 사용 시 감소
     }
+  }
+
+  public void useForV3(UUID couponId) {
+    this.couponStatus = USED;
+    this.usedAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    this.orderId = couponId;
+
+    if (isExpired()) {
+      throw new CustomException(COUPON_EXPIRED);
+    }
+  }
+
+  public boolean isExpired() {
+    ZonedDateTime now = ZonedDateTime.now();
+    return now.isBefore(couponPolicyEntity.getStartedAt()) || now.isAfter(couponPolicyEntity.getEndedAt());
+  }
+
+  public boolean isUsed() {
+    return couponStatus == USED;
   }
 
   public void updateUsedAt() {
@@ -124,7 +147,7 @@ public class CouponEntity extends BaseEntity {
   }
 
   public void restore() {
-    if (this.couponStatus != CouponStatus.USED) {
+    if (this.couponStatus != USED) {
       throw new CustomException(COUPON_NOT_USED);
     }
 
