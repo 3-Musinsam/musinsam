@@ -167,8 +167,8 @@ public class OrderServiceApiV1 {
     ResponseEntity<Boolean> response = productFeignClient.checkAndReduceStock(
         item.getProductId(), item.getQuantity());
 
-    if (response.getStatusCode().is2xxSuccessful() &&
-        Boolean.TRUE.equals(response.getBody())) {
+    if (response.getStatusCode().is2xxSuccessful()
+        && Boolean.TRUE.equals(response.getBody())) {
       return true;
     }
 
@@ -176,21 +176,29 @@ public class OrderServiceApiV1 {
   }
 
   private boolean stockReductionFallback(OrderItemEntity item, Exception e) {
-
     log.debug("상품 재고 차감 실패: productId={}, quantity={}, 오류={}",
         item.getProductId(), item.getQuantity(), e.getMessage());
     return false;
 
   }
 
+  @Retry(name = "product-service", fallbackMethod = "restoreProductStockFallback")
   private void rollbackStockReduction(List<OrderItemEntity> processedItems) {
     if (processedItems.isEmpty()) {
       return;
     }
 
     for (OrderItemEntity item : processedItems) {
-      productFeignClient.restoreStock(item.getProductId(), item.getQuantity());
+      ResponseEntity<Void> response = productFeignClient.restoreStock(item.getProductId(),
+          item.getQuantity());
+
+      if (!response.getStatusCode().is2xxSuccessful()) {
+        log.debug("재고 롤백 요청 실패: 상품 ID={}, 응답코드={}", item.getProductId(), response.getStatusCode());
+        throw new OrderStockRestoreException();
+      }
     }
+
+    log.debug("모든 상품 재고 롤백 완료: 처리된 상품 수={}", processedItems.size());
   }
 
   private void restoreProductStock(OrderEntity orderEntity) {
@@ -210,7 +218,6 @@ public class OrderServiceApiV1 {
 
     throw new OrderStockRestoreException();
   }
-
 
   private void validateDeletableStatus(OrderEntity orderEntity) {
     List<OrderStatus> deletableStatuses = List.of(
