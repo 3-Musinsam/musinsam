@@ -104,6 +104,7 @@ public class CouponServiceImpl implements CouponService {
   }
 
   @Transactional
+  @Override
   public void issueCoupon(IssueMessage message) {
 
     CurrentUserDtoApiV1 currentUser = new CurrentUserDtoApiV1(
@@ -138,6 +139,7 @@ public class CouponServiceImpl implements CouponService {
     }
   }
 
+  @Transactional
   @Override
   public ResCouponUseDtoApiV3 useCoupon(UUID couponId, ReqCouponUseDtoApiV3 request, CurrentUserDtoApiV1 currentUser) {
     CouponEntity couponEntity = couponRepository.findByIdWithLock(couponId)
