@@ -48,13 +48,13 @@ public class OrderServiceApiV1 {
     validateOrderOwner(orderEntity, userId);
     validateOrderStatus(orderEntity);
 
+    OrderEntity savedOrder = orderRepository.save(orderEntity);
+
     boolean stockAvailable = checkAndReduceStock(orderEntity);
 
     if (!stockAvailable) {
       throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
-
-    OrderEntity savedOrder = orderRepository.save(orderEntity);
 
     return ResOrderPostDtoApiV1.of(savedOrder);
   }
