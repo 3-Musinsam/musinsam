@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OrderStockMangerV1 {
+public class OrderStockManagerV1 {
 
   private final ProductFeignClient productFeignClient;
 

@@ -31,7 +31,7 @@ public class OrderServiceApiV1 {
 
   private final OrderRepository orderRepository;
   private final OrderValidatorV1 orderValidatorV1;
-  private final OrderStockMangerV1 orderStockMangerV1;
+  private final OrderStockManagerV1 orderStockManagerV1;
 
   @Transactional
   public ResOrderPostDtoApiV1 createOrder(ReqOrderPostDtoApiV1 requestDto, Long userId) {
@@ -43,7 +43,7 @@ public class OrderServiceApiV1 {
 
     OrderEntity savedOrder = orderRepository.save(orderEntity);
 
-    boolean stockAvailable = orderStockMangerV1.checkAndReduceStock(orderEntity);
+    boolean stockAvailable = orderStockManagerV1.checkAndReduceStock(orderEntity);
 
     if (!stockAvailable) {
       throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
@@ -84,11 +84,11 @@ public class OrderServiceApiV1 {
     orderValidatorV1.validateOrderOwner(orderEntity, userId);
     orderValidatorV1.validateOrderStatus(orderEntity);
 
-    orderStockMangerV1.restoreProductStock(orderEntity);
+    orderStockManagerV1.restoreProductStock(orderEntity);
 
     requestDto.getOrder().updateEntity(orderEntity);
 
-    boolean stockAvailable = orderStockMangerV1.checkAndReduceStock(orderEntity);
+    boolean stockAvailable = orderStockManagerV1.checkAndReduceStock(orderEntity);
 
     if (!stockAvailable) {
       throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
@@ -113,7 +113,7 @@ public class OrderServiceApiV1 {
         requestDto.getOrder().getCancelReason()
     );
 
-    orderStockMangerV1.restoreProductStock(orderEntity);
+    orderStockManagerV1.restoreProductStock(orderEntity);
 
     return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
