@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderServiceApiV1 {
 
   private final OrderRepository orderRepository;
-  private final OrderValidatorV1 orderValidator;
+  private final OrderValidatorV1 orderValidatorV1;
   private final OrderStockMangerV1 orderStockMangerV1;
 
   @Transactional
@@ -38,8 +38,8 @@ public class OrderServiceApiV1 {
 
     OrderEntity orderEntity = requestDto.getOrder().toEntityWith(userId);
 
-    orderValidator.validateOrderOwner(orderEntity, userId);
-    orderValidator.validateOrderStatus(orderEntity);
+    orderValidatorV1.validateOrderOwner(orderEntity, userId);
+    orderValidatorV1.validateOrderStatus(orderEntity);
 
     OrderEntity savedOrder = orderRepository.save(orderEntity);
 
@@ -58,7 +58,7 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
         .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
-    orderValidator.validateOrderOwner(orderEntity, userId);
+    orderValidatorV1.validateOrderOwner(orderEntity, userId);
 
     return ResOrderGetByIdDtoApiV1.of(orderEntity);
   }
@@ -81,8 +81,8 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItemsForUpdate(orderId)
         .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
-    orderValidator.validateOrderOwner(orderEntity, userId);
-    orderValidator.validateOrderStatus(orderEntity);
+    orderValidatorV1.validateOrderOwner(orderEntity, userId);
+    orderValidatorV1.validateOrderStatus(orderEntity);
 
     orderStockMangerV1.restoreProductStock(orderEntity);
 
@@ -104,9 +104,9 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
         .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
-    orderValidator.validateOrderOwner(orderEntity, userId);
+    orderValidatorV1.validateOrderOwner(orderEntity, userId);
 
-    orderValidator.validateCancellableStatus(orderEntity);
+    orderValidatorV1.validateCancellableStatus(orderEntity);
 
     orderEntity.cancel(
         requestDto.getOrder().getCancelType(),
@@ -123,8 +123,8 @@ public class OrderServiceApiV1 {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
         .orElseThrow(() -> OrderException.from(OrderErrorCode.ORDER_NOT_FOUND));
 
-    orderValidator.validateOrderOwner(orderEntity, userId);
-    orderValidator.validateDeletableStatus(orderEntity);
+    orderValidatorV1.validateOrderOwner(orderEntity, userId);
+    orderValidatorV1.validateDeletableStatus(orderEntity);
 
     ZoneId zoneId = ZoneId.systemDefault();
 
