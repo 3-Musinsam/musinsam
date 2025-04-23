@@ -30,7 +30,7 @@ public class ShopEntity extends BaseEntity {
   @Column
   private Long userId;
 
-  @Column
+  @Column(unique = true)
   private String name;
 
 }

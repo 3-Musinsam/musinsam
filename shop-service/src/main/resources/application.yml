@@ -37,6 +37,22 @@ springdoc:
   swagger-ui:
     enabled: true
 
+management:
+  server:
+    port: 11003
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms, 100ms, 200ms
+
 eureka:
   client:
     register-with-eureka: true

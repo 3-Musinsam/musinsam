@@ -65,6 +65,7 @@ X-User-Role: {{userRole}}
 
 {
   "shop": {
+    "userId": 1,
     "name": "adidas"
   }
 }

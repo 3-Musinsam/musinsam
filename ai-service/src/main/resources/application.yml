@@ -32,14 +32,20 @@ springdoc:
     enabled: true
 
 management:
+  server:
+    port: 15001
   endpoints:
     web:
       exposure:
-        include: "*"
-    health:
-      show-details: always
-  prometheus:
-    enabled: true
+        include: health,metrics,prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      slo:
+        http.server.requests: 50ms, 100ms, 200ms
 
 openai:
   api:

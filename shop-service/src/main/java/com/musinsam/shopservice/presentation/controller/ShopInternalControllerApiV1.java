@@ -2,6 +2,7 @@ package com.musinsam.shopservice.presentation.controller;
 
 import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
+import com.musinsam.shopservice.application.dto.response.ResInternalShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopCouponDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.application.service.ShopInternalServiceApiV1;
@@ -25,6 +26,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShopInternalControllerApiV1 {
 
   private final ShopInternalServiceApiV1 shopInternalServiceApiV1;
+
+  /**
+   * Retrieves a paginated list of all shops.
+   *
+   * @param pageable pagination and sorting information
+   * @return a ResponseEntity containing the paginated shop list
+   */
+  @GetMapping
+  public ResponseEntity<ResInternalShopGetDtoApiV1> internalGetShopList(@Valid Pageable pageable
+  ) {
+    return ResponseEntity.ok(shopInternalServiceApiV1.internalGetShopList(pageable));
+  }
 
   /**
    * 상점 단건 조회

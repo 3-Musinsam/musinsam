@@ -3,6 +3,7 @@ package com.musinsam.shopservice.application.service;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
+import com.musinsam.shopservice.application.dto.response.ResInternalShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopCouponDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
@@ -26,9 +27,27 @@ public class ShopInternalServiceApiV1 {
   private final CouponFeignClientApiV1 couponFeignClientApiV1;
 
   /**
-   * 내부 호출용
+   * Retrieves a paginated list of active shops for internal use.
+   *
+   * @param pageable pagination and sorting information
+   * @return a DTO containing a page of shops not marked as deleted, ordered by descending ID
    */
-  @Transactional
+  @Transactional(readOnly = true)
+  public ResInternalShopGetDtoApiV1 internalGetShopList(Pageable pageable) {
+    Page<ShopEntity> shopEntityPage;
+    shopEntityPage = shopRepository.findByDeletedAtIsNullOrderByIdDesc(pageable);
+    return ResInternalShopGetDtoApiV1.of(shopEntityPage);
+  }
+
+
+  /**
+   * Retrieves a shop by its UUID.
+   *
+   * @param id the UUID of the shop to retrieve
+   * @return a DTO representing the shop
+   * @throws CustomException if the shop is not found
+   */
+  @Transactional(readOnly = true)
   public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
     ShopEntity shopEntity = shopRepository.findById(id)
         .orElseThrow(() -> new CustomException(ShopErrorCode.SHOP_NOT_FOUND));
@@ -47,7 +66,7 @@ public class ShopInternalServiceApiV1 {
     return couponFeignClientApiV1.getCouponsByCompanyId(shopId);
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Boolean internalExistsShopById(UUID id) {
     return shopRepository.existsById(id);
   }
