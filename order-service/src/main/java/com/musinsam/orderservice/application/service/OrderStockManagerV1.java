@@ -19,6 +19,12 @@ public class OrderStockManagerV1 {
 
   private final ProductFeignClient productFeignClient;
 
+  /**
+   * 주문 항목의 재고를 확인하고 차감. 재고 차감에 실패할 경우 이미 처리된 항목들을 롤백한다.
+   *
+   * @param orderEntity 재고를 차감할 주문 엔티티
+   * @return 모든 상품의 재고 차감 성공 시 true, 실패 시 false
+   */
   public boolean checkAndReduceStock(OrderEntity orderEntity) {
 
     log.debug("주문 상품 재고 확인 및 차감 시작: 주문 ID={}", orderEntity.getId());
@@ -40,6 +46,12 @@ public class OrderStockManagerV1 {
     return true;
   }
 
+  /**
+   * 단일 주문 항목에 대한 재고 차감. Feign Client를 통해 상품 서비스에 재고 차감을 요청한다.
+   *
+   * @param item 재고를 차감할 OrderItem 엔티티
+   * @return 재고 차감 성공 시 true, 실패 시 false
+   */
   @Retry(name = "product-service", fallbackMethod = "stockReductionFallback")
   public boolean attemptStockReduction(OrderItemEntity item) {
     ResponseEntity<Boolean> response = productFeignClient.checkAndReduceStock(
@@ -60,6 +72,11 @@ public class OrderStockManagerV1 {
 
   }
 
+  /**
+   * 이미 처리된 주문 항목들의 재고를 원래대로 복원한다. Feign Client를 통해 상품 복구를 요청한다.
+   *
+   * @param processedItems 재고를 복원할 주문 항목 목록
+   */
   @Retry(name = "product-service", fallbackMethod = "rollbackStockReductionFallback")
   public void rollbackStockReduction(List<OrderItemEntity> processedItems) {
     if (processedItems.isEmpty()) {
@@ -83,6 +100,11 @@ public class OrderStockManagerV1 {
     log.error("재고 롤백 과정에서 복구 오류 발생: {}", e.getMessage());
   }
 
+  /**
+   * 주문 취소 또는 수정 시 모든 주문 항목의 재고를 복원한다. Feign Client를 통해 요청 주문의 상품들의 재고를 복원한다.
+   *
+   * @param orderEntity 재고를 복원할 주문 엔티티
+   */
   @Retry(name = "product-service", fallbackMethod = "restoreProductStockFallback")
   public void restoreProductStock(OrderEntity orderEntity) {
     for (OrderItemEntity item : orderEntity.getOrderItems()) {
