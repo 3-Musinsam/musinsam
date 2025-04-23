@@ -79,6 +79,7 @@ public class OrderStockManagerV1 {
     log.debug("모든 상품 재고 롤백 완료: 처리된 상품 수={}", processedItems.size());
   }
 
+  @Retry(name = "product-service", fallbackMethod = "restoreProductStockFallback")
   public void restoreProductStock(OrderEntity orderEntity) {
     for (OrderItemEntity item : orderEntity.getOrderItems()) {
       ResponseEntity<Void> response = productFeignClient.restoreStock(item.getProductId(),
