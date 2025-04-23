@@ -11,6 +11,7 @@ import com.musinsam.orderservice.domain.order.exception.OrderException;
 import com.musinsam.orderservice.domain.order.exception.OrderNotFoundException;
 import com.musinsam.orderservice.domain.order.exception.OrderProductException;
 import com.musinsam.orderservice.domain.order.exception.OrderStatusException;
+import com.musinsam.orderservice.domain.order.exception.OrderStockRestoreException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -91,6 +92,12 @@ public class OrderExceptionHandler {
   @ExceptionHandler(OrderControlException.class)
   public ResponseEntity<ErrorResponse> handleOrderControlException(
       OrderControlException ex, HttpServletRequest request) {
+    return createOrderBaseException(ex, request, false);
+  }
+
+  @ExceptionHandler(OrderStockRestoreException.class)
+  public ResponseEntity<ErrorResponse> handleOrderStoreRestoreException(
+      OrderStockRestoreException ex, HttpServletRequest request) {
     return createOrderBaseException(ex, request, false);
   }
 

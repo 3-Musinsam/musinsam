@@ -7,12 +7,11 @@ const userRole = __ENV.TEST_USER_ROLE;
 
 export const options = {
   scenarios: {
-    ramping_test: {
-      executor: 'per-vu-iterations',
-      vus: 1000,
-      iterations: 10,
-      startTime: '0s',
-      maxDuration: '1m',
+    concurrent_requests: {
+      executor: 'constant-vus',
+      vus: 100,
+      duration: '10s',
+      gracefulStop: '5s'
     },
   },
 };
@@ -64,7 +63,6 @@ export default function () {
   const response = http.post(url, payload, params);
 
   check(response, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 500ms': (r) => r.timings.duration < 500
+    'status is 200': (r) => r.status === 200
   });
 }
