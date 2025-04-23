@@ -3,6 +3,7 @@ package com.musinsam.shopservice.application.service;
 import com.musinsam.common.exception.CustomException;
 import com.musinsam.shopservice.application.dto.request.ReqShopGetSearchDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResInternalShopGetByShopIdDtoApiV1;
+import com.musinsam.shopservice.application.dto.response.ResInternalShopGetDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopCouponDtoApiV1;
 import com.musinsam.shopservice.application.dto.response.ResShopGetDtoApiV1;
 import com.musinsam.shopservice.domain.shop.entity.ShopEntity;
@@ -28,6 +29,13 @@ public class ShopInternalServiceApiV1 {
   /**
    * 내부 호출용
    */
+  @Transactional
+  public ResInternalShopGetDtoApiV1 internalGetShopList(Pageable pageable) {
+    Page<ShopEntity> shopEntityPage;
+    shopEntityPage = shopRepository.findByDeletedAtIsNullOrderByIdDesc(pageable);
+    return ResInternalShopGetDtoApiV1.of(shopEntityPage);
+  }
+
   @Transactional
   public ResInternalShopGetByShopIdDtoApiV1 internalGetShop(UUID id) {
     ShopEntity shopEntity = shopRepository.findById(id)
