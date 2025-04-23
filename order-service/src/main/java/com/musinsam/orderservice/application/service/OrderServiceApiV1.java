@@ -86,13 +86,13 @@ public class OrderServiceApiV1 {
 
     orderStockMangerV1.restoreProductStock(orderEntity);
 
+    requestDto.getOrder().updateEntity(orderEntity);
+
     boolean stockAvailable = orderStockMangerV1.checkAndReduceStock(orderEntity);
 
     if (!stockAvailable) {
       throw OrderException.from(OrderErrorCode.ORDER_PRODUCT_NOT_AVAILABLE);
     }
-
-    requestDto.getOrder().updateEntity(orderEntity);
 
     return ResOrderPutDtoApiV1.of(orderEntity);
   }
