@@ -33,6 +33,13 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 
+resilience4j:
+  retry:
+    instances:
+      product-service:
+        max-attempts: 3
+        wait-duration: 500ms
+
 springdoc:
   swagger-ui:
     enabled: true
