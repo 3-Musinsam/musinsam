@@ -108,8 +108,79 @@ services:
     networks:
       - laboratory-network
 
+  prometheus-shop:
+    image: prom/prometheus:latest
+    container_name: prometheus-shop
+    volumes:
+      - ./prometheus/shop/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/shop/rules:/etc/prometheus/rules
+      - prometheus_data_shop:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.listen-address=:9093'
+    ports:
+      - "39093:9093"
+    restart: always
+    networks:
+      - laboratory-network
 
+  grafana-shop:
+    image: grafana/grafana:latest
+    container_name: grafana-shop
+    volumes:
+      - grafana_data_shop:/var/lib/grafana
+      - ./grafana/shop/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "33003:3000"
+    depends_on:
+      - prometheus-shop
+    restart: always
+    networks:
+      - laboratory-network
 
+  prometheus-alarm:
+    image: prom/prometheus:latest
+    container_name: prometheus-alarm
+    volumes:
+      - ./prometheus/alarm/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alarm/rules:/etc/prometheus/rules
+      - prometheus_data_alarm:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.listen-address=:9094'
+    ports:
+      - "39094:9094"
+    restart: always
+    networks:
+      - laboratory-network
+
+  grafana-alarm:
+    image: grafana/grafana:latest
+    container_name: grafana-alarm
+    volumes:
+      - grafana_data_alarm:/var/lib/grafana
+      - ./grafana/alarm/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "33004:3000"
+    depends_on:
+      - prometheus-alarm
+    restart: always
+    networks:
+      - laboratory-network
 
 
 
@@ -231,6 +302,10 @@ volumes:
   grafana-storage:
   prometheus_data_coupon:
   grafana_data_coupon:
+  prometheus_data_shop:
+  grafana_data_shop:
+  prometheus_data_alarm:
+  grafana_data_alarm:
 
 networks:
   laboratory-network:
