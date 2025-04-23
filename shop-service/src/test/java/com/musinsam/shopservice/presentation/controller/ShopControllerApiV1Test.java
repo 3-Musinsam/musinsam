@@ -282,8 +282,4 @@ public class ShopControllerApiV1Test {
             )
         );
   }
-
-  @Test
-  public void testCouponsGetById_Success() throws Exception {
-  }
 }

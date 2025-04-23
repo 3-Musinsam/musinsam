@@ -35,6 +35,56 @@ class ShopInternalControllerApiV1Test {
   private ObjectMapper objectMapper;
 
   @Test
+  public void testInternalGetShopList_Success() throws Exception {
+
+    mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/internal/v1/shops")
+                .header("X-USER-ID", 1L)
+                .header("X-USER-ROLE", "ROLE_COMPANY")
+                .contentType("application/json")
+                .param("page", "0")
+                .param("size", "10")
+                .param("orderby", "CREATED")
+                .param("sort", "DESC")
+        )
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentationWrapper.document("상점 전체 조회 성공 (내부용)",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Shop v1")
+                    .summary("상점 전체 조회 (내부용)")
+                    .description("상점 정보를 페이지네이션으로 전체 조회합니다. (내부용)")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("요청자 ID"),
+                        headerWithName("X-USER-ROLE").description("요청자 역할")
+                    )
+                    .queryParameters(
+                        parameterWithName("page").description("페이지 번호"),
+                        parameterWithName("size").description("페이지 크기"),
+                        parameterWithName("orderby").description("정렬 기준 필드"),
+                        parameterWithName("sort").description("정렬 방식 (ASC/DESC)")
+                    )
+                    .responseFields(
+                        fieldWithPath("shopPage").description("상점 페이지 객체"),
+                        fieldWithPath("shopPage.content").description("상점 리스트"),
+                        fieldWithPath("shopPage.content[].id").description("상점 ID"),
+                        fieldWithPath("shopPage.content[].userId").description("상점 회원 ID"),
+                        fieldWithPath("shopPage.content[].name").description("상점 이름"),
+                        fieldWithPath("shopPage.page").description("페이지 정보"),
+                        fieldWithPath("shopPage.page.size").description("페이지 크기"),
+                        fieldWithPath("shopPage.page.number").description("페이지 번호"),
+                        fieldWithPath("shopPage.page.totalElements").description("전체 데이터 수"),
+                        fieldWithPath("shopPage.page.totalPages").description("전체 페이지 수")
+                    )
+                    .build()
+                )
+            )
+        );
+  }
+
+  @Test
   public void testInternalGetShop_Success() throws Exception {
     String id = "af80aa19-9c74-49dc-b115-8f4533de0f7b";
 
@@ -145,6 +195,35 @@ class ShopInternalControllerApiV1Test {
                     )
                     .responseFields(
                         fieldWithPath("couponList").description("쿠폰 목록")
+                    )
+                    .build()
+                )
+            )
+        );
+  }
+
+  @Test
+  public void testInternalExistsShopById_Success() throws Exception {
+    String id = "af80aa19-9c74-49dc-b115-8f4533de0f7b";
+
+    mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/internal/v1/shops/{id}/exists", id)
+                .header("X-USER-ID", 1L)
+                .header("X-USER-ROLE", "ROLE_COMPANY")
+                .contentType("application/json")
+        )
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andDo(
+            MockMvcRestDocumentationWrapper.document("상점 존재 여부 조회 성공 (내부용)",
+                preprocessRequest(prettyPrint()),
+                preprocessResponse(prettyPrint()),
+                resource(ResourceSnippetParameters.builder()
+                    .tag("Shop v1")
+                    .summary("상점 존재 여부 조회 (내부용)")
+                    .description("상점 존재 여부를 조회합니다.")
+                    .requestHeaders(
+                        headerWithName("X-USER-ID").description("요청자 ID"),
+                        headerWithName("X-USER-ROLE").description("요청자 역할")
                     )
                     .build()
                 )
