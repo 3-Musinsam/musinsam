@@ -33,6 +33,14 @@ public class OrderServiceApiV1 {
   private final OrderValidatorV1 orderValidatorV1;
   private final OrderStockManagerV1 orderStockManagerV1;
 
+  /**
+   * Creates a new order for the specified user, validates ownership and status, checks and reduces stock, and returns the created order details.
+   *
+   * @param requestDto the order creation request data
+   * @param userId the ID of the user placing the order
+   * @return a response DTO representing the created order
+   * @throws OrderException if stock is unavailable or validation fails
+   */
   @Transactional
   public ResOrderPostDtoApiV1 createOrder(ReqOrderPostDtoApiV1 requestDto, Long userId) {
 
@@ -52,6 +60,14 @@ public class OrderServiceApiV1 {
     return ResOrderPostDtoApiV1.of(savedOrder);
   }
 
+  /**
+   * Retrieves the details of a specific order for a given user.
+   *
+   * @param orderId the unique identifier of the order
+   * @param userId the ID of the user requesting the order
+   * @return a response DTO containing the order details
+   * @throws OrderException if the order is not found or the user does not own the order
+   */
   @Transactional(readOnly = true)
   public ResOrderGetByIdDtoApiV1 getOrder(UUID orderId, Long userId) {
 
@@ -75,6 +91,15 @@ public class OrderServiceApiV1 {
     return ResOrderGetDtoApiV1.of(orderPage);
   }
 
+  /**
+   * Updates the status of an existing order and adjusts product stock accordingly.
+   *
+   * @param orderId the unique identifier of the order to update
+   * @param requestDto the request data containing the new order status and details
+   * @param userId the ID of the user performing the update
+   * @return a response DTO representing the updated order
+   * @throws OrderException if the order is not found, the user is not the owner, the order status is invalid for update, or if required product stock is unavailable
+   */
   @Transactional
   public ResOrderPutDtoApiV1 updateOrderStatus(UUID orderId, ReqOrderPutDtoApiV1 requestDto,
       Long userId) {
@@ -97,6 +122,15 @@ public class OrderServiceApiV1 {
     return ResOrderPutDtoApiV1.of(orderEntity);
   }
 
+  /**
+   * Cancels an order for the specified user and restores product stock.
+   *
+   * @param orderId the unique identifier of the order to cancel
+   * @param requestDto the cancellation request containing cancel type and reason
+   * @param userId the ID of the user requesting the cancellation
+   * @return a response DTO representing the cancelled order
+   * @throws OrderException if the order is not found or cannot be cancelled
+   */
   @Transactional
   public ResOrderPostCancelDtoApiV1 cancelOrder(UUID orderId, ReqOrderPostCancelDtoApiV1 requestDto,
       Long userId) {
@@ -118,6 +152,15 @@ public class OrderServiceApiV1 {
     return ResOrderPostCancelDtoApiV1.of(orderEntity);
   }
 
+  /**
+   * Soft deletes an order and its items if the user is the owner and the order is deletable.
+   *
+   * Marks the order and all associated items as deleted, updates the order status to DELETED, and records deletion metadata.
+   *
+   * @param orderId the unique identifier of the order to delete
+   * @param userId the ID of the user requesting the deletion
+   * @throws OrderException if the order is not found, the user is not the owner, or the order cannot be deleted
+   */
   @Transactional
   public void deleteOrder(UUID orderId, Long userId) {
     OrderEntity orderEntity = orderRepository.findByIdWithOrderItems(orderId)
