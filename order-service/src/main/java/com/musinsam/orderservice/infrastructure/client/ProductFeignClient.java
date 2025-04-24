@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
     name = "product-service",
-    configuration = FeignConfig.class
+    configuration = FeignConfig.class,
+    url = "http://localhost:11002"
 )
 public interface ProductFeignClient {
 
