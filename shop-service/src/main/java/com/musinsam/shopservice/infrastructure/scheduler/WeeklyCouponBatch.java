@@ -22,9 +22,8 @@ public abstract class WeeklyCouponBatch {
   private final AiFeignClientApiV1 aiFeignClientApiV1;
   private final AlarmKafkaProducer alarmKafkaProducer;
 
-  // 매주 월요일 오전 3시에 실행
-  @Scheduled(cron = "0 0 3 ? * MON")
-//  @Scheduled(cron = "0 0/1 * * * *") // 테스트용
+  // 매주 금요일 오후 18시에 실행
+  @Scheduled(cron = "0 0 18 ? * Fri")
   public void runWeeklyCouponCheck() {
     List<UUID> shopIds = getShopIds();
     int totalShopCount = shopIds.size(); // 전체 상점 수
