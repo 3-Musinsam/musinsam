@@ -1,6 +1,5 @@
 package com.musinsam.orderservice.application.dto.request.v2;
 
-import com.musinsam.orderservice.application.dto.request.ReqOrderPostCancelDtoApiV1;
 import com.musinsam.orderservice.domain.order.vo.OrderCancelType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +16,7 @@ public class ReqOrderPostCancelDtoApiV2 {
 
   @Valid
   @NotNull(message = "주문 정보가 존재하지 않습니다.")
-  private ReqOrderPostCancelDtoApiV1.Order order;
+  private Order order;
 
   @Getter
   @Builder
