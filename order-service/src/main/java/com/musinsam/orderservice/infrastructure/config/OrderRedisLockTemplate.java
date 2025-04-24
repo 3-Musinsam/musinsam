@@ -21,12 +21,16 @@ public class OrderRedisLockTemplate {
   public <T> T executeWithLock(List<UUID> orderItemIds, Supplier<T> action) {
     List<RLock> locks = new ArrayList<>();
 
+    List<UUID> sortedIds = orderItemIds.stream()
+        .sorted()
+        .toList();
+
     try {
-      for (UUID orderItemId : orderItemIds) {
+      for (UUID orderItemId : sortedIds) {
         String lockKey = "product_lock:" + orderItemId;
         RLock lock = redissonClient.getLock(lockKey);
 
-        boolean isLocked = lock.tryLock(5, 10, TimeUnit.SECONDS);
+        boolean isLocked = lock.tryLock(3, 10, TimeUnit.SECONDS);
         if (!isLocked) {
           releaseAllLocks(locks);
           throw OrderException.from(OrderErrorCode.ORDER_LOCK_FAILED);
