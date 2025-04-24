@@ -2,9 +2,11 @@ package com.musinsam.orderservice.infrastructure.persistence.order;
 
 import com.musinsam.orderservice.domain.order.entity.OrderEntity;
 import com.musinsam.orderservice.domain.order.repository.OrderRepository;
+import jakarta.persistence.LockModeType;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +24,9 @@ public interface OrderJpaRepository extends
   @Override
   @Query("SELECT o FROM OrderEntity o LEFT JOIN FETCH o.orderItems WHERE o.id = :orderId")
   Optional<OrderEntity> findByIdWithOrderItems(@Param("orderId") UUID orderId);
+
+  @Override
+  @Lock(LockModeType.PESSIMISTIC_WRITE)
+  @Query("SELECT o FROM OrderEntity o LEFT JOIN FETCH o.orderItems WHERE o.id = :orderId")
+  Optional<OrderEntity> findByIdWithOrderItemsForUpdate(@Param("orderId") UUID orderId);
 }

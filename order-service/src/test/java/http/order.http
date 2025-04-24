@@ -135,7 +135,7 @@ X-User-Role: {{userRole}}
       },
       {
         "id": "d8fe1ffd-e525-4ad6-973a-ad07acd039c8",
-        "productId": "3f6164db-5907-4cf0-afe4-c219527516ae",
+        "productId": "3f6164db-5907-4cf0-afe4-c219527516a0",
         "productName": "New Sample Product",
         "quantity": 1,
         "price": 50000

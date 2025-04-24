@@ -21,6 +21,12 @@ public class ResInternalShopGetDtoApiV1 {
 
   private ShopPage shopPage;
 
+  /**
+   * Creates a new response DTO containing a paginated list of shops from the given page of shop entities.
+   *
+   * @param shopEntityPage the page of shop entities to convert
+   * @return a response DTO wrapping the paginated shop data
+   */
   public static ResInternalShopGetDtoApiV1 of(Page<ShopEntity> shopEntityPage) {
     return ResInternalShopGetDtoApiV1.builder()
         .shopPage(new ShopPage(shopEntityPage))
@@ -31,6 +37,14 @@ public class ResInternalShopGetDtoApiV1 {
   @ToString
   public static class ShopPage extends PagedModel<Shop> {
 
+    /**
+     * Constructs a paginated model of shop DTOs from a page of shop entities.
+     *
+     * Converts the content of the provided {@code Page<ShopEntity>} into a list of {@code Shop} DTOs,
+     * preserving pagination and metadata for API responses.
+     *
+     * @param shopEntityPage the page of shop entities to convert
+     */
     public ShopPage(Page<ShopEntity> shopEntityPage) {
       super(
           new PageImpl<>(
@@ -51,12 +65,24 @@ public class ResInternalShopGetDtoApiV1 {
       private Long userId;
       private String name;
 
+      /**
+       * Converts a list of ShopEntity objects into a list of Shop DTOs.
+       *
+       * @param shopEntityList the list of ShopEntity instances to convert
+       * @return a list of Shop DTOs corresponding to the input entities
+       */
       public static List<Shop> from(List<ShopEntity> shopEntityList) {
         return shopEntityList.stream()
             .map(Shop::from)
             .toList();
       }
 
+      /**
+       * Converts a ShopEntity instance to a Shop DTO.
+       *
+       * @param shopEntity the ShopEntity to convert
+       * @return a Shop DTO with fields populated from the given entity
+       */
       public static Shop from(ShopEntity shopEntity) {
         return Shop.builder()
             .id(shopEntity.getId())

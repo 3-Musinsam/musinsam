@@ -26,6 +26,8 @@ public enum OrderErrorCode implements ErrorCode {
   ORDER_CANNOT_BE_CANCELED(-1, "Order cannot be canceled",
       HttpStatus.BAD_REQUEST),
   ORDER_CANNOT_BE_DELETED(-1, "Order cannot be deleted",
+      HttpStatus.BAD_REQUEST),
+  ORDER_STOCK_RESTORE_FAILED(-1, "Stock Restore request failed",
       HttpStatus.BAD_REQUEST);
 
   private final Integer code;

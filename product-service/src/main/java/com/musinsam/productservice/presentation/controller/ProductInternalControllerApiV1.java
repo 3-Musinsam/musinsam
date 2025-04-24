@@ -4,7 +4,6 @@ import com.musinsam.productservice.application.service.ProductServiceApiV1;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +30,7 @@ public class ProductInternalControllerApiV1 {
   /**
    * 재고 복구
    */
-  @PatchMapping("/stock/restore")
+  @PutMapping("/stock/restore")
   public ResponseEntity<Void> updateProductStock(
       @RequestParam UUID productId,
       @RequestParam Integer quantity
