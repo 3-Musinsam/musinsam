@@ -128,7 +128,7 @@ spring:
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
-            - Path=/v1/orders/**
+            - Path=/v1/orders/**, /v2/orders/**
 
         - id: internal-payment-service
           uri: lb://PAYMENT-SERVICE

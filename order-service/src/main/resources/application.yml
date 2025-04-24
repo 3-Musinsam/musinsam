@@ -26,6 +26,13 @@ spring:
     open-in-view: false
     defer-datasource-initialization: true
 
+  data:
+    redis:
+      host: localhost
+      port: 6381
+      username: default
+      password: systempass
+
 eureka:
   client:
     register-with-eureka: true
