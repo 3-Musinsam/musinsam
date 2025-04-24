@@ -252,16 +252,16 @@ services:
       - laboratory-network
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:7.4.0
+    image: confluentinc/cp-zookeeper:7.5.1
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
     ports:
       - "2181:2181"
 
-  kafka:
-    image: confluentinc/cp-kafka:7.4.0
-    container_name: kafka
+  kafka-shop:
+    image: confluentinc/cp-kafka:7.5.1
+    container_name: kafka-shop
     ports:
       - "9092:9092"
     environment:
@@ -273,15 +273,28 @@ services:
     depends_on:
       - zookeeper
 
+  kafka-ui-shop:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui-shop
+    ports:
+      - "19091:8080"
+    environment:
+      - KAFKA_CLUSTERS_0_NAME=shop
+      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-shop:9092
+    networks:
+      - laboratory-network
+    depends_on:
+      - kafka-shop
+
   alarm-service:
     build:
       context: ../alarm-service
     container_name: alarm-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_BOOTSTRAP_SERVERS: kafka-shop:9092
     depends_on:
-      - kafka
+      - kafka-shop
     ports:
       - "14001:10000"
 
@@ -291,9 +304,9 @@ services:
     container_name: shop-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      KAFKA_BOOTSTRAP_SERVERS: kafka-shop:9092
     depends_on:
-      - kafka
+      - kafka-shop
     ports:
       - "11003:10000"
 
