@@ -19,6 +19,16 @@ services:
     networks:
       - laboratory-network
 
+  redis-order:
+    image: redis:latest
+    container_name: redis-order
+    ports:
+      - "6381:6379"
+    volumes:
+      - ./redis-order-config:/usr/local/etc/redis
+    networks:
+      - laboratory-network
+
   postgres:
     image: postgres:latest
     container_name: postgres-db
@@ -238,7 +248,27 @@ services:
       - "test"
     volumes:
       - ./k6-scripts:/k6-scripts
-    command: run -o experimental-prometheus-rw /k6-scripts/order-api-stress-test.js
+    command: run --tag testid=order-stress-test -o experimental-prometheus-rw /k6-scripts/order-api-stress-test.js
+    env_file:
+      - ../.env
+    environment:
+      - K6_PROMETHEUS_RW_SERVER_URL=http://prometheus:9090/api/v1/write
+      - K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true
+      - TEST_ID=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - prometheus
+    networks:
+      - laboratory-network
+
+  k6-lock-test:
+    image: grafana/k6
+    profiles:
+      - "test"
+    volumes:
+      - ./k6-scripts:/k6-scripts
+    command: run --tag testid=order-lock-test -o experimental-prometheus-rw /k6-scripts/order-distributed-lock-test.js
     env_file:
       - ../.env
     environment:

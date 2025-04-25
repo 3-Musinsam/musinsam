@@ -1,0 +1,99 @@
+package com.musinsam.orderservice.application.dto.response.v2;
+
+import com.musinsam.orderservice.domain.order.entity.OrderEntity;
+import com.musinsam.orderservice.domain.order.entity.OrderItemEntity;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ResOrderPostDtoApiV2 {
+
+  private Order order;
+
+  @Getter
+  @Builder
+  @NoArgsConstructor
+  @AllArgsConstructor
+  public static class Order {
+
+    private UUID id;
+    private Long userId;
+    private String orderStatus;
+    private List<OrderItem> orderItems;
+    private BigDecimal totalAmount;
+    private BigDecimal discountAmount;
+    private BigDecimal finalAmount;
+    private String request;
+    private String orderName;
+    private ZonedDateTime createdAt;
+
+    public static Order from(OrderEntity orderEntity) {
+
+      List<Order.OrderItem> orderItems = orderEntity.getOrderItems().stream()
+          .map(OrderItem::from)
+          .toList();
+
+      return Order.builder()
+          .id(orderEntity.getId())
+          .userId(orderEntity.getUserId())
+          .orderItems(orderItems)
+          .orderStatus(orderEntity.getOrderStatus().name())
+          .totalAmount(orderEntity.getTotalAmount())
+          .discountAmount(orderEntity.getDiscountAmount())
+          .finalAmount(orderEntity.getFinalAmount())
+          .request(orderEntity.getRequest())
+          .orderName(orderEntity.getOrderName())
+          .createdAt(orderEntity.getCreatedAt())
+          .build();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OrderItem {
+
+      private UUID productId;
+      private String productName;
+      private Integer quantity;
+      private BigDecimal price;
+
+      public static OrderItem from(OrderItemEntity orderItemEntity) {
+        return OrderItem.builder()
+            .productId(orderItemEntity.getProductId())
+            .productName(orderItemEntity.getProductName())
+            .quantity(orderItemEntity.getQuantity())
+            .price(orderItemEntity.getPrice())
+            .build();
+      }
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ShippingInfo {
+
+      private String receiverName;
+      private String receiverPhone;
+      private String zipCode;
+      private String address;
+      private String addressDetail;
+    }
+  }
+
+  public static ResOrderPostDtoApiV2 of(OrderEntity orderEntity) {
+    return ResOrderPostDtoApiV2.builder()
+        .order(Order.from(orderEntity))
+        .build();
+  }
+}
