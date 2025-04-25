@@ -90,7 +90,7 @@
 | **Gateway** | API Gateway | `http://localhost:10000` | 10000 |
 | **User** | 사용자 서비스 | `http://localhost:10001` | 10001 |
 | **Coupon** | 쿠폰 서비스 | `http://localhost:10051` | 10051 |
-| **Event** | 쿠폰 서비스 | `http://localhost:11001` | 11001 |
+| **Event** | 이벤트 서비스 | `http://localhost:11001` | 11001 |
 | **Product** | 상품 서비스 | `http://localhost:11002` | 11002 |
 | **Order** | 주문 서비스 | `http://localhost:12001` | 12001 |
 | **Payment** | 결제 서비스 | `http://localhost:13001` | 13001 |
